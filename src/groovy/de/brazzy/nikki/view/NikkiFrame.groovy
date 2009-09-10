@@ -4,19 +4,20 @@ import groovy.swing.SwingBuilder
 import java.awt.BorderLayout as BL
 import javax.swing.JSplitPane
 import javax.swing.BoxLayout
-import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
+import javax.swing.ImageIconimport javax.swing.border.EmptyBorderimport groovy.model.DefaultTableModelimport javax.swing.table.DefaultTableModel
 
 /**
  * @author Michael Borgwardt
  */
 public class NikkiFrame{
-    def frame;
-    def dirList;
-    def addButton;
-    def scanButton;
-    def saveButton;
-    def exportButton;
-    def dayList;        
+    def frame
+    def dirList
+    def addButton
+    def scanButton
+    def saveButton
+    def exportButton
+    def dayList
+    def imageTable
     
     public static NikkiFrame create(){
         def swing = new SwingBuilder()
@@ -50,23 +51,21 @@ public class NikkiFrame{
                   
               }
               scrollPane(){
-                  panel()
-                  {
-                      boxLayout(axis:BoxLayout.Y_AXIS)
-                      (1..25).each{ i ->                          
-                          panel(border: new EmptyBorder(5,5,5,5))
-                          {
-                              borderLayout()
-                              label(text:"Image $i", constraints: BL.NORTH)
-                              label(icon: new ImageIcon(NikkiFrame.class.getResource("image.jpg")), constraints: BL.WEST)
-                              textArea(rows: 2, columns:40, constraints: BL.CENTER, border: new EmptyBorder(3,3,3,3))
-                          }
-                          separator()
-                      }                      
-                  }
+                    result.imageTable = table(model: new DefaultTableModel(columnCount: 1, rowCount:30), tableHeader:null, rowHeight:new ImageView(0).getPreferredSize().height)
+
+//                  panel()
+//                  {
+//                      boxLayout(axis:BoxLayout.Y_AXIS)
+//                      (1..25).each{ i ->                          
+//                          widget(widget: new ImageView(i))
+//                      }                      
+//                  }
               }
           }
         }
+        
+        result.imageTable.columnModel.getColumn(0).setCellRenderer(new CellRenderer())
+        result.imageTable.columnModel.getColumn(0).setCellEditor(new CellRenderer())
         
         return result;
     }    
