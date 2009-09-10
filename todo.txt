@@ -1,0 +1,10 @@
+- Domainmodels mit Swing-Model-Interfaces
+- Speichern der Einstellungsdaten mit Preferences API
+- Daten zu Verzeichnis im jeweiligen Verzeichnis oder alles zentral?
+- Serialisieren der Daten
+- Export als KMZ
+- Einlesen der Bilddaten
+- Anfertigen von Thumbnails / verkleinerten Version für KMZ
+- Einlesen der GPS-Logs
+- Geotagging
+
