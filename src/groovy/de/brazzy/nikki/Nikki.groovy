@@ -12,38 +12,41 @@ public class Nikki{
     public static void main(def args){
         def swing = new SwingBuilder()
 
-        def dirListPanel
-        def dayListPanel
-        def dayPanel
+        def dirList;
+        def addButton;
+        def scanButton;
+        def saveButton;
+        def exportButton;
+        def dayList;        
         
         def frame = swing.frame(title:'Nikki') {
           borderLayout()
           splitPane(orientation: JSplitPane.HORIZONTAL_SPLIT, constraints: BL.CENTER){
               splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
-                  dirListPanel = panel(){
+                  panel(){
                       borderLayout()
                       scrollPane(constraints: BL.CENTER){
-                          list(listData: (1..5).collect{"Directory $it"})
+                          dirList = list(listData: (1..5).collect{"Directory $it"})
                       }
                       panel(constraints: BL.SOUTH){
-                          button(text:'Add')
-                          button(text:'Scan')                      
+                          addButton = button(text:'Add')
+                          scanButton = button(text:'Scan')                      
                       }
                   }
-                  dayListPanel = panel(){
+                  panel(){
                       borderLayout()
                       scrollPane(constraints: BL.CENTER){
-                          list(listData: (1..30).collect{"Day $it"})
+                          dayList = list(listData: (1..30).collect{"Day $it"})
                       }
                       panel(constraints: BL.SOUTH){
-                          button(text:'Save')
-                          button(text:'Export')
+                          saveButton = button(text:'Save')
+                          exportButton = button(text:'Export')
                       }
                   }
                   
                   
               }
-              dayPanel = scrollPane(){
+              scrollPane(){
                   panel()
                   {
                       boxLayout(axis:BoxLayout.Y_AXIS)
