@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +24,9 @@ public class ImageView extends JPanel
         
         textArea = new JTextArea(2, 40);
         textArea.setBorder(new EmptyBorder(3,3,3,3));
-        add(textArea, BorderLayout.CENTER);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
         add(new JSeparator(), BorderLayout.SOUTH);
     }    
 
