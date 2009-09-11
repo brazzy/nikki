@@ -22,7 +22,6 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
         def imgs = path.listFiles(filter)
         
         def days = new TreeMap()
-        System.out.println(imgs.size())
         imgs.each{
             Image i = new Image(directory:this, fileName:it.name)
             JpegImageMetadata md =  Sanselan.getMetadata(it);
@@ -41,8 +40,6 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
                 {
                     days.put(d, [i])                    
                 }
-                
-                System.out.println(it.name+": "+d)                
             }
         }
         
