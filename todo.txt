@@ -1,7 +1,6 @@
 - Domainmodels mit Swing-Model-Interfaces
 - Speichern der Einstellungsdaten mit Preferences API
-- Daten zu Verzeichnis im jeweiligen Verzeichnis oder alles zentral?
-- Serialisieren der Daten
+- Serialisieren der Daten - XMLEncoder?
 - Export als KMZ
 - Einlesen der Bilddaten
 - Anfertigen von Thumbnails / verkleinerten Version für KMZ
@@ -9,3 +8,4 @@
 - Geotagging
 
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
+v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup
