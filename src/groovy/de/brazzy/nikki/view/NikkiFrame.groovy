@@ -4,7 +4,7 @@ import groovy.swing.SwingBuilder
 import java.awt.BorderLayout as BL
 import javax.swing.JSplitPane
 import javax.swing.BoxLayout
-import javax.swing.ImageIconimport javax.swing.border.EmptyBorderimport groovy.model.DefaultTableModelimport javax.swing.table.DefaultTableModel
+import javax.swing.ImageIconimport javax.swing.border.EmptyBorderimport groovy.model.DefaultTableModelimport javax.swing.table.DefaultTableModelimport javax.swing.JFrame
 
 /**
  * @author Michael Borgwardt
@@ -64,6 +64,7 @@ public class NikkiFrame{
           }
         }
         
+        result.frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE;
         result.imageTable.columnModel.getColumn(0).setCellRenderer(new CellRenderer())
         result.imageTable.columnModel.getColumn(0).setCellEditor(new CellRenderer())
         
