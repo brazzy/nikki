@@ -7,4 +7,10 @@ class Day {
     
     Date date;
     Directory directory;
+    
+    public String toString()
+    {
+        date.getDateString()+" ("+images.size()+")"
+    }
+
 }

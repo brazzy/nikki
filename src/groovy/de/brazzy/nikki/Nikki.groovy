@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooser
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModel
 /**
  * @author Michael Borgwardt
  */
@@ -19,13 +19,31 @@ public class Nikki{
         view.frame.show()
         
         def model = new NikkiModel()
-        view.dirList.model = model
+        view.dirList.model = model        
+        def selListener = { it ->
+            def sel = view.dirList.selectedValue
+            if(sel)
+            {
+                view.dayList.model = sel                
+            }
+            else
+            {
+                view.dayList.model = new DefaultListModel()
+            }
+            view.scanButton.enabled = (sel != null)
+        } as ListSelectionListener
+        view.dirList.addListSelectionListener(selListener)
+        
         view.addButton.actionPerformed={
             def fc = new JFileChooser()
             fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             if(fc.showOpenDialog(view.frame) == JFileChooser.APPROVE_OPTION){
-                model.addDirectory(new Directory(path:fc.getSelectedFile()))
+                model.add(new Directory(path:fc.getSelectedFile()))
             }            
+        }
+        
+        view.scanButton.actionPerformed={
+            view.dirList.selectedValue.scan()
         }
     }    
 }

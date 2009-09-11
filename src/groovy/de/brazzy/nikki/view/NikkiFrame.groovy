@@ -30,21 +30,21 @@ public class NikkiFrame{
                   panel(){
                       borderLayout()
                       scrollPane(constraints: BL.CENTER){
-                          result.dirList = list(listData: (1..5).collect{"Directory $it"})
+                          result.dirList = list()
                       }
                       panel(constraints: BL.SOUTH){
                           result.addButton = button(text:'Add')
-                          result.scanButton = button(text:'Scan')                      
+                          result.scanButton = button(text:'Scan', enabled:false)                      
                       }
                   }
                   panel(){
                       borderLayout()
                       scrollPane(constraints: BL.CENTER){
-                          result.dayList = list(listData: (1..30).collect{"Day $it"})
+                          result.dayList = list()
                       }
                       panel(constraints: BL.SOUTH){
-                          result.saveButton = button(text:'Save')
-                          result.exportButton = button(text:'Export')
+                          result.saveButton = button(text:'Save', enabled:false)
+                          result.exportButton = button(text:'Export', enabled:false)
                       }
                   }
                   
