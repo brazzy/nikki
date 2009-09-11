@@ -30,15 +30,18 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
                 images.add(i)
                 
                 TiffField f = md.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL)            
-                def d = format.parse(f.value.substring(0, 10))
-                def list = days.get(d)
-                if(list)
+                if(f != null && f.value != null)
                 {
-                    list.add(i)
-                }
-                else
-                {
-                    days.put(d, [i])                    
+                    def d = format.parse(f.value.substring(0, 10))
+                    def list = days.get(d)
+                    if(list)
+                    {
+                        list.add(i)
+                    }
+                    else
+                    {
+                        days.put(d, [i])                    
+                    }
                 }
             }
         }
