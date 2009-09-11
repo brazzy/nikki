@@ -8,3 +8,4 @@
 - Einlesen der GPS-Logs
 - Geotagging
 
+v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
