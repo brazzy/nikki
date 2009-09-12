@@ -34,10 +34,10 @@ public class ImageReader
         BufferedImage scaledImage = new BufferedImage(
                 (int)100, heightForWidth(fullSize, 100), ((int)BufferedImage.TYPE_INT_RGB));
         Graphics2D graphics2D = scaledImage.createGraphics();
-        double scale = 100/fullSize.getWidth();
+        double scale = 100.0d/fullSize.getWidth();
         AffineTransform xform = AffineTransform.getScaleInstance(scale, scale);
         graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graphics2D.drawImage(fullSize, xform, null);
         graphics2D.dispose();
         

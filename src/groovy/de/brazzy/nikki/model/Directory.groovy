@@ -1,8 +1,23 @@
 package de.brazzy.nikki.model;
 
-import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sanselan.Sanselanimport org.apache.sanselan.formats.tiff.constants.TagInfoimport org.apache.sanselan.formats.tiff.constants.TiffConstantsimport org.apache.sanselan.formats.tiff.TiffFieldimport java.io.FilenameFilterimport java.text.SimpleDateFormatimport java.util.HashMapimport javax.imageio.ImageIOimport java.awt.image.BufferedImageimport java.io.ByteArrayOutputStream
-import java.awt.Graphics2Dimport java.awt.geom.AffineTransformimport java.text.DateFormatimport java.awt.RenderingHints
-import de.brazzy.nikki.util.ImageReaderclass Directory extends ListDataModel<Day>{
+import org.apache.sanselan.formats.jpeg.JpegImageMetadata
+import org.apache.sanselan.Sanselan
+import org.apache.sanselan.formats.tiff.constants.TagInfo
+import org.apache.sanselan.formats.tiff.constants.TiffConstants
+import org.apache.sanselan.formats.tiff.TiffField
+import java.io.FilenameFilter
+import java.text.SimpleDateFormat
+import java.util.HashMap
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
+import java.awt.Graphics2D
+import java.awt.geom.AffineTransform
+import java.text.DateFormat
+import java.awt.RenderingHints
+import de.brazzy.nikki.util.ImageReader
+class Directory extends ListDataModel<Day>{
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
     
     List<Image> images = [];
     List<WaypointFile> waypointFiles = [];    
@@ -25,7 +40,7 @@ import de.brazzy.nikki.util.ImageReaderclass Directory extends ListDataModel<D
         images.each{
             Image image = ImageReader.createImage(it, this)
             
-            def date = DateFormat.getDateInstance().parse(image.time.dateString)
+            def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
             def list = days.get(date)
             if(list)
             {
@@ -47,6 +62,5 @@ import de.brazzy.nikki.util.ImageReaderclass Directory extends ListDataModel<D
         
         toSort.sort{ it.date }        
         toSort.each{ add(it) }
-    }
-    
+    }    
 }
