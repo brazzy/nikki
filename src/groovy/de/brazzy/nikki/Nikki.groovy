@@ -35,11 +35,12 @@ public class Nikki{
         view.dirList.addListSelectionListener(selListener)
         
         view.addButton.actionPerformed={
-            def fc = new JFileChooser()
+            def fc = new JFileChooser(model.selectionDir)
             fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             if(fc.showOpenDialog(view.frame) == JFileChooser.APPROVE_OPTION){
+                model.selectionDir = fc.getSelectedFile().getParentFile()
                 model.add(new Directory(path:fc.getSelectedFile()))
-            }            
+            }
         }
         
         view.scanButton.actionPerformed={

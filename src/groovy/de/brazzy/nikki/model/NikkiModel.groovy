@@ -6,5 +6,5 @@ package de.brazzy.nikki.model
  *
  */
 public class NikkiModel extends ListDataModel<Directory>{    
-
+    File selectionDir
 }

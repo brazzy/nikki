@@ -6,6 +6,7 @@
 - Anfertigen von Thumbnails / verkleinerten Version für KMZ
 - Einlesen der GPS-Logs
 - Geotagging
+- NPE bei Falkenhütte/Mahnkopf
 
 v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
