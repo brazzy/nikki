@@ -7,22 +7,28 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-public class CellRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor
+import de.brazzy.nikki.model.Image;
+
+public class ImageRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor
 {
+    ImageView view = new ImageView();
+    
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column)
     {
-        return new ImageView(row);
+        view.setValue((Image)value);
+        return view;
     }
 
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) 
     {
-        return new ImageView(row);        
+        view.setValue((Image)value);
+        return view;
     }
     
     public Object getCellEditorValue()
     {
-        return null;
+        return view.getValue();
     }
 
 }

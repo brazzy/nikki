@@ -3,11 +3,20 @@
 - Serialisieren der Daten - XMLEncoder?
 - Export als KMZ
 - Einlesen der Bilddaten
-- Anfertigen von Thumbnails / verkleinerten Version für KMZ
+  v Datum
+  - alternative Datumsfelder nutzen
+  v Thumbnail
+  - Rotation
+  - GPS
+- Thumbnails rotieren
+- verkleinerten Version für KMZ  
+- Schnelleres Skalieren
 - Einlesen der GPS-Logs
 - Geotagging
 - NPE bei Falkenhütte/Mahnkopf
+- Progressbar
 
+v Anfertigen von Thumbnails
 v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
 v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup

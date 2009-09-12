@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModel
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport groovy.model.DefaultTableModel
 /**
  * @author Michael Borgwardt
  */
@@ -46,5 +46,21 @@ public class Nikki{
         view.scanButton.actionPerformed={
             view.dirList.selectedValue.scan()
         }
+        
+        selListener = { it ->
+            def sel = view.dayList.selectedValue
+            if(sel)
+            {
+                view.imageTable.model = sel                
+            }
+            else
+            {
+                view.imageTable.model = new DefaultTableModel()
+            }
+            view.exportButton.enabled = (sel != null)
+            view.saveButton.enabled = (sel != null)
+        } as ListSelectionListener
+        view.dayList.addListSelectionListener(selListener)
+
     }    
 }

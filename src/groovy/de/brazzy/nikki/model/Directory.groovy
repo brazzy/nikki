@@ -1,6 +1,8 @@
 package de.brazzy.nikki.model;
 
-import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sanselan.Sanselanimport org.apache.sanselan.formats.tiff.constants.TagInfoimport org.apache.sanselan.formats.tiff.constants.TiffConstantsimport org.apache.sanselan.formats.tiff.TiffFieldimport java.io.FilenameFilterimport java.text.SimpleDateFormatimport java.util.HashMapclass Directory extends ListDataModel<Day>{
+import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sanselan.Sanselanimport org.apache.sanselan.formats.tiff.constants.TagInfoimport org.apache.sanselan.formats.tiff.constants.TiffConstantsimport org.apache.sanselan.formats.tiff.TiffFieldimport java.io.FilenameFilterimport java.text.SimpleDateFormatimport java.util.HashMapimport javax.imageio.ImageIOimport java.awt.image.BufferedImageimport java.io.ByteArrayOutputStream
+import java.awt.Graphics2Dimport java.awt.geom.AffineTransformimport java.text.DateFormatimport java.awt.RenderingHints
+import de.brazzy.nikki.util.ImageReaderclass Directory extends ListDataModel<Day>{
     
     List<Image> images = [];
     List<WaypointFile> waypointFiles = [];    
@@ -12,9 +14,7 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
     }
     
     public void scan()
-    {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd")
-        
+    {        
         def filter = { dir, name ->
             name.toUpperCase().endsWith(".JPG")
         } as FilenameFilter
@@ -23,20 +23,9 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
         
         def days = new HashMap()
         images.each{
-            Image image = new Image(directory:this, fileName:it.name)
-            this.images.add(image)
-            def date;
+            Image image = ImageReader.createImage(it, this)
             
-            JpegImageMetadata md =  Sanselan.getMetadata(it);
-            if(md)
-            {                
-                TiffField f = md.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL)            
-                if(f != null && f.value != null)
-                {
-                    date = format.parse(f.value.substring(0, 10))
-                }                
-            }
-            
+            def date = DateFormat.getDateInstance().parse(image.time.dateString)
             def list = days.get(date)
             if(list)
             {
@@ -59,4 +48,5 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadataimport org.apache.sans
         toSort.sort{ it.date }        
         toSort.each{ add(it) }
     }
+    
 }

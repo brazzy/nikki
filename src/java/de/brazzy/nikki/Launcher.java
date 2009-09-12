@@ -1,5 +1,7 @@
 package de.brazzy.nikki;
 
+import de.brazzy.nikki.Nikki;
+
 /**
  * For starting the app and creating a runnable JAR in eclipse
  * 
