@@ -13,7 +13,7 @@ import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListeneri
  * @author Michael Borgwardt
  */
 public class Nikki{
-    public static void main(def args){
+    public static void start(){
         def view = NikkiFrame.create()
         view.frame.pack()
         view.frame.show()

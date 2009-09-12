@@ -7,5 +7,6 @@
 - Einlesen der GPS-Logs
 - Geotagging
 
+v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
 v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup
