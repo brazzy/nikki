@@ -9,8 +9,8 @@ class Day {
     Directory directory;
     
     public String toString()
-    {
-        date.getDateString()+" ("+images.size()+")"
+    {        
+        (date==null? "unknown" : date.getDateString())+" ("+images.size()+")"
     }
 
 }
