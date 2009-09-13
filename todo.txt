@@ -13,9 +13,9 @@
 - Schnelleres Skalieren
 - Einlesen der GPS-Logs
 - Geotagging
-- NPE bei Falkenhütte/Mahnkopf
 - Progressbar
 
+v NPE bei Falkenhütte/Mahnkopf
 v Anfertigen von Thumbnails
 v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
