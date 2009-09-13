@@ -3,7 +3,7 @@ package de.brazzy.nikki.model
 import javax.swing.AbstractListModel
 public class ListDataModel<T> extends AbstractListModel{
 
-    private List<T> data = [];
+    protected List<T> data = [];
 
     public void add(T d)
     {

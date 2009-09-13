@@ -16,10 +16,13 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
+import java.beans.XMLDecoder
 class Directory extends ListDataModel<Day>{
+    public static final String PERSIST_FILE = "Nikki.db";
+    
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
     
-    List<Image> images = [];
+    Map<Image> images = [:];
     List<WaypointFile> waypointFiles = [];    
     File path;
     
@@ -29,38 +32,51 @@ class Directory extends ListDataModel<Day>{
     }
     
     public void scan()
-    {        
+    {
+//        def persist = new File(path, PERSIST_FILE)
+//        if(persist.exists)
+//        {
+//            def dec = new XMLDecoder(
+//                    new BufferedOutputStream(
+//                        new FileOutputStream(persist)))
+//            
+//        }
+        
         def filter = { dir, name ->
             name.toUpperCase().endsWith(".JPG")
         } as FilenameFilter
         
-        def images = path.listFiles(filter)
+        def imageFiles = path.listFiles(filter)
         
         def days = new HashMap()
-        images.each{
-            Image image = ImageReader.createImage(it, this)
+        this.data.each{
+            days[it.date] = it
+        }
+        
+        imageFiles.each{
+            if(!this.images[it.name])
+            {
+                Image image = ImageReader.createImage(it, this)
+                this.images[it.name] = image
+                
+                def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
+                def day = days[date]
+                if(day)
+                {
+                    day.images.add(image)
+                }
+                else
+                {
+                    day = new Day(date:date, images:[image])
+                    days.put(date, day)
+                    this.data.add(day)
+                }                
+            }
             
-            def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
-            def list = days.get(date)
-            if(list)
-            {
-                list.add(image)
-            }
-            else
-            {
-                days.put(date, [image])                    
-            }
+            this.data.sort{it.date}
+            fireContentsChanged(this, 0, this.data.size()-1)
         }
+
         
-        def toSort = []
-        days.each
-        { key,value ->
-            Day d = new Day(date:key)
-            d.images = value
-            toSort.add(d)
-        }
-        
-        toSort.sort{ it.date }        
-        toSort.each{ add(it) }
     }    
 }
