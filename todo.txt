@@ -1,5 +1,3 @@
-- Domainmodels mit Swing-Model-Interfaces
-- Serialisieren der Daten im Verzeichnis - XMLEncoder?
 - Export als KMZ
 - Einlesen der Bilddaten
   v Datum
@@ -7,16 +5,24 @@
   v Thumbnail
   - Rotation
   - GPS
+- Welche Daten eingeben?
 - Thumbnails rotieren
 - verkleinerten Version für KMZ  
-- Schnelleres Skalieren
 - Einlesen der GPS-Logs
 - Geotagging
+- Zeitkorrektur
+- Speichern beim Schliessen
+
+- Schnelleres Skalieren
+- Individuelle Tabellenzeilenhöhe
+- Scan/Persistierung automatisch
 - Progressbar
 
+v Serialisieren der Daten im Verzeichnis
 v Speichern der Einstellungsdaten mit Preferences API
 v NPE bei Falkenhütte/Mahnkopf
 v Anfertigen von Thumbnails
 v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
 v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup
+v Domainmodels mit Swing-Model-Interfaces
