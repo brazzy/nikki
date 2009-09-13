@@ -1,7 +1,8 @@
 package de.brazzy.nikki.model;
 
-class Waypoint {
-    
+class Waypoint implements Serializable{
+    public static final long serialVersionUID = 1;
+
     WaypointFile file;
     Day day;
     Date timestamp;

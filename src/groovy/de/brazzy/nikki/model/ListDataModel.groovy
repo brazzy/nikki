@@ -1,7 +1,8 @@
 package de.brazzy.nikki.model
 
 import javax.swing.AbstractListModel
-public class ListDataModel<T> extends AbstractListModel{
+import java.io.ObjectInputimport java.lang.ClassNotFoundExceptionimport java.io.IOExceptionimport java.io.ObjectOutputimport java.io.ObjectInputpublic class ListDataModel<T> extends AbstractListModel
+{
 
     protected List<T> data = [];
 
@@ -35,5 +36,4 @@ import javax.swing.AbstractListModel
     {
         return data[index]
     }
-    
 }

@@ -1,7 +1,9 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-class Day extends AbstractTableModel{
+class Day extends AbstractTableModel implements Externalizable
+{
+    public static final long serialVersionUID = 1;
 
     List<Waypoint> waypoints = [];
     List<Image> images = [];
@@ -32,5 +34,19 @@ class Day extends AbstractTableModel{
     public boolean isCellEditable(int rowIndex, int columnIndex) 
     {
         true
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        out.writeObject(waypoints)
+        out.writeObject(images)
+        out.writeObject(date)
+    }
+    
+    public void readExternal(ObjectInput oi) throws IOException, ClassNotFoundException
+    {
+        waypoints = oi.readObject()
+        images = oi.readObject()
+        date = oi.readObject()
     }
 }

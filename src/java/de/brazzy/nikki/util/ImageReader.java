@@ -25,6 +25,7 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
 
+import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Directory;
 
@@ -44,14 +45,13 @@ public class ImageReader
         }
     }
 
-    public static Image createImage(File file, Directory dir)
+    public static Image createImage(File file)
     {
         System.out.println("Starting: "+file.getName());
         long start = System.currentTimeMillis();
         Image image = new Image();
         image.setTitle(file.getName());
         image.setFileName(file.getName());
-        image.setDirectory(dir);
 
         try
         {

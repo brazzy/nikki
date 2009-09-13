@@ -16,11 +16,10 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
-import java.beans.XMLDecoder
+import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Date
 class Directory extends ListDataModel<Day>{
-    public static final String PERSIST_FILE = "Nikki.db";
-    
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
+    public static final String PERSIST_FILE = "Nikki.db";    
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
     
     Map<Image> images = [:];
     List<WaypointFile> waypointFiles = [];    
@@ -33,14 +32,22 @@ class Directory extends ListDataModel<Day>{
     
     public void scan()
     {
-//        def persist = new File(path, PERSIST_FILE)
-//        if(persist.exists)
-//        {
-//            def dec = new XMLDecoder(
-//                    new BufferedOutputStream(
-//                        new FileOutputStream(persist)))
-//            
-//        }
+        def persist = new File(path, PERSIST_FILE)
+        
+        if(this.images.size()==0 && persist.exists())
+        {
+            def input = new ObjectInputStream(
+                        new BufferedInputStream(
+                        new FileInputStream(persist)))
+            this.data = input.readObject()
+            this.data.each
+            {
+                it.directory = this
+            }
+            this.images = input.readObject()
+            this.waypointFiles = input.readObject()
+            input.close()
+        }
         
         def filter = { dir, name ->
             name.toUpperCase().endsWith(".JPG")
@@ -56,7 +63,7 @@ class Directory extends ListDataModel<Day>{
         imageFiles.each{
             if(!this.images[it.name])
             {
-                Image image = ImageReader.createImage(it, this)
+                Image image = ImageReader.createImage(it)
                 this.images[it.name] = image
                 
                 def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
@@ -70,13 +77,26 @@ class Directory extends ListDataModel<Day>{
                     day = new Day(date:date, images:[image])
                     days.put(date, day)
                     this.data.add(day)
-                }                
+                } 
+                
+                image.day = day
             }
             
-            this.data.sort{it.date}
-            fireContentsChanged(this, 0, this.data.size()-1)
         }
 
+        this.data.sort{
+            it.date==null ?
+            new Date(1800,1,1) :
+            it.date
+        }
+        fireContentsChanged(this, 0, this.data.size()-1)
         
+        def output = new ObjectOutputStream(
+                     new BufferedOutputStream(
+                     new FileOutputStream(persist)))
+        output.writeObject(this.data)
+        output.writeObject(this.images)
+        output.writeObject(this.waypointFiles)
+        output.close()
     }    
 }
