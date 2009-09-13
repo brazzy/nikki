@@ -50,7 +50,7 @@ public class NikkiFrame{
                     }
                 }
                 scrollPane(){
-                      result.imageTable = table(tableHeader:null, rowHeight: 100)
+                      result.imageTable = table(tableHeader:null, rowHeight: 150)
                 }
             }
         }
