@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport groovy.model.DefaultTableModel
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModel
 /**
  * @author Michael Borgwardt
  */
@@ -42,7 +42,7 @@ public class Nikki{
                 model.add(new Directory(path:fc.getSelectedFile()))
             }
         }
-        
+
         view.scanButton.actionPerformed={
             view.dirList.selectedValue.scan()
         }
