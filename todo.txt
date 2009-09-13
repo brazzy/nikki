@@ -1,6 +1,5 @@
 - Domainmodels mit Swing-Model-Interfaces
-- Speichern der Einstellungsdaten mit Preferences API
-- Serialisieren der Daten - XMLEncoder?
+- Serialisieren der Daten im Verzeichnis - XMLEncoder?
 - Export als KMZ
 - Einlesen der Bilddaten
   v Datum
@@ -15,6 +14,7 @@
 - Geotagging
 - Progressbar
 
+v Speichern der Einstellungsdaten mit Preferences API
 v NPE bei Falkenhütte/Mahnkopf
 v Anfertigen von Thumbnails
 v executable JAR
