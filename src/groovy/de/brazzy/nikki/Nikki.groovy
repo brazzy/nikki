@@ -51,6 +51,7 @@ public class Nikki{
             def sel = view.dayList.selectedValue
             if(sel)
             {
+                view.imageTable.editingStopped()
                 view.imageTable.model = sel                
             }
             else
