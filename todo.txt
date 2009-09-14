@@ -11,8 +11,9 @@
 - Einlesen der GPS-Logs
 - Geotagging
 - Zeitkorrektur
-- Speichern beim Schliessen
+- autom. Speichern beim Schliessen
 
+- Testbarkeit
 - Schnelleres Skalieren
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch

@@ -97,7 +97,10 @@ public class ImageView extends JPanel
         this.value = value;
         title.setText(value.getTitle());
         filename.setText(value.getFileName());
-        time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));
+        if(value.getTime() != null)
+        {
+            time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));            
+        }
         latitude.setText("48 N");
         longitude.setText("11 E");
         icon.setIcon(new ImageIcon(value.getThumbnail()));
