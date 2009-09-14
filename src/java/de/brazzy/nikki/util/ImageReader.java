@@ -47,8 +47,8 @@ public class ImageReader
 
     public static Image createImage(File file)
     {
-        System.out.println("Starting: "+file.getName());
-        long start = System.currentTimeMillis();
+//        System.out.println("Starting: "+file.getName());
+//        long start = System.currentTimeMillis();
         Image image = new Image();
         image.setTitle(file.getName());
         image.setFileName(file.getName());
@@ -56,8 +56,8 @@ public class ImageReader
         try
         {
             BufferedImage fullSize = ImageIO.read(file);
-            System.out.println("Reading+Decoding: "+(System.currentTimeMillis()-start));
-            start = System.currentTimeMillis();
+//            System.out.println("Reading+Decoding: "+(System.currentTimeMillis()-start));
+//            start = System.currentTimeMillis();
             
             BufferedImage scaledImage = new BufferedImage(
                     (int)100, heightForWidth(fullSize, 100), ((int)BufferedImage.TYPE_INT_RGB));
@@ -70,12 +70,12 @@ public class ImageReader
                     RenderingHints.VALUE_ANTIALIAS_ON);
             graphics2D.drawImage(fullSize, xform, null);
             graphics2D.dispose();
-            System.out.println("Scaling: "+(System.currentTimeMillis()-start));
-            start = System.currentTimeMillis();
+//            System.out.println("Scaling: "+(System.currentTimeMillis()-start));
+//            start = System.currentTimeMillis();
 
             byte[] bytes = Sanselan.writeImageToBytes(scaledImage, ImageFormat.IMAGE_FORMAT_PNG, new HashMap());
-            System.out.println("Encoding thumbnail: "+(System.currentTimeMillis()-start));
-            start = System.currentTimeMillis();
+//            System.out.println("Encoding thumbnail: "+(System.currentTimeMillis()-start));
+//            start = System.currentTimeMillis();
             
             image.setThumbnail(bytes);
             
@@ -88,8 +88,8 @@ public class ImageReader
                     image.setTime(dateFormat.parse(((String)f.getValue()).substring(0, 19)));
                 }                
             }
-            System.out.println("Metadata: "+(System.currentTimeMillis()-start)+"\n");
-            start = System.currentTimeMillis();
+//            System.out.println("Metadata: "+(System.currentTimeMillis()-start)+"\n");
+//            start = System.currentTimeMillis();
         }
         catch (Throwable e)
         {
