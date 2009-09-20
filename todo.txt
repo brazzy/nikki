@@ -13,8 +13,9 @@
 - Schnelleres Skalieren
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch
-- Progressbar
+- Progressbar verbessern (Oberfläche sperren?)
 
+v Progressbar
 v Einlesen der Bilddaten
   v Datum
   v Thumbnail

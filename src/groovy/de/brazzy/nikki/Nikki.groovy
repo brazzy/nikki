@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModel
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorker
 /**
  * @author Michael Borgwardt
  */
@@ -43,8 +43,16 @@ public class Nikki{
             }
         }
 
+        def progressListener = { evt ->
+            if("progress".equals(evt.propertyName)) {
+                view.progressBar.value = evt.newValue.intValue();
+            }
+        } as PropertyChangeListener
+        
         view.scanButton.actionPerformed={
-            view.dirList.selectedValue.scan()
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
         }
         
         selListener = { it ->

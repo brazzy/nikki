@@ -19,6 +19,7 @@ public class NikkiFrame{
     def exportButton
     def dayList
     def imageTable
+    def progressBar
     
     public static NikkiFrame create(){
         def swing = new SwingBuilder()
@@ -53,6 +54,7 @@ public class NikkiFrame{
                       result.imageTable = table(tableHeader:null, rowHeight: 150)
                 }
             }
+            result.progressBar = progressBar(constraints: BL.SOUTH, minimum:0, maximum:100)
         }
         
         result.frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE;

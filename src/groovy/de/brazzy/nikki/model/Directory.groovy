@@ -16,7 +16,7 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
-import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Date
+import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorker
 class Directory extends ListDataModel<Day>{
     public static final String PERSIST_FILE = "Nikki.db";    
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
@@ -30,8 +30,9 @@ class Directory extends ListDataModel<Day>{
         path.name
     }
     
-    public void scan()
+    public void scan(SwingWorker worker)
     {
+        worker.setProgress(0);
         def persist = new File(path, PERSIST_FILE)
         
         if(this.images.size()==0 && persist.exists())
@@ -59,7 +60,8 @@ class Directory extends ListDataModel<Day>{
         this.data.each{
             days[it.date] = it
         }
-        
+
+        int count = 0;
         imageFiles.each{
             if(!this.images[it.name])
             {
@@ -82,6 +84,7 @@ class Directory extends ListDataModel<Day>{
                 image.day = day
             }
             
+            worker.progress = new Integer((int)(++count / imageFiles.length * 100))
         }
 
         this.data.sort{
