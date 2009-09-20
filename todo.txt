@@ -1,12 +1,8 @@
 - Export als KMZ
 - Einlesen der Bilddaten
-  v Datum
   - alternative Datumsfelder nutzen
-  v Thumbnail
-  - Rotation
   - GPS
 - Welche Daten eingeben?
-- Thumbnails rotieren
 - verkleinerten Version für KMZ  
 - Einlesen der GPS-Logs
 - Geotagging
@@ -19,6 +15,11 @@
 - Scan/Persistierung automatisch
 - Progressbar
 
+v Einlesen der Bilddaten
+  v Datum
+  v Thumbnail
+  v Rotation
+v Thumbnails rotieren
 v Serialisieren der Daten im Verzeichnis
 v Speichern der Einstellungsdaten mit Preferences API
 v NPE bei Falkenhütte/Mahnkopf

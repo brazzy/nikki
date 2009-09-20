@@ -63,7 +63,7 @@ class Directory extends ListDataModel<Day>{
         imageFiles.each{
             if(!this.images[it.name])
             {
-                Image image = ImageReader.createImage(it)
+                Image image = new ImageReader(it).createImage()
                 this.images[it.name] = image
                 
                 def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
