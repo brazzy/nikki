@@ -14,6 +14,7 @@ public class NikkiFrame{
     def frame
     def dirList
     def addButton
+    def deleteButton
     def scanButton
     def saveButton
     def exportButton
@@ -36,6 +37,7 @@ public class NikkiFrame{
                         }
                         panel(constraints: BL.SOUTH){
                             result.addButton = button(text:'Add')
+                            result.deleteButton = button(text:'Delete', enabled:false)                            
                             result.scanButton = button(text:'Scan', enabled:false)                      
                         }
                     }

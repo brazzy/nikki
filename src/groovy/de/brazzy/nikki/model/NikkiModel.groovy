@@ -9,7 +9,7 @@ public class NikkiModel extends ListDataModel<Directory>{
     public static final String PREF_KEY_DIRECTORIES = "directories"
     public static final String PREF_KEY_SELECTION_DIR = "selectionDir"
     public static final String SEP = System.getProperty("path.separator")
-    
+   
     static Preferences prefs = Preferences.userNodeForPackage(NikkiModel.class)
     
     File selectionDir
@@ -39,13 +39,15 @@ public class NikkiModel extends ListDataModel<Directory>{
     public void add(Directory d)
     {
         super.add(d)
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, SEP);
+        def dirs = prefs.get(PREF_KEY_DIRECTORIES, SEP)
         prefs.put(PREF_KEY_DIRECTORIES, dirs+d.path.absolutePath+SEP)
+        //println(prefs.get(PREF_KEY_DIRECTORIES, SEP))
     }
     public boolean remove(Directory d)
     {
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, "");
+        def dirs = prefs.get(PREF_KEY_DIRECTORIES, "")
         prefs.put(PREF_KEY_DIRECTORIES, dirs.replace(SEP+d.path.absolutePath+SEP, SEP))
+        //println(prefs.get(PREF_KEY_DIRECTORIES, SEP))
         return super.remove(d)
     }
 

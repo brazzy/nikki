@@ -30,6 +30,7 @@ public class Nikki{
             {
                 view.dayList.model = new DefaultListModel()
             }
+            view.deleteButton.enabled = (sel != null)
             view.scanButton.enabled = (sel != null)
         } as ListSelectionListener
         view.dirList.addListSelectionListener(selListener)
@@ -41,6 +42,10 @@ public class Nikki{
                 model.selectionDir = fc.getSelectedFile().getParentFile()
                 model.add(new Directory(path:fc.getSelectedFile()))
             }
+        }
+        view.deleteButton.actionPerformed={
+            def dir = view.dirList.selectedValue
+            model.remove(dir)
         }
 
         def progressListener = { evt ->

@@ -15,6 +15,7 @@
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
 
+v Verzeichnisse löschen
 v Progressbar
 v Einlesen der Bilddaten
   v Datum
