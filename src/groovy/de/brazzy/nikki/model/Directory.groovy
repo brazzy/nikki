@@ -19,10 +19,17 @@ import de.brazzy.nikki.util.ImageReader
 import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorker
 class Directory extends ListDataModel<Day>{
     public static final String PERSIST_FILE = "Nikki.db";    
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
+    private static final def FILTER_JPG = { dir, name ->
+        name.toUpperCase().endsWith(".JPG")
+    } as FilenameFilter
+    private static final def FILTER_NMEA = { dir, name ->
+        name.toUpperCase().endsWith(".NMEA")
+    } as FilenameFilter
+
     
-    Map<Image> images = [:];
-    List<WaypointFile> waypointFiles = [];    
+    Map<String, Image> images = [:];
+    Map<String, WaypointFile> waypointFiles = [:];    
     File path;
     
     public String toString()
@@ -33,27 +40,7 @@ class Directory extends ListDataModel<Day>{
     public void scan(SwingWorker worker)
     {
         worker.setProgress(0);
-        def persist = new File(path, PERSIST_FILE)        
-        if(this.images.size()==0 && persist.exists())
-        {
-            def input = new ObjectInputStream(
-                        new BufferedInputStream(
-                        new FileInputStream(persist)))
-            this.data = input.readObject()
-            this.data.each
-            {
-                it.directory = this
-            }
-            this.images = input.readObject()
-            this.waypointFiles = input.readObject()
-            input.close()
-        }
-        
-        def filter = { dir, name ->
-            name.toUpperCase().endsWith(".JPG")
-        } as FilenameFilter
-        
-        def imageFiles = path.listFiles(filter)
+        readPersistent()
         
         def days = new HashMap()
         this.data.each{
@@ -61,6 +48,7 @@ class Directory extends ListDataModel<Day>{
         }
 
         int count = 0;
+        def imageFiles = path.listFiles(FILTER_JPG)
         imageFiles.each{
             if(!this.images[it.name])
             {
@@ -86,19 +74,53 @@ class Directory extends ListDataModel<Day>{
             worker.progress = new Integer((int)(++count / imageFiles.length * 100))
         }
 
+        def nmeaFiles = path.listFiles(FILTER_NMEA);
+        nmeaFiles.each{
+            if(!this.waypointFiles[it.name])
+            {
+                WaypointFile wf = WaypointFile.parse(this, it)
+                this.waypointFiles[it.name] = wf            
+            }
+        }
+
         this.data.sort{
             it.date==null ?
             new Date(1800,1,1) :
             it.date
-        }
-        fireContentsChanged(this, 0, this.data.size()-1)
+        }        
         
+        fireContentsChanged(this, 0, this.data.size()-1)
+        writePersistent()
+    }  
+
+    private void writePersistent()
+    {
+        def persist = new File(this.path, PERSIST_FILE)        
         def output = new ObjectOutputStream(
-                     new BufferedOutputStream(
-                     new FileOutputStream(persist)))
-        output.writeObject(this.data)
-        output.writeObject(this.images)
-        output.writeObject(this.waypointFiles)
-        output.close()
-    }    
+                new BufferedOutputStream(
+                new FileOutputStream(persist)))
+       output.writeObject(this.data)
+       output.writeObject(this.images)
+       output.writeObject(this.waypointFiles)
+       output.close()
+    }
+    
+    private void readPersistent()
+    {
+        def persist = new File(this.path, PERSIST_FILE)        
+        if(this.images.size()==0 && persist.exists())
+        {
+            def input = new ObjectInputStream(
+                        new BufferedInputStream(
+                        new FileInputStream(persist)))
+            this.data = input.readObject()
+            this.data.each
+            {
+                it.directory = this
+            }
+            this.images = input.readObject()
+            this.waypointFiles = input.readObject()
+            input.close()
+        }
+    }
 }

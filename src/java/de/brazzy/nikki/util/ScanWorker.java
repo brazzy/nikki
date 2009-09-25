@@ -17,7 +17,14 @@ public class ScanWorker extends SwingWorker
     @Override
     protected Object doInBackground() throws Exception
     {
-        dir.scan(this);
+        try
+        {
+            dir.scan(this);            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         return null;
     }   
 }

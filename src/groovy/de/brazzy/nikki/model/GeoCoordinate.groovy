@@ -4,7 +4,7 @@ package de.brazzy.nikki.model
  * @author Michael Borgwardt
  *
  */
-public class GeoCoordinate{
+public class GeoCoordinate implements Serializable{
     Cardinal direction;
     double magnitude;
     
