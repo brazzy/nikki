@@ -13,7 +13,7 @@ class Day extends AbstractTableModel implements Externalizable
     
     public String toString()
     {        
-        (date==null? "unknown" : date.getDateString())+" ("+images.size()+")"
+        (date==null? "unknown" : date.getDateString())+" ("+images.size()+", "+waypoints.size()+")"
     }
 
     public int getRowCount()

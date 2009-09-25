@@ -27,14 +27,13 @@ class Directory extends ListDataModel<Day>{
     
     public String toString()
     {
-        path.name
+        path.name+" ("+images.size()+", "+waypointFiles.size()+")"
     }
     
     public void scan(SwingWorker worker)
     {
         worker.setProgress(0);
-        def persist = new File(path, PERSIST_FILE)
-        
+        def persist = new File(path, PERSIST_FILE)        
         if(this.images.size()==0 && persist.exists())
         {
             def input = new ObjectInputStream(
@@ -76,9 +75,9 @@ class Directory extends ListDataModel<Day>{
                 }
                 else
                 {
-                    day = new Day(date:date, images:[image])
+                    day = new Day(date:date, images:[image], directory: this)
                     days.put(date, day)
-                    this.data.add(day)
+                    this.add(day)
                 } 
                 
                 image.day = day
