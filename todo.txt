@@ -9,7 +9,6 @@
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 
-- Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
 - Eliminieren von Waypoints, die zu nah zusammen sind
 - Testbarkeit
 - Schnelleres Skalieren
@@ -19,6 +18,7 @@
 - mehr GPS-Formate lesen
 - GPS-Daten in Bilder schreiben
 
+v Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
 v Link zu Google Maps
 v Geotagging
 v Einlesen der NMEA-Logs

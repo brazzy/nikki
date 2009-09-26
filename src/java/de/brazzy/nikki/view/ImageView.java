@@ -1,6 +1,7 @@
 package de.brazzy.nikki.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -25,11 +26,14 @@ import de.brazzy.nikki.model.Waypoint;
 
 public class ImageView extends JPanel
 {
+    public static final int DIFF_THRESHOLD = 30;
+    
     private JTextArea textArea;
     private JLabel icon = new JLabel();
     private JTextField title = new JTextField();
     private JTextField filename = new JTextField();
     private JTextField time = new JTextField();
+    private JTextField timeDiff = new JTextField();
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
     private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("globe.gif")));
@@ -90,10 +94,12 @@ public class ImageView extends JPanel
                         .addComponent(timeLabel)
                         .addComponent(longitudeLabel))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(time)
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(longitude)
-                        .addComponent(geoLink)
+                                .addComponent(time)
+                                .addComponent(timeDiff))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(longitude)
+                                .addComponent(geoLink)
                         )))
                 .addComponent(scrollPane)                    
         );
@@ -104,7 +110,8 @@ public class ImageView extends JPanel
                     .addComponent(filenameLabel)
                     .addComponent(filename)
                     .addComponent(timeLabel)
-                    .addComponent(time))
+                    .addComponent(time)
+                    .addComponent(timeDiff))
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(latitudeLabel)
                     .addComponent(latitude)
@@ -115,6 +122,8 @@ public class ImageView extends JPanel
         );
         filename.setEditable(false);
         time.setEditable(false);
+        timeDiff.setEditable(false);
+        timeDiff.setColumns(5);
         latitude.setEditable(false);
         longitude.setEditable(false);
         geoLink.setEnabled(false);
@@ -123,11 +132,27 @@ public class ImageView extends JPanel
     public void setValue(Image value)
     {
         this.value = value;
+        timeDiff.setText(null);
+        timeDiff.setToolTipText(null);
         title.setText(value.getTitle());
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));            
+            time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));
+            if(value.getWaypoint() != null)
+            {
+                long diff = (value.getTime().getTime() - value.getWaypoint().getTimestamp().getTime()) / 1000;                
+                timeDiff.setText(String.valueOf(diff));
+                timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
+                if(Math.abs(diff) > DIFF_THRESHOLD)
+                {
+                    timeDiff.setForeground(Color.RED);
+                }
+                else
+                {
+                    timeDiff.setForeground(Color.BLACK);                    
+                }
+            }
         }
         if(value.getWaypoint() != null)
         {
