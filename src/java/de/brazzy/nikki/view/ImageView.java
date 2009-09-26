@@ -68,11 +68,11 @@ public class ImageView extends JPanel
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(time)
                         .addComponent(longitude)))
-            .addComponent(scrollPane)
+                .addComponent(scrollPane)                    
         );
         layout.setVerticalGroup(
             layout.createSequentialGroup()
-            .addComponent(title)
+            .addComponent(title, (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight())
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(filenameLabel)
                     .addComponent(filename)
@@ -83,7 +83,7 @@ public class ImageView extends JPanel
                     .addComponent(latitude)
                     .addComponent(longitudeLabel)
                     .addComponent(longitude))
-            .addComponent(scrollPane)                    
+            .addComponent(scrollPane)
         );
         filename.setEditable(false);
         time.setEditable(false);
@@ -101,8 +101,8 @@ public class ImageView extends JPanel
         {
             time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));            
         }
-        latitude.setText("48 N");
-        longitude.setText("11 E");
+        latitude.setText(value.getWaypoint().getLatitude().toString());
+        longitude.setText(value.getWaypoint().getLongitude().toString());
         icon.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
     }
