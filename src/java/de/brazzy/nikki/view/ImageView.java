@@ -1,11 +1,18 @@
 package de.brazzy.nikki.view;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URI;
 import java.text.DateFormat;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -13,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Waypoint;
 
 
 public class ImageView extends JPanel
@@ -24,7 +32,7 @@ public class ImageView extends JPanel
     private JTextField time = new JTextField();
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
-
+    private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("globe.gif")));
     
     private Image value;
 
@@ -45,6 +53,23 @@ public class ImageView extends JPanel
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
+        geoLink.setMargin(new Insets(0,0,0,0));
+        geoLink.setDisabledIcon(new ImageIcon(ImageView.class.getResource("globe_grey.gif")));
+        geoLink.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    Waypoint wp = value.getWaypoint();
+                    Desktop.getDesktop().browse(new URI("http://maps.google.com/maps?ll="+wp.getLatitude().getValue()+","+wp.getLongitude().getValue()));
+                }
+                catch (Exception ex)
+                {
+                    JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
+                }
+            }            
+        });
         
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -66,7 +91,10 @@ public class ImageView extends JPanel
                         .addComponent(longitudeLabel))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(time)
-                        .addComponent(longitude)))
+                        .addGroup(layout.createSequentialGroup()
+                        .addComponent(longitude)
+                        .addComponent(geoLink)
+                        )))
                 .addComponent(scrollPane)                    
         );
         layout.setVerticalGroup(
@@ -81,14 +109,15 @@ public class ImageView extends JPanel
                     .addComponent(latitudeLabel)
                     .addComponent(latitude)
                     .addComponent(longitudeLabel)
-                    .addComponent(longitude))
+                    .addComponent(longitude)
+                    .addComponent(geoLink))
             .addComponent(scrollPane)
         );
         filename.setEditable(false);
         time.setEditable(false);
         latitude.setEditable(false);
         longitude.setEditable(false);
-
+        geoLink.setEnabled(false);
     }
 
     public void setValue(Image value)
@@ -104,11 +133,13 @@ public class ImageView extends JPanel
         {
             latitude.setText(value.getWaypoint().getLatitude().toString());
             longitude.setText(value.getWaypoint().getLongitude().toString());            
+            geoLink.setEnabled(true);
         }
         else
         {
             latitude.setText("?");
             longitude.setText("?");            
+            geoLink.setEnabled(false);
         }
         icon.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
