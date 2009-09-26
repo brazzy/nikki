@@ -1,6 +1,6 @@
 package de.brazzy.nikki.model;
 
-import java.text.SimpleDateFormatimport java.text.DateFormatclass Waypoint implements Serializable, Comparable{
+import java.text.SimpleDateFormatimport java.text.DateFormatimport java.util.TimeZoneclass Waypoint implements Serializable, Comparable{
     public static final long serialVersionUID = 1;
     private static final DATE_FORMAT = new SimpleDateFormat('ddMMyyHHmmss.SSS')
     
@@ -15,9 +15,10 @@ import java.text.SimpleDateFormatimport java.text.DateFormatclass Waypoint imp
         def result = new Waypoint()
         result.file = wpFile
         def data = line.trim().tokenize(',')
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(TimeZone.GMT_ID))
         result.timestamp = DATE_FORMAT.parse(data[9]+data[1])
-        result.latitude = GeoCoordinate.parse(data[5], data[6])
-        result.longitude = GeoCoordinate.parse(data[3], data[4])
+        result.latitude = GeoCoordinate.parse(data[3], data[4])
+        result.longitude = GeoCoordinate.parse(data[5], data[6])
         
 	    Day d = dir.data.find{
 	        it.date.dateString.equals(result.timestamp.dateString)

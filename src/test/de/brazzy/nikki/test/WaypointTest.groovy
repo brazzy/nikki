@@ -25,12 +25,12 @@ public class WaypointTest extends GroovyTestCase{
 
         assertEquals(wp.timestamp, Date.parse("yyyy-MM-dd HH:mm:ss.SSS", "2009-07-27 07:12:32.000"))
 
-        def coord = wp.longitude
+        def coord = wp.latitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
         assertTrue(coord.value.toString(), 48 < coord.value )
         assertTrue(coord.value.toString(), coord.value < 49)
 
-        coord = wp.latitude
+        coord = wp.longitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.EAST)
         assertTrue(coord.value.toString(), 11 < coord.value )
         assertTrue(coord.value.toString(), coord.value < 12)
