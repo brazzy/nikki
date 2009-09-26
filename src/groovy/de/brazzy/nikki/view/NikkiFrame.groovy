@@ -16,7 +16,7 @@ public class NikkiFrame{
     def addButton
     def deleteButton
     def scanButton
-    def saveButton
+    def tagButton
     def exportButton
     def dayList
     def imageTable
@@ -47,13 +47,13 @@ public class NikkiFrame{
                             result.dayList = list()
                         }
                         panel(constraints: BL.SOUTH){
-                            result.saveButton = button(text:'Save', enabled:false)
+                            result.tagButton = button(text:'Geotag', enabled:false)
                             result.exportButton = button(text:'Export', enabled:false)
                         }
                     }
                 }
                 scrollPane(){
-                      result.imageTable = table(tableHeader:null, rowHeight: 150)
+                      result.imageTable = table(tableHeader:null, rowHeight: 180)
                 }
             }
             result.progressBar = progressBar(constraints: BL.SOUTH, minimum:0, maximum:100)

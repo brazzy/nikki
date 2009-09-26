@@ -72,9 +72,12 @@ public class Nikki{
                 view.imageTable.model = new DefaultTableModel()
             }
             view.exportButton.enabled = (sel != null)
-            view.saveButton.enabled = (sel != null)
+            view.tagButton.enabled = (sel != null)
         } as ListSelectionListener
         view.dayList.addListSelectionListener(selListener)
 
+        view.tagButton.actionPerformed={
+            view.dayList.selectedValue.geotag()
+        }
     }    
 }

@@ -1,6 +1,6 @@
 package de.brazzy.nikki.model;
 
-import java.text.SimpleDateFormatimport java.text.DateFormatclass Waypoint implements Serializable{
+import java.text.SimpleDateFormatimport java.text.DateFormatclass Waypoint implements Serializable, Comparable{
     public static final long serialVersionUID = 1;
     private static final DATE_FORMAT = new SimpleDateFormat('ddMMyyHHmmss.SSS')
     
@@ -31,5 +31,15 @@ import java.text.SimpleDateFormatimport java.text.DateFormatclass Waypoint imp
         d.waypoints.add(result)            
 
         return result;
+    }
+    
+    public int compareTo(Object o)
+    {
+        return this.timestamp.compareTo(o.timestamp)
+    }
+    
+    public String toString()
+    {
+        return timestamp.toString()
     }
 }

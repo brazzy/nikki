@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -101,8 +100,16 @@ public class ImageView extends JPanel
         {
             time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));            
         }
-        latitude.setText(value.getWaypoint().getLatitude().toString());
-        longitude.setText(value.getWaypoint().getLongitude().toString());
+        if(value.getWaypoint() != null)
+        {
+            latitude.setText(value.getWaypoint().getLatitude().toString());
+            longitude.setText(value.getWaypoint().getLongitude().toString());            
+        }
+        else
+        {
+            latitude.setText("?");
+            longitude.setText("?");            
+        }
         icon.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
     }
