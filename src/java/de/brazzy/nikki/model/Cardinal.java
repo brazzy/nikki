@@ -2,8 +2,8 @@ package de.brazzy.nikki.model;
 
 public enum Cardinal
 {
-    NORTH('N',-1),
-    SOUTH('S', 1),
+    NORTH('N',1),
+    SOUTH('S', -1),
     EAST('E', 1),
     WEST('W', -1);
     

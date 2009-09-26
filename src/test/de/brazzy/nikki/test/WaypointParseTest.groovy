@@ -7,15 +7,15 @@ public class WaypointParseTest extends GroovyTestCase{
 
     public void testCoord()
     {
-        def coord = GeoCoordinate.parse("4810.0900","N")
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
+        def coord = GeoCoordinate.parse("4810.0900","S")
+        assertTrue(coord.direction.toString(), coord.direction == Cardinal.SOUTH)
         assertTrue(coord.value.toString(), -49 < coord.value )
         assertTrue(coord.value.toString(), coord.value < -48)
 
-        coord = GeoCoordinate.parse("01134.9470","E")
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.EAST)
-        assertTrue(coord.value.toString(), 11 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < 12)
+        coord = GeoCoordinate.parse("01134.9470","W")
+        assertTrue(coord.direction.toString(), coord.direction == Cardinal.WEST)
+        assertTrue(coord.value.toString(), -12 < coord.value )
+        assertTrue(coord.value.toString(), coord.value < -11)
     }
     
     public void testWaypoint()
@@ -27,8 +27,8 @@ public class WaypointParseTest extends GroovyTestCase{
 
         def coord = wp.longitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
-        assertTrue(coord.value.toString(), -49 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < -48)
+        assertTrue(coord.value.toString(), 48 < coord.value )
+        assertTrue(coord.value.toString(), coord.value < 49)
 
         coord = wp.latitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.EAST)
