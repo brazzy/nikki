@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -19,6 +20,7 @@ import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.ImageWriteException;
 import org.apache.sanselan.Sanselan;
+import org.apache.sanselan.SanselanConstants;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
@@ -27,7 +29,7 @@ import de.brazzy.nikki.model.Image;
 
 public class ImageReader
 {    
-    private static final int THUMBNAIL_SIZE = 100;
+    private static final int THUMBNAIL_SIZE = 180;
     private static final Double ROTATE_RIGHT = new Double(Math.PI/2.0);
     private static final Double ROTATE_180D = new Double(Math.PI);
     private static final Double ROTATE_LEFT = new Double(Math.PI*1.5);
@@ -59,8 +61,8 @@ public class ImageReader
         image.setFileName(file.getName());
 
         try
-        {
-            JpegImageMetadata md =  (JpegImageMetadata) Sanselan.getMetadata(file);
+        {            
+            JpegImageMetadata md =  (JpegImageMetadata) Sanselan.getMetadata(file, Collections.singletonMap(SanselanConstants.PARAM_KEY_READ_THUMBNAILS, Boolean.TRUE));
             Double rotation = null;
             if(md != null)
             {                
@@ -68,7 +70,12 @@ public class ImageReader
                 rotation = getRotation(md);                
             }
             
-            image.setThumbnail(createThumbnail(rotation));
+            byte[] th = getThumbnail(md);
+            if(th == null)
+            {
+                th = createThumbnail(rotation);
+            }
+            image.setThumbnail(th);
         }
         catch (Throwable e)
         {
@@ -98,6 +105,16 @@ public class ImageReader
             {
                 return ROTATE_RIGHT;
             }
+        }
+        return null;
+    }
+
+    private byte[] getThumbnail(JpegImageMetadata md) throws Exception
+    {
+        BufferedImage th = md.getEXIFThumbnail();
+        if(th != null)
+        {
+            return Sanselan.writeImageToBytes(th, ImageFormat.IMAGE_FORMAT_PNG, new HashMap<Object, Object>());            
         }
         return null;
     }
@@ -159,7 +176,7 @@ public class ImageReader
     
     private static int heightForWidth(java.awt.Image img, int width)
     {
-        return (int) (img.getHeight(null) / (double)img.getWidth(null) * 100);
+        return (int) (img.getHeight(null) / (double)img.getWidth(null) * THUMBNAIL_SIZE);
     }
 
     public static void main(String[] args) throws Exception
