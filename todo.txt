@@ -2,21 +2,24 @@
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
   - vorhandene Thumbnails
+  - GPS
 - Welche Daten eingeben?
 - verkleinerten Version für KMZ  
-- Zeitkorrektur
+- Zeitkorrektur + Angabe Zeitzone beim Geotagging
 - autom. Speichern beim Schliessen
-- Link zu Google Maps
+- UI-Updates nach scan/geotag
 
 - Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
-- Eliminieren von Waypoints, die zu nah zussammen sind
+- Eliminieren von Waypoints, die zu nah zusammen sind
 - Testbarkeit
 - Schnelleres Skalieren
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
+- GPS-Daten in Bilder schreiben
 
+v Link zu Google Maps
 v Geotagging
 v Einlesen der NMEA-Logs
 v Verzeichnisse löschen
@@ -25,7 +28,6 @@ v Einlesen der Bilddaten
   v Datum
   v Thumbnail
   v Rotation
-  v GPS
 v Thumbnails rotieren
 v Serialisieren der Daten im Verzeichnis
 v Speichern der Einstellungsdaten mit Preferences API
