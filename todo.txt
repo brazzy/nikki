@@ -1,10 +1,9 @@
 - Export als KMZ
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
-  - GPS
+  - vorhandene Thumbnails
 - Welche Daten eingeben?
 - verkleinerten Version für KMZ  
-- Einlesen der GPS-Logs
 - Geotagging
 - Zeitkorrektur
 - autom. Speichern beim Schliessen
@@ -14,13 +13,16 @@
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
+- mehr GPS-Formate lesen
 
+v Einlesen der NMEA-Logs
 v Verzeichnisse löschen
 v Progressbar
 v Einlesen der Bilddaten
   v Datum
   v Thumbnail
   v Rotation
+  v GPS
 v Thumbnails rotieren
 v Serialisieren der Daten im Verzeichnis
 v Speichern der Einstellungsdaten mit Preferences API
