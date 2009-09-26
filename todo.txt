@@ -4,10 +4,12 @@
   - vorhandene Thumbnails
 - Welche Daten eingeben?
 - verkleinerten Version für KMZ  
-- Geotagging
 - Zeitkorrektur
 - autom. Speichern beim Schliessen
+- Link zu Google Maps
 
+- Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
+- Eliminieren von Waypoints, die zu nah zussammen sind
 - Testbarkeit
 - Schnelleres Skalieren
 - Individuelle Tabellenzeilenhöhe
@@ -15,6 +17,7 @@
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
 
+v Geotagging
 v Einlesen der NMEA-Logs
 v Verzeichnisse löschen
 v Progressbar
