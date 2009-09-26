@@ -3,6 +3,7 @@ package de.brazzy.nikki.model
 import javax.swing.AbstractListModel
 import java.io.ObjectInputimport java.lang.ClassNotFoundExceptionimport java.io.IOExceptionimport java.io.ObjectOutputimport java.io.ObjectInputpublic class ListDataModel<T> extends AbstractListModel
 {
+    public static final long serialVersionUID = 1;
 
     protected List<T> data = [];
 

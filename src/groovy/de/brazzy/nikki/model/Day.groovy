@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-class Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
 
@@ -82,6 +82,23 @@ class Day extends AbstractTableModel implements Externalizable
                 }
             }
         }
+    }
+    
+    public void export(OutputStream out)
+    {
+        Kml kml = KmlFactory.createKml()
+        Document doc = kml.createAndSetDocument()
         
+        images.each{ Image image ->
+            doc.createAndAddPlacemark()
+            .withName(image.title)
+            .withDescription(image.description)
+            .withVisibility(true)
+            .createAndSetPoint()
+                .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
+        }
+        
+        kml.marshal(out)
+        out.close()
     }
 }

@@ -5,6 +5,8 @@ package de.brazzy.nikki.model
  *
  */
 public class GeoCoordinate implements Serializable{
+    public static final long serialVersionUID = 1;
+    
     Cardinal direction;
     double magnitude;
     

@@ -7,6 +7,7 @@ public enum Cardinal
     EAST('E', 1),
     WEST('W', -1);
     
+    public static final long serialVersionUID = 1;
     private char character;
     private int sign;
     

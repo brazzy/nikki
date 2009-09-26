@@ -6,6 +6,7 @@
 - Welche Daten eingeben?
 - verkleinerten Version für KMZ  
 - Zeitkorrektur + Angabe Zeitzone beim Geotagging
+- Parameter beim Export: Bildgröße, Dokumentenname
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 

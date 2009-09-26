@@ -8,5 +8,9 @@
 	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar"/>
 	<classpathentry kind="lib" path="C:/Programme/Java/groovy-1.6.4/embeddable/groovy-all-1.6.4.jar"/>
 	<classpathentry kind="lib" path="E:/projects_checkout/map_kmz/groovy-out"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/JavaAPIforKml.jar" sourcepath="E:/projects_checkout/map_kmz/lib/JavaAPIforKml-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
 	<classpathentry kind="output" path="out"/>
 </classpath>

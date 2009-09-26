@@ -18,6 +18,8 @@ import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
 import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorker
 class Directory extends ListDataModel<Day>{
+    public static final long serialVersionUID = 1;
+    
     public static final String PERSIST_FILE = "Nikki.db";    
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
     private static final def FILTER_JPG = { dir, name ->
