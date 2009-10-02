@@ -1,7 +1,7 @@
 - Export als KMZ
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
-  - vorhandene Thumbnails
+  - verschiedene Speicherorte von thumbnails
   - GPS
 - Welche Daten eingeben?
 - verkleinerten Version für KMZ  
@@ -12,13 +12,13 @@
 
 - Eliminieren von Waypoints, die zu nah zusammen sind
 - Testbarkeit
-- Schnelleres Skalieren
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
 - GPS-Daten in Bilder schreiben
 
+v Schnelleres Einlesen von Thumbnails
 v Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
 v Link zu Google Maps
 v Geotagging
@@ -29,6 +29,7 @@ v Einlesen der Bilddaten
   v Datum
   v Thumbnail
   v Rotation
+  v vorhandene Thumbnails
 v Thumbnails rotieren
 v Serialisieren der Daten im Verzeichnis
 v Speichern der Einstellungsdaten mit Preferences API

@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -12,8 +14,11 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+
+import mediautil.image.jpeg.LLJTran;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.sanselan.ImageFormat;
@@ -22,8 +27,12 @@ import org.apache.sanselan.ImageWriteException;
 import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.SanselanConstants;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
+import org.apache.sanselan.formats.tiff.TiffDirectory;
 import org.apache.sanselan.formats.tiff.TiffField;
+import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
+
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 import de.brazzy.nikki.model.Image;
 
@@ -70,7 +79,7 @@ public class ImageReader
                 rotation = getRotation(md);                
             }
             
-            byte[] th = getThumbnail(md);
+            byte[] th = getThumbnail(md, rotation);
             if(th == null)
             {
                 th = createThumbnail(rotation);
@@ -109,12 +118,42 @@ public class ImageReader
         return null;
     }
 
-    private byte[] getThumbnail(JpegImageMetadata md) throws Exception
+    private byte[] getThumbnail(JpegImageMetadata md, Double rotation) throws Exception
     {
-        BufferedImage th = md.getEXIFThumbnail();
-        if(th != null)
+        List<TiffImageMetadata.Directory> dirs = md.getExif().getDirectories();
+        for(TiffImageMetadata.Directory dir : dirs)
         {
-            return Sanselan.writeImageToBytes(th, ImageFormat.IMAGE_FORMAT_PNG, new HashMap<Object, Object>());            
+            if(dir.getJpegImageData() !=null)
+            {
+                byte[] result = dir.getJpegImageData().data;
+                if(rotation != null)
+                {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    LLJTran llj = new LLJTran(new ByteArrayInputStream(result));
+                    llj.read(true);
+                    if(rotation == ROTATE_180D)
+                    {
+                        llj.transform(out, LLJTran.ROT_180, 0);                        
+                    }
+                    else if(rotation == ROTATE_LEFT)
+                    {
+                        llj.transform(out, LLJTran.ROT_270, 0);                        
+                    }
+                    else if(rotation == ROTATE_RIGHT)
+                    {
+                        llj.transform(out, LLJTran.ROT_90, 0);
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException(String.valueOf(rotation));
+                    }
+                    return out.toByteArray();
+                }
+                else
+                {
+                    return result;                    
+                }
+            }
         }
         return null;
     }
