@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Day
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManager
 /**
  * @author Michael Borgwardt
  */
@@ -16,6 +16,7 @@ public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
     
     public static void start(){
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         def view = NikkiFrame.create()
         view.frame.pack()
         view.frame.show()
