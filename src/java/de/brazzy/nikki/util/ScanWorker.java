@@ -4,7 +4,7 @@ import javax.swing.SwingWorker;
 
 import de.brazzy.nikki.model.Directory;
 
-public class ScanWorker extends SwingWorker
+public class ScanWorker extends SwingWorker<Void, Void>
 {
     private Directory dir;
     
@@ -15,7 +15,7 @@ public class ScanWorker extends SwingWorker
     }
     
     @Override
-    protected Object doInBackground() throws Exception
+    protected Void doInBackground() throws Exception
     {
         try
         {
