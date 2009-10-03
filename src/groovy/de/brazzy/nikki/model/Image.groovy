@@ -1,6 +1,6 @@
 package de.brazzy.nikki.model;
 
-class Image implements Serializable{
+import de.brazzy.nikki.util.ImageReaderclass Image implements Serializable{
     public static final long serialVersionUID = 1;
     
     String fileName
@@ -17,7 +17,7 @@ class Image implements Serializable{
         def builder = new groovy.xml.MarkupBuilder(writer) 
         builder.html(){ 
           body(){ 
-            img(src: new File(day.directory.path, fileName).toURL(), width:200, height:150)
+            img(src: "images/"+fileName)
             p(description) 
           } 
         } 

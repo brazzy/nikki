@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeclass Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
 
@@ -84,11 +84,12 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         }
     }
     
-    public void export(OutputStream out)
+    public void export(ZipOutputStream out)
     {
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
         
+        out.putNextEntry(new ZipEntry("images/"))
         images.each{ Image image ->
             doc.createAndAddPlacemark()
             .withName(image.title)
@@ -96,6 +97,10 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             .withVisibility(true)
             .createAndSetPoint()
                 .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
+            out.putNextEntry(new ZipEntry("images/"+image.fileName))
+            ImageReader reader = new ImageReader(new File(directory.path, image.fileName))
+            out.write(reader.scale(600));
+            out.closeEntry()
         }
         LineString ls = doc.createAndAddPlacemark()
                            .createAndSetLineString()
@@ -107,7 +112,9 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
         }
         
+        out.putNextEntry(new ZipEntry("diary.kml"))
         kml.marshal(out)
+        out.closeEntry()
         out.close()
     }
 }

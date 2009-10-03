@@ -1,14 +1,13 @@
-- Export als KMZ
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
   - verschiedene Speicherorte von thumbnails
   - GPS
 - Welche Daten eingeben?
-- verkleinerten Version für KMZ  
 - Zeitkorrektur + Angabe Zeitzone beim Geotagging
 - Parameter beim Export: Bildgröße, Dokumentenname
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
+- Lücken in GPS-Log anzeigen
 
 - Eliminieren von Waypoints, die zu nah zusammen sind
 - Testbarkeit
@@ -18,6 +17,8 @@
 - mehr GPS-Formate lesen
 - GPS-Daten in Bilder schreiben
 
+v Export als KMZ
+v verkleinerten Version für KMZ  
 v Schnelleres Einlesen von Thumbnails
 v Warnung/Kennzeichnung bei fehlendem Waypoint innerhalb best. Zeitintervalls beim Geotagging
 v Link zu Google Maps

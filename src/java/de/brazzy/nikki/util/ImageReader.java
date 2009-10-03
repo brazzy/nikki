@@ -56,6 +56,8 @@ public class ImageReader
     private File file;
     private JpegImageMetadata metadata;
     private Double rotation;
+    private int lastWidth;
+    private int lastHeight;
 
     public ImageReader(File file)
     {
@@ -181,35 +183,36 @@ public class ImageReader
 
     public byte[] scale(int toWidth) throws IOException, ImageWriteException
     {
+        this.lastWidth = toWidth;
         BufferedImage fullSize = ImageIO.read(file);            
         double scale = (double)toWidth/fullSize.getWidth();
         AffineTransform xform = AffineTransform.getScaleInstance(scale, scale);
         BufferedImage scaledImage;
-        int heightForWidth = heightForWidth(fullSize, toWidth);
+        this.lastHeight = heightForWidth(fullSize, toWidth);
         if(rotation!=null)
         {
             if(rotation==ROTATE_RIGHT)
             {
                 scaledImage = new BufferedImage(
-                        heightForWidth, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
-                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), heightForWidth/2, heightForWidth/2));
+                        this.lastHeight, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), this.lastHeight/2, this.lastHeight/2));
             }
             else if(rotation==ROTATE_LEFT)
             {
                 scaledImage = new BufferedImage(
-                        heightForWidth, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                        this.lastHeight, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
                 xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), toWidth/2, toWidth/2));
             }
             else
             {
                 scaledImage = new BufferedImage(
-                        toWidth, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                        toWidth, this.lastHeight, ((int)BufferedImage.TYPE_INT_RGB));
             }
         }        
         else
         {
             scaledImage = new BufferedImage(
-                    toWidth, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                    toWidth, this.lastHeight, ((int)BufferedImage.TYPE_INT_RGB));
         }
         
         Graphics2D graphics2D = scaledImage.createGraphics();
@@ -228,6 +231,16 @@ public class ImageReader
         return (int) (img.getHeight(null) / (double)img.getWidth(null) * width);
     }
 
+    public int getLastWidth()
+    {
+        return lastWidth;
+    }
+
+    public int getLastHeight()
+    {
+        return lastHeight;
+    }
+    
     public static void main(String[] args) throws Exception
     {
         File f = new File("E:\\tmp\\test\\IMG_3572.JPG");
@@ -236,5 +249,7 @@ public class ImageReader
         byte[] b = reader.scale(400);
         FileUtils.writeByteArrayToFile(th, b);
         Runtime.getRuntime().exec(new String[]{"C:\\Programme\\IrfanView\\i_view32.exe", th.getAbsolutePath()});
+        System.out.println(reader.getLastHeight());
     }
+
 }
