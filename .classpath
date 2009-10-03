@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="lib/mediautil-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/imagescaling_0_8_1.jar" sourcepath="lib/imagescaling_src__0_8_1.zip"/>
 	<classpathentry kind="output" path="out"/>
 </classpath>
