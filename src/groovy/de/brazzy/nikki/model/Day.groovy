@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentclass Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
 
@@ -92,10 +92,19 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         images.each{ Image image ->
             doc.createAndAddPlacemark()
             .withName(image.title)
-            .withDescription(image.description)
+            .withDescription(image.longDescription)
             .withVisibility(true)
             .createAndSetPoint()
                 .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
+        }
+        LineString ls = doc.createAndAddPlacemark()
+                           .createAndSetLineString()
+                           .withTessellate(Boolean.TRUE)
+                           .withExtrude(Boolean.TRUE)
+                           .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
+        
+        waypoints.each{ waypoint ->
+            ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
         }
         
         kml.marshal(out)
