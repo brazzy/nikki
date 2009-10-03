@@ -1,14 +1,16 @@
+- Bildqualität beim Skalieren
+- Zeitkorrektur + Angabe Zeitzone beim Geotagging
+- autom. Speichern beim Schliessen
+- UI-Updates nach scan/geotag
+- Lücken in GPS-Log anzeigen
+- Progressbar beim Export
+- GPS-Daten/Zeit bearbeitbar?
+- Parameter beim Export: Bildgröße, Dokumentenname
+
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
   - verschiedene Speicherorte von thumbnails
   - GPS
-- Welche Daten eingeben?
-- Zeitkorrektur + Angabe Zeitzone beim Geotagging
-- Parameter beim Export: Bildgröße, Dokumentenname
-- autom. Speichern beim Schliessen
-- UI-Updates nach scan/geotag
-- Lücken in GPS-Log anzeigen
-
 - Eliminieren von Waypoints, die zu nah zusammen sind
 - Testbarkeit
 - Individuelle Tabellenzeilenhöhe
@@ -16,6 +18,7 @@
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
 - GPS-Daten in Bilder schreiben
+- Sansealn komplett durch MediaUtils ersetzen?
 
 v Export als KMZ
 v verkleinerten Version für KMZ  
