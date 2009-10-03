@@ -222,8 +222,9 @@ public class ImageReader
                 RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.drawImage(fullSize, xform, null);
         graphics2D.dispose();
-        byte[] bytes = Sanselan.writeImageToBytes(scaledImage, ImageFormat.IMAGE_FORMAT_PNG, new HashMap<Object, Object>());
-        return bytes;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(scaledImage, "jpg", out);
+        return out.toByteArray();
     }
     
     private static int heightForWidth(java.awt.Image img, int width)
