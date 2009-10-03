@@ -4,6 +4,8 @@ import javax.swing.table.AbstractTableModel
 import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
+    
+    public static final int WAYPOINT_THRESHOLD = 1000 * 80
 
     List<Waypoint> waypoints = [];
     List<Image> images = [];
@@ -88,6 +90,10 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
     {
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
+        doc.createAndAddStyle().withId("track")
+            .createAndSetLineStyle()
+            .withWidth(3.0)
+            .withColor("801977FF")
         
         out.putNextEntry(new ZipEntry("images/"))
         images.each{ Image image ->
@@ -102,19 +108,31 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             out.write(reader.scale(600));
             out.closeEntry()
         }
-        LineString ls = doc.createAndAddPlacemark()
-                           .createAndSetLineString()
-                           .withTessellate(Boolean.TRUE)
-                           .withExtrude(Boolean.TRUE)
-                           .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
         
+        LineString ls;        
+        long previous = 0;
         waypoints.each{ waypoint ->
+            if(waypoint.timestamp.time - previous > WAYPOINT_THRESHOLD)
+            {
+                ls = createLine(doc)
+            }
             ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
+            previous = waypoint.timestamp.time
         }
         
         out.putNextEntry(new ZipEntry("diary.kml"))
         kml.marshal(out)
         out.closeEntry()
         out.close()
+    }
+    
+    private LineString createLine(Document doc)
+    {
+        return doc.createAndAddPlacemark()
+            .withStyleUrl("#track")
+            .createAndSetLineString()
+            .withTessellate(Boolean.TRUE)
+            .withExtrude(Boolean.TRUE)
+            .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
     }
 }
