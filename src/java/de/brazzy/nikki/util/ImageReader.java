@@ -27,12 +27,9 @@ import org.apache.sanselan.ImageWriteException;
 import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.SanselanConstants;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
-import org.apache.sanselan.formats.tiff.TiffDirectory;
 import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 import de.brazzy.nikki.model.Image;
 
@@ -57,11 +54,26 @@ public class ImageReader
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
     private File file;
+    private JpegImageMetadata metadata;
+    private Double rotation;
 
     public ImageReader(File file)
     {
         super();
         this.file = file;
+        try
+        {
+            this.metadata = (JpegImageMetadata) Sanselan.getMetadata(file, Collections.singletonMap(SanselanConstants.PARAM_KEY_READ_THUMBNAILS, Boolean.TRUE));            
+            this.rotation = getRotation();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(ImageReadException e)
+        {
+            e.printStackTrace();            
+        }
     }
 
     public Image createImage()
@@ -71,18 +83,15 @@ public class ImageReader
 
         try
         {            
-            JpegImageMetadata md =  (JpegImageMetadata) Sanselan.getMetadata(file, Collections.singletonMap(SanselanConstants.PARAM_KEY_READ_THUMBNAILS, Boolean.TRUE));
-            Double rotation = null;
-            if(md != null)
-            {                
-                image.setTime(getTime(md));                
-                rotation = getRotation(md);                
+            if(metadata != null)
+            {
+                image.setTime(getTime());
             }
             
-            byte[] th = getThumbnail(md, rotation);
+            byte[] th = getThumbnail();
             if(th == null)
             {
-                th = createThumbnail(rotation);
+                th = scale(THUMBNAIL_SIZE);
             }
             image.setThumbnail(th);
         }
@@ -96,9 +105,9 @@ public class ImageReader
         return image;
     }
 
-    private Double getRotation(JpegImageMetadata md) throws ImageReadException
+    private Double getRotation() throws ImageReadException
     {
-        TiffField orientField = md.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
+        TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
         if(orientField != null && orientField.getValue() != null)
         { // see http://sylvana.net/jpegcrop/exif_orientation.html
             Integer o = (Integer) orientField.getValue();
@@ -118,9 +127,10 @@ public class ImageReader
         return null;
     }
 
-    private byte[] getThumbnail(JpegImageMetadata md, Double rotation) throws Exception
+    private byte[] getThumbnail() throws Exception
     {
-        List<TiffImageMetadata.Directory> dirs = md.getExif().getDirectories();
+        @SuppressWarnings("unchecked")
+        List<TiffImageMetadata.Directory> dirs = metadata.getExif().getDirectories();
         for(TiffImageMetadata.Directory dir : dirs)
         {
             if(dir.getJpegImageData() !=null)
@@ -158,10 +168,10 @@ public class ImageReader
         return null;
     }
 
-    private Date getTime(JpegImageMetadata md) throws ImageReadException, ParseException
+    private Date getTime() throws ImageReadException, ParseException
     {
         Date time = null;
-        TiffField timeField = md.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+        TiffField timeField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         if(timeField != null && timeField.getValue() != null)
         {
             time = dateFormat.parse(((String)timeField.getValue()).substring(0, 19));
@@ -169,37 +179,37 @@ public class ImageReader
         return time;
     }
 
-    private byte[] createThumbnail(Double rotation) throws IOException, ImageWriteException
+    public byte[] scale(int toWidth) throws IOException, ImageWriteException
     {
         BufferedImage fullSize = ImageIO.read(file);            
-        double scale = ((double)THUMBNAIL_SIZE)/fullSize.getWidth();
+        double scale = (double)toWidth/fullSize.getWidth();
         AffineTransform xform = AffineTransform.getScaleInstance(scale, scale);
         BufferedImage scaledImage;
-        int heightForWidth = heightForWidth(fullSize, THUMBNAIL_SIZE);
+        int heightForWidth = heightForWidth(fullSize, toWidth);
         if(rotation!=null)
         {
             if(rotation==ROTATE_RIGHT)
             {
                 scaledImage = new BufferedImage(
-                        heightForWidth, THUMBNAIL_SIZE, ((int)BufferedImage.TYPE_INT_RGB));
+                        heightForWidth, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
                 xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), heightForWidth/2, heightForWidth/2));
             }
             else if(rotation==ROTATE_LEFT)
             {
                 scaledImage = new BufferedImage(
-                        heightForWidth, THUMBNAIL_SIZE, ((int)BufferedImage.TYPE_INT_RGB));
-                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), THUMBNAIL_SIZE/2, THUMBNAIL_SIZE/2));
+                        heightForWidth, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), toWidth/2, toWidth/2));
             }
             else
             {
                 scaledImage = new BufferedImage(
-                        THUMBNAIL_SIZE, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                        toWidth, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
             }
         }        
         else
         {
             scaledImage = new BufferedImage(
-                    THUMBNAIL_SIZE, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
+                    toWidth, heightForWidth, ((int)BufferedImage.TYPE_INT_RGB));
         }
         
         Graphics2D graphics2D = scaledImage.createGraphics();
@@ -215,14 +225,15 @@ public class ImageReader
     
     private static int heightForWidth(java.awt.Image img, int width)
     {
-        return (int) (img.getHeight(null) / (double)img.getWidth(null) * THUMBNAIL_SIZE);
+        return (int) (img.getHeight(null) / (double)img.getWidth(null) * width);
     }
 
     public static void main(String[] args) throws Exception
     {
         File f = new File("E:\\tmp\\test\\IMG_3572.JPG");
         File th = new File("E:\\tmp\\test\\IMG_3572_th.PNG");
-        byte[] b = new ImageReader(f).createThumbnail(ROTATE_LEFT);
+        ImageReader reader = new ImageReader(f);
+        byte[] b = reader.scale(400);
         FileUtils.writeByteArrayToFile(th, b);
         Runtime.getRuntime().exec(new String[]{"C:\\Programme\\IrfanView\\i_view32.exe", th.getAbsolutePath()});
     }
