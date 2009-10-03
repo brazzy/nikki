@@ -1,8 +1,5 @@
 package de.brazzy.nikki.util;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,15 +10,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import mediautil.image.jpeg.LLJTran;
+import mediautil.image.jpeg.LLJTranException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.ImageWriteException;
 import org.apache.sanselan.Sanselan;
@@ -31,14 +27,14 @@ import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
 
+import com.mortennobel.imagescaling.ResampleOp;
+
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Rotation;
 
 public class ImageReader
 {    
     private static final int THUMBNAIL_SIZE = 180;
-    private static final Double ROTATE_RIGHT = new Double(Math.PI/2.0);
-    private static final Double ROTATE_180D = new Double(Math.PI);
-    private static final Double ROTATE_LEFT = new Double(Math.PI*1.5);
     private static byte[] errorIcon;
     static
     {
@@ -55,7 +51,7 @@ public class ImageReader
     private DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
     private File file;
     private JpegImageMetadata metadata;
-    private Double rotation;
+    private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
 
@@ -107,7 +103,7 @@ public class ImageReader
         return image;
     }
 
-    private Double getRotation() throws ImageReadException
+    private Rotation getRotation() throws ImageReadException
     {
         TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
         if(orientField != null && orientField.getValue() != null)
@@ -115,18 +111,18 @@ public class ImageReader
             Integer o = (Integer) orientField.getValue();
             if(new Integer(8).equals(o))
             {
-                return ROTATE_LEFT;
+                return Rotation.LEFT;
             }
             if(new Integer(3).equals(o))
             {
-                return ROTATE_180D;
+                return Rotation.ROT180D;
             }
             if(new Integer(6).equals(o))
             {
-                return ROTATE_RIGHT;
+                return Rotation.RIGHT;
             }
         }
-        return null;
+        return Rotation.NONE;
     }
 
     private byte[] getThumbnail() throws Exception
@@ -137,37 +133,26 @@ public class ImageReader
         {
             if(dir.getJpegImageData() !=null)
             {
-                byte[] result = dir.getJpegImageData().data;
-                if(rotation != null)
-                {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    LLJTran llj = new LLJTran(new ByteArrayInputStream(result));
-                    llj.read(true);
-                    if(rotation == ROTATE_180D)
-                    {
-                        llj.transform(out, LLJTran.ROT_180, 0);                        
-                    }
-                    else if(rotation == ROTATE_LEFT)
-                    {
-                        llj.transform(out, LLJTran.ROT_270, 0);                        
-                    }
-                    else if(rotation == ROTATE_RIGHT)
-                    {
-                        llj.transform(out, LLJTran.ROT_90, 0);
-                    }
-                    else
-                    {
-                        throw new IllegalArgumentException(String.valueOf(rotation));
-                    }
-                    return out.toByteArray();
-                }
-                else
-                {
-                    return result;                    
-                }
+                return adjustForRotation(dir.getJpegImageData().data);
             }
         }
         return null;
+    }
+
+    private byte[] adjustForRotation(byte[] result) throws LLJTranException, IOException
+    {
+        if(rotation != null && rotation != Rotation.NONE)
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            LLJTran llj = new LLJTran(new ByteArrayInputStream(result));
+            llj.read(true);
+            llj.transform(out, rotation.getLLJTranConstant(), 0);
+            return out.toByteArray();
+        }
+        else
+        {
+            return result;                    
+        }
     }
 
     private Date getTime() throws ImageReadException, ParseException
@@ -181,50 +166,18 @@ public class ImageReader
         return time;
     }
 
-    public byte[] scale(int toWidth) throws IOException, ImageWriteException
+    public byte[] scale(int toWidth) throws IOException, ImageWriteException, LLJTranException
     {
+        BufferedImage fullSize = ImageIO.read(file);
         this.lastWidth = toWidth;
-        BufferedImage fullSize = ImageIO.read(file);            
-        double scale = (double)toWidth/fullSize.getWidth();
-        AffineTransform xform = AffineTransform.getScaleInstance(scale, scale);
-        BufferedImage scaledImage;
         this.lastHeight = heightForWidth(fullSize, toWidth);
-        if(rotation!=null)
-        {
-            if(rotation==ROTATE_RIGHT)
-            {
-                scaledImage = new BufferedImage(
-                        this.lastHeight, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
-                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), this.lastHeight/2, this.lastHeight/2));
-            }
-            else if(rotation==ROTATE_LEFT)
-            {
-                scaledImage = new BufferedImage(
-                        this.lastHeight, toWidth, ((int)BufferedImage.TYPE_INT_RGB));
-                xform.preConcatenate(AffineTransform.getRotateInstance(rotation.doubleValue(), toWidth/2, toWidth/2));
-            }
-            else
-            {
-                scaledImage = new BufferedImage(
-                        toWidth, this.lastHeight, ((int)BufferedImage.TYPE_INT_RGB));
-            }
-        }        
-        else
-        {
-            scaledImage = new BufferedImage(
-                    toWidth, this.lastHeight, ((int)BufferedImage.TYPE_INT_RGB));
-        }
-        
-        Graphics2D graphics2D = scaledImage.createGraphics();
-        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics2D.drawImage(fullSize, xform, null);
-        graphics2D.dispose();
+
+        ResampleOp op = new ResampleOp(toWidth, this.lastHeight);        
+        BufferedImage scaledImage = op.filter(fullSize, null);        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(scaledImage, "jpg", out);
-        return out.toByteArray();
+        byte[] result = out.toByteArray();
+        return adjustForRotation(out.toByteArray());
     }
     
     private static int heightForWidth(java.awt.Image img, int width)
@@ -244,8 +197,8 @@ public class ImageReader
     
     public static void main(String[] args) throws Exception
     {
-        File f = new File("E:\\tmp\\test\\IMG_3572.JPG");
-        File th = new File("E:\\tmp\\test\\IMG_3572_th.PNG");
+        File f = new File("E:\\tmp\\test\\IMG_3487.JPG");
+        File th = new File("E:\\tmp\\test\\IMG_3487_th.JPG");
         ImageReader reader = new ImageReader(f);
         byte[] b = reader.scale(400);
         FileUtils.writeByteArrayToFile(th, b);
