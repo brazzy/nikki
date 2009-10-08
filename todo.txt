@@ -1,7 +1,6 @@
 - Zeitkorrektur + Angabe Zeitzone beim Geotagging
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
-- Progressbar beim Export
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname
 
@@ -18,6 +17,7 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Progressbar beim Export
 v Bildqualität beim Skalieren
 v Lücken in GPS-Log anzeigen
 v Export als KMZ

@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStream
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStreamimport de.brazzy.nikki.util.ExportWorker
 /**
  * @author Michael Borgwardt
  */
@@ -89,7 +89,10 @@ public class Nikki{
             fc.selectedFile = new File(model.exportDir, EXPORT_FILE_NAME + day.date.dateString +".kmz");
             if(fc.showSaveDialog(view.frame) == JFileChooser.APPROVE_OPTION){
                 model.exportDir = fc.getSelectedFile().getParentFile()
-                day.export(new ZipOutputStream(new FileOutputStream(fc.getSelectedFile())))
+                ExportWorker worker = new ExportWorker(
+                    day, new ZipOutputStream(new FileOutputStream(fc.getSelectedFile())))
+                worker.addPropertyChangeListener(progressListener)
+                worker.execute()
             }
         }
     }    

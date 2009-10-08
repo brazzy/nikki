@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderclass Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderimport javax.swing.SwingWorkerclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
     
@@ -86,8 +86,9 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         }
     }
     
-    public void export(ZipOutputStream out)
+    public void export(ZipOutputStream out, SwingWorker worker)
     {
+        worker.progress = 0;
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
         doc.createAndAddStyle().withId("track")
@@ -95,6 +96,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             .withWidth(3.0)
             .withColor("801977FF")
         
+        int count = 0;
         out.putNextEntry(new ZipEntry("images/"))
         images.each{ Image image ->
             doc.createAndAddPlacemark()
@@ -107,6 +109,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             ImageReader reader = new ImageReader(new File(directory.path, image.fileName))
             out.write(reader.scale(600));
             out.closeEntry()
+            worker.progress = new Integer((int)(++count / images.size * 100))
         }
         
         LineString ls;        

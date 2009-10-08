@@ -41,7 +41,7 @@ class Directory extends ListDataModel<Day>{
     
     public void scan(SwingWorker worker)
     {
-        worker.setProgress(0);
+        worker.progress = 0;
         readPersistent()
         
         def days = new HashMap()
