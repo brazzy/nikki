@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
 
@@ -48,17 +49,18 @@ public class ImageReader
         }
     }
 
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
     private File file;
+    private TimeZone zone;
     private JpegImageMetadata metadata;
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
 
-    public ImageReader(File file)
+    public ImageReader(File file, TimeZone zone)
     {
         super();
         this.file = file;
+        this.zone = zone;
         try
         {
             this.metadata = (JpegImageMetadata) Sanselan.getMetadata(file, Collections.singletonMap(SanselanConstants.PARAM_KEY_READ_THUMBNAILS, Boolean.TRUE));            
@@ -161,7 +163,10 @@ public class ImageReader
         TiffField timeField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         if(timeField != null && timeField.getValue() != null)
         {
-            time = dateFormat.parse(((String)timeField.getValue()).substring(0, 19));
+            DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            format.setTimeZone(zone);
+
+            time = format.parse(((String)timeField.getValue()).substring(0, 19));
         }
         return time;
     }
@@ -199,7 +204,7 @@ public class ImageReader
     {
         File f = new File("E:\\tmp\\test\\IMG_3487.JPG");
         File th = new File("E:\\tmp\\test\\IMG_3487_th.JPG");
-        ImageReader reader = new ImageReader(f);
+        ImageReader reader = new ImageReader(f, TimeZone.getDefault());
         byte[] b = reader.scale(400);
         FileUtils.writeByteArrayToFile(th, b);
         Runtime.getRuntime().exec(new String[]{"C:\\Programme\\IrfanView\\i_view32.exe", th.getAbsolutePath()});

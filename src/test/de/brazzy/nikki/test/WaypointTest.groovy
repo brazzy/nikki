@@ -23,7 +23,7 @@ public class WaypointTest extends GroovyTestCase{
         final String line = '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D'
         Waypoint wp = Waypoint.parse(new Directory(), null, line);
 
-        assertEquals(wp.timestamp, Date.parse("yyyy-MM-dd HH:mm:ss.SSS", "2009-07-27 07:12:32.000"))
+        assertEquals(wp.timestamp, Date.parse("yyyy-MM-dd HH:mm:ss.SSS Z", "2009-07-27 07:12:32.000 GMT"))
 
         def coord = wp.latitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
@@ -38,8 +38,8 @@ public class WaypointTest extends GroovyTestCase{
     
     public void testGeotag()
     {
-        def fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        def dat = "2009-01-01 12:"
+        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
+        def dat = "GMT 2009-01-01 12:"
         
         def day = new Day()
         def wp12 = new Waypoint(timestamp: fmt.parse(dat+"12:00"))

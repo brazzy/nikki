@@ -16,7 +16,7 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
-import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorker
+import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorkerimport java.util.TimeZoneimport de.brazzy.nikki.util.RelativeDateFormat
 class Directory extends ListDataModel<Day>{
     public static final long serialVersionUID = 1;
     
@@ -33,6 +33,7 @@ class Directory extends ListDataModel<Day>{
     Map<String, Image> images = [:];
     Map<String, WaypointFile> waypointFiles = [:];    
     File path;
+    TimeZone zone = TimeZone.getDefault();
     
     public String toString()
     {
@@ -51,13 +52,16 @@ class Directory extends ListDataModel<Day>{
 
         int count = 0;
         def imageFiles = path.listFiles(FILTER_JPG)
+        // Datum gemäß der Foto-Zeitzone verwenden
+        def format = new RelativeDateFormat(zone)
+        
         imageFiles.each{
             if(!this.images[it.name])
             {
-                Image image = new ImageReader(it).createImage()
+                Image image = new ImageReader(it, zone).createImage()
                 this.images[it.name] = image
-                
-                def date = image.time == null ? null : DateFormat.getDateInstance().parse(image.time.dateString)
+
+                def date = image.time == null ? null : format.stripTime(image.time)
                 def day = days[date]
                 if(day)
                 {
@@ -92,10 +96,9 @@ class Directory extends ListDataModel<Day>{
         }        
         
         fireContentsChanged(this, 0, this.data.size()-1)
-        writePersistent()
     }  
 
-    private void writePersistent()
+    public void save()
     {
         def persist = new File(this.path, PERSIST_FILE)        
         def output = new ObjectOutputStream(

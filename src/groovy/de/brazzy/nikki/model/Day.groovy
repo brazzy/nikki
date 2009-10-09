@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderimport javax.swing.SwingWorkerclass Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderimport javax.swing.SwingWorkerimport java.util.TimeZoneimport java.text.DateFormatclass Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
     
@@ -15,7 +15,9 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
     
     public String toString()
     {        
-        (date==null? "unknown" : date.getDateString())+" ("+images.size()+", "+waypoints.size()+")"
+        def format = DateFormat.getDateInstance();
+        format.timeZone = directory.zone;
+        (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
     public int getRowCount()
@@ -52,7 +54,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         date = oi.readObject()
     }
     
-    public void geotag()
+    public void geotag(int offset = 0)
     {
         waypoints.sort()
         images.each{ image ->

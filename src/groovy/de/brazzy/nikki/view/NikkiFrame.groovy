@@ -17,6 +17,7 @@ public class NikkiFrame{
     def deleteButton
     def scanButton
     def tagButton
+    def saveButton
     def exportButton
     def dayList
     def imageTable
@@ -39,6 +40,7 @@ public class NikkiFrame{
                             result.addButton = button(text:'Add')
                             result.deleteButton = button(text:'Delete', enabled:false)                            
                             result.scanButton = button(text:'Scan', enabled:false)                      
+                            result.saveButton = button(text:'Save', enabled:false)
                         }
                     }
                     panel(){

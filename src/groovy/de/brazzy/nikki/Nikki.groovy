@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStreamimport de.brazzy.nikki.util.ExportWorker
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStreamimport de.brazzy.nikki.util.ExportWorkerimport java.text.SimpleDateFormatimport javax.swing.JOptionPaneimport de.brazzy.nikki.util.RelativeDateFormatimport de.brazzy.nikki.view.ScanOptions
 /**
  * @author Michael Borgwardt
  */
@@ -35,6 +35,7 @@ public class Nikki{
             }
             view.deleteButton.enabled = (sel != null)
             view.scanButton.enabled = (sel != null)
+            view.saveButton.enabled = (sel != null)
         } as ListSelectionListener
         view.dirList.addListSelectionListener(selListener)
         
@@ -58,9 +59,19 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
-            worker.addPropertyChangeListener(progressListener)
-            worker.execute()
+            ScanOptions opt = new ScanOptions(view.dirList.selectedValue.zone);
+            int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)            
+            
+            if(pressed == JOptionPane.OK_OPTION)
+            {
+                view.dirList.selectedValue.zone = opt.timezone
+                ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
+                worker.addPropertyChangeListener(progressListener)
+                worker.execute()                
+            }
+        }
+        view.saveButton.actionPerformed={            
+            view.dirList.selectedValue.save()
         }
         
         selListener = { it ->
@@ -79,14 +90,15 @@ public class Nikki{
         } as ListSelectionListener
         view.dayList.addListSelectionListener(selListener)
 
-        view.tagButton.actionPerformed={
+        view.tagButton.actionPerformed={            
             view.dayList.selectedValue.geotag()
         }
         view.exportButton.actionPerformed={
             def day = view.dayList.selectedValue
+            def format = new RelativeDateFormat(day.directory.zone);
             def fc = new JFileChooser(model.exportDir);
-            fc.fileSelectionMode = JFileChooser.FILES_ONLY
-            fc.selectedFile = new File(model.exportDir, EXPORT_FILE_NAME + day.date.dateString +".kmz");
+            fc.fileSelectionMode = JFileChooser.FILES_ONLY            
+            fc.selectedFile = new File(model.exportDir, EXPORT_FILE_NAME + format.format(day.date) +".kmz");
             if(fc.showSaveDialog(view.frame) == JFileChooser.APPROVE_OPTION){
                 model.exportDir = fc.getSelectedFile().getParentFile()
                 ExportWorker worker = new ExportWorker(

@@ -1,4 +1,5 @@
-- Zeitkorrektur + Angabe Zeitzone beim Geotagging
+- Hilfs-Exportdatei für Zeitkorrektur
+- Angabe Zeitkorrektur beim Geotagging
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
@@ -17,6 +18,7 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Angabe Zeitzone beim Scannen
 v Progressbar beim Export
 v Bildqualität beim Skalieren
 v Lücken in GPS-Log anzeigen
@@ -43,3 +45,10 @@ v executable JAR
 v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
 v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup
 v Domainmodels mit Swing-Model-Interfaces
+
+http://labs.micromata.de/display/jak/Home
+http://www.tutego.de/blog/javainsel/2009/09/thema-der-woche-programmieren-mit-einem.html
+http://commons.apache.org/sanselan/
+http://javanmea.sourceforge.net/
+http://griffon.codehaus.org/
+http://java.sun.com/javase/6/docs/api/javax/swing/SwingWorker.html
