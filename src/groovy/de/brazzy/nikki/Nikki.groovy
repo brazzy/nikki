@@ -8,7 +8,7 @@ import javax.swing.ImageIconimport javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStreamimport de.brazzy.nikki.util.ExportWorkerimport java.text.SimpleDateFormatimport javax.swing.JOptionPaneimport de.brazzy.nikki.util.RelativeDateFormatimport de.brazzy.nikki.view.ScanOptions
+import javax.swing.JFileChooserimport javax.swing.event.ListSelectionListenerimport javax.swing.DefaultListModelimport javax.swing.table.DefaultTableModelimport java.beans.PropertyChangeListenerimport de.brazzy.nikki.util.ScanWorkerimport de.brazzy.nikki.model.Dayimport javax.swing.UIManagerimport java.util.zip.ZipOutputStreamimport de.brazzy.nikki.util.ExportWorkerimport java.text.SimpleDateFormatimport javax.swing.JOptionPaneimport de.brazzy.nikki.util.RelativeDateFormatimport de.brazzy.nikki.view.ScanOptionsimport de.brazzy.nikki.view.GeotagOptions
 /**
  * @author Michael Borgwardt
  */
@@ -90,8 +90,14 @@ public class Nikki{
         } as ListSelectionListener
         view.dayList.addListSelectionListener(selListener)
 
-        view.tagButton.actionPerformed={            
-            view.dayList.selectedValue.geotag()
+        view.tagButton.actionPerformed={  
+            GeotagOptions opt = new GeotagOptions();
+            int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Geotagging options", JOptionPane.OK_CANCEL_OPTION)            
+            
+            if(pressed == JOptionPane.OK_OPTION)
+            {
+                view.dayList.selectedValue.geotag(opt.offset)
+            }
         }
         view.exportButton.actionPerformed={
             def day = view.dayList.selectedValue

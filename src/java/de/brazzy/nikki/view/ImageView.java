@@ -6,7 +6,9 @@ import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 
 import javax.swing.GroupLayout;
@@ -21,7 +23,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.model.Waypoint;
 
 
 public class ImageView extends JPanel
@@ -65,16 +66,35 @@ public class ImageView extends JPanel
             {
                 try
                 {
-                    Waypoint wp = value.getWaypoint();
-                    Desktop.getDesktop().browse(new URI("http://maps.google.com/maps?ll="+wp.getLatitude().getValue()+","+wp.getLongitude().getValue()));
+                    File tmpFile = File.createTempFile("nikki", ".kml");
+                    OutputStream tmpOut = new FileOutputStream(tmpFile);
+                    value.offsetFinder(tmpOut);
+                    Desktop.getDesktop().open(tmpFile);
                 }
                 catch (Exception ex)
                 {
                     JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
                 }
             }            
         });
-        
+
+//        geoLink.addActionListener(new ActionListener(){
+//            @Override
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                try
+//                {
+//                    Waypoint wp = value.getWaypoint();
+//                    Desktop.getDesktop().browse(new URI("http://maps.google.com/maps?ll="+wp.getLatitude().getValue()+","+wp.getLongitude().getValue()));
+//                }
+//                catch (Exception ex)
+//                {
+//                    JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
+//                }
+//            }            
+//        });
+
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
         layout.setAutoCreateGaps(true);

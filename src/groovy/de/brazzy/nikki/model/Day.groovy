@@ -58,7 +58,8 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
     {
         waypoints.sort()
         images.each{ image ->
-            def index = Collections.binarySearch(waypoints, new Waypoint(timestamp:image.time))
+            def imagetime = new Date(image.time.time + (offset*1000))
+            def index = Collections.binarySearch(waypoints, new Waypoint(timestamp:imagetime))
             if(index>=0) // direct hit
             {
                 image.waypoint = waypoints[index]
@@ -75,8 +76,8 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             {
                 def before = waypoints[-(index+2)]
                 def after = waypoints[-(index+1)]
-                if(image.time.time - before.timestamp.time > 
-                   after.timestamp.time - image.time.time)
+                if(imagetime.time - before.timestamp.time > 
+                   after.timestamp.time - imagetime.time)
                 {
                     image.waypoint = after
                 }
@@ -108,7 +109,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             .createAndSetPoint()
                 .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
             out.putNextEntry(new ZipEntry("images/"+image.fileName))
-            ImageReader reader = new ImageReader(new File(directory.path, image.fileName))
+            ImageReader reader = new ImageReader(new File(directory.path, image.fileName), null)
             out.write(reader.scale(600));
             out.closeEntry()
             worker.progress = new Integer((int)(++count / images.size * 100))
@@ -130,7 +131,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         out.closeEntry()
         out.close()
     }
-    
+
     private LineString createLine(Document doc)
     {
         return doc.createAndAddPlacemark()

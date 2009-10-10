@@ -1,9 +1,8 @@
-- Hilfs-Exportdatei für Zeitkorrektur
-- Angabe Zeitkorrektur beim Geotagging
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname
+- Icons auf Karte
 
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
@@ -18,6 +17,8 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Hilfs-Exportdatei für Zeitkorrektur
+v Angabe Zeitkorrektur beim Geotagging
 v Angabe Zeitzone beim Scannen
 v Progressbar beim Export
 v Bildqualität beim Skalieren
