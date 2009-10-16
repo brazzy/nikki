@@ -1,7 +1,7 @@
 package de.brazzy.nikki.model;
 
 import javax.swing.table.AbstractTableModel
-import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderimport javax.swing.SwingWorkerimport java.util.TimeZoneimport java.text.DateFormatclass Day extends AbstractTableModel implements Externalizable
+import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_2_0.KmlFactoryimport de.micromata.opengis.kml.v_2_2_0.Coordinateimport de.micromata.opengis.kml.v_2_2_0.Documentimport de.micromata.opengis.kml.v_2_2_0.Placemarkimport de.micromata.opengis.kml.v_2_2_0.LineStringimport de.micromata.opengis.kml.v_2_2_0.AltitudeModeimport java.util.zip.ZipOutputStreamimport java.util.zip.ZipEntryimport de.brazzy.nikki.util.ImageReaderimport javax.swing.SwingWorkerimport java.util.TimeZoneimport java.text.DateFormatimport java.util.zip.CRC32class Day extends AbstractTableModel implements Externalizable
 {
     public static final long serialVersionUID = 1;
     
@@ -96,22 +96,40 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         Document doc = kml.createAndSetDocument()
         doc.createAndAddStyle().withId("track")
             .createAndSetLineStyle()
-            .withWidth(3.0)
+            .withWidth(4.0)
             .withColor("801977FF")
         
         int count = 0;
-        out.putNextEntry(new ZipEntry("images/"))
+        out.method = ZipOutputStream.STORED
+        def entry = new ZipEntry("images/");
+        entry.size = 0;
+        entry.crc = 0;
+        out.putNextEntry(entry)
+        out.closeEntry()
+        
+        entry = new ZipEntry("thumbs/");
+        entry.size = 0;
+        entry.crc = 0;
+        out.putNextEntry(entry)
+        out.closeEntry()
+        
         images.each{ Image image ->
-            doc.createAndAddPlacemark()
-            .withName(image.title)
-            .withDescription(image.longDescription)
-            .withVisibility(true)
-            .createAndSetPoint()
+            Placemark pm = doc.createAndAddPlacemark()
+                .withName(image.title)
+                .withDescription(image.longDescription)
+                .withVisibility(true)
+             pm.createAndSetPoint()
                 .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
-            out.putNextEntry(new ZipEntry("images/"+image.fileName))
+             pm.createAndAddStyle()
+               .createAndSetIconStyle()
+               .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
+               .createAndSetIcon()
+               .withHref("thumbs/"+image.fileName)
+
             ImageReader reader = new ImageReader(new File(directory.path, image.fileName), null)
-            out.write(reader.scale(600));
-            out.closeEntry()
+            store(reader.scale(592, false), "images/"+image.fileName, out)
+            store(reader.scale(96, true), "thumbs/"+image.fileName, out)
+            
             worker.progress = new Integer((int)(++count / images.size * 100))
         }
         
@@ -126,10 +144,23 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
             previous = waypoint.timestamp.time
         }
         
+        out.method = ZipOutputStream.DEFLATED
         out.putNextEntry(new ZipEntry("diary.kml"))
         kml.marshal(out)
         out.closeEntry()
         out.close()
+    }
+    
+    private store(byte[] imgData, String name, ZipOutputStream out)
+    {
+        def entry = new ZipEntry(name)
+        entry.size = imgData.length
+        def crc = new CRC32()
+        crc.update(imgData)
+        entry.crc = crc.value
+        out.putNextEntry(entry)
+        out.write(imgData)
+        out.closeEntry()
     }
 
     private LineString createLine(Document doc)

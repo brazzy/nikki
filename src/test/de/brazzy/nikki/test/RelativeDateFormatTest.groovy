@@ -56,4 +56,12 @@ public class RelativeDateFormatTest extends GroovyTestCase{
         assertFalse(holiday.sameDay(normal, format12.parse("2009-10-02 00:00:00")))
         assertFalse(holiday.sameDay(normal, format12.parse("2009-09-30 23:59:59")))
     }
+    
+    public void testFormat()
+    {
+        assertEquals("2009-10-01", holiday.format(normal));
+        assertEquals("2009-10-01", holiday.format(early));
+        assertEquals("2009-10-01", holiday.format(late));
+        assertEquals("2009-10-01", holiday.format(noon));
+    }
 }

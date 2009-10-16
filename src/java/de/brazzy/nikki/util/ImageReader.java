@@ -1,5 +1,7 @@
 package de.brazzy.nikki.util;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
 import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
@@ -55,7 +59,8 @@ public class ImageReader
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
-
+    private BufferedImage mainImage;
+    
     public ImageReader(File file, TimeZone zone)
     {
         super();
@@ -91,7 +96,7 @@ public class ImageReader
             byte[] th = getThumbnail();
             if(th == null)
             {
-                th = scale(THUMBNAIL_SIZE);
+                th = scale(THUMBNAIL_SIZE, false);
             }
             image.setThumbnail(th);
         }
@@ -171,14 +176,26 @@ public class ImageReader
         return time;
     }
 
-    public byte[] scale(int toWidth) throws IOException, ImageWriteException, LLJTranException
+    public byte[] scale(int toWidth, boolean paintBorder) throws IOException, ImageWriteException, LLJTranException
     {
-        BufferedImage fullSize = ImageIO.read(file);
+        if(mainImage == null)
+        {
+            mainImage = ImageIO.read(file);
+        }
+        
         this.lastWidth = toWidth;
-        this.lastHeight = heightForWidth(fullSize, toWidth);
+        this.lastHeight = heightForWidth(mainImage, toWidth);
 
         ResampleOp op = new ResampleOp(toWidth, this.lastHeight);        
-        BufferedImage scaledImage = op.filter(fullSize, null);        
+        BufferedImage scaledImage = op.filter(mainImage, null);
+        if(paintBorder)
+        {
+            Graphics2D g = scaledImage.createGraphics();
+            g.setPaintMode();
+            new EtchedBorder(EtchedBorder.RAISED, Color.LIGHT_GRAY, Color.DARK_GRAY)
+            .paintBorder(null, g, 0, 0, this.lastWidth, this.lastHeight);
+        }
+        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(scaledImage, "jpg", out);
         byte[] result = out.toByteArray();
@@ -205,7 +222,7 @@ public class ImageReader
         File f = new File("E:\\tmp\\test\\IMG_3487.JPG");
         File th = new File("E:\\tmp\\test\\IMG_3487_th.JPG");
         ImageReader reader = new ImageReader(f, TimeZone.getDefault());
-        byte[] b = reader.scale(400);
+        byte[] b = reader.scale(400, true);
         FileUtils.writeByteArrayToFile(th, b);
         Runtime.getRuntime().exec(new String[]{"C:\\Programme\\IrfanView\\i_view32.exe", th.getAbsolutePath()});
         System.out.println(reader.getLastHeight());
