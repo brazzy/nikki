@@ -3,7 +3,6 @@
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname
 
-- Bei Scan Zeitzone nicht nachfragen wenn DB schon vorhanden
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
   - verschiedene Speicherorte von thumbnails
@@ -17,6 +16,7 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Bei Scan Zeitzone nicht nachfragen wenn DB schon vorhanden
 v kartenicons mit Rand
 v Icons auf Karte
 v Hilfs-Exportdatei für Zeitkorrektur

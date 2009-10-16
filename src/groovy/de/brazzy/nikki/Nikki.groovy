@@ -59,16 +59,22 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            ScanOptions opt = new ScanOptions(view.dirList.selectedValue.zone);
-            int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)            
-            
-            if(pressed == JOptionPane.OK_OPTION)
+            if(!view.dirList.selectedValue.hasPersistent())
             {
-                view.dirList.selectedValue.zone = opt.timezone
-                ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
-                worker.addPropertyChangeListener(progressListener)
-                worker.execute()                
+                ScanOptions opt = new ScanOptions(view.dirList.selectedValue.zone);
+                int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)
+                if(pressed == JOptionPane.OK_OPTION)
+                {
+                    view.dirList.selectedValue.zone = opt.timezone
+                }
+                else
+                {
+                    return
+                }
             }
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
         }
         view.saveButton.actionPerformed={            
             view.dirList.selectedValue.save()

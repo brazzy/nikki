@@ -110,6 +110,11 @@ class Directory extends ListDataModel<Day>{
        output.close()
     }
     
+    public boolean hasPersistent()
+    {
+        return new File(this.path, PERSIST_FILE).exists()
+    }
+    
     private void readPersistent()
     {
         def persist = new File(this.path, PERSIST_FILE)        
