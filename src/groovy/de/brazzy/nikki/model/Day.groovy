@@ -113,6 +113,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         out.putNextEntry(entry)
         out.closeEntry()
         
+        images.sort{ it.time }
         images.each{ Image image ->
             Placemark pm = doc.createAndAddPlacemark()
                 .withName(image.title)

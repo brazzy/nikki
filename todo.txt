@@ -1,7 +1,9 @@
+- Zeit anzeigen?
+- Reihenfolge in Google Maps
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
-- Parameter beim Export: Bildgröße, Dokumentenname
+- Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
@@ -16,6 +18,7 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Dateiname 0009
 v Bei Scan Zeitzone nicht nachfragen wenn DB schon vorhanden
 v kartenicons mit Rand
 v Icons auf Karte
