@@ -1,5 +1,4 @@
 - Zeit anzeigen?
-- Reihenfolge in Google Maps
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
@@ -18,6 +17,7 @@
 - GPS-Daten in Bilder schreiben
 - Sansealn komplett durch MediaUtils ersetzen?
 
+v Reihenfolge in Google Maps
 v Dateiname 0009
 v Bei Scan Zeitzone nicht nachfragen wenn DB schon vorhanden
 v kartenicons mit Rand
