@@ -8,4 +8,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.brazzy.nikki.Launcher"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="map_kmz"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx256m"/>
 </launchConfiguration>
