@@ -112,36 +112,42 @@ public class ImageReader
 
     private Rotation getRotation() throws ImageReadException
     {
-        TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
-        if(orientField != null && orientField.getValue() != null)
-        { // see http://sylvana.net/jpegcrop/exif_orientation.html
-            Integer o = (Integer) orientField.getValue();
-            if(new Integer(8).equals(o))
-            {
-                return Rotation.LEFT;
-            }
-            if(new Integer(3).equals(o))
-            {
-                return Rotation.ROT180D;
-            }
-            if(new Integer(6).equals(o))
-            {
-                return Rotation.RIGHT;
-            }
+        if(metadata != null)
+        {
+            TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
+            if(orientField != null && orientField.getValue() != null)
+            { // see http://sylvana.net/jpegcrop/exif_orientation.html
+                Integer o = (Integer) orientField.getValue();
+                if(new Integer(8).equals(o))
+                {
+                    return Rotation.LEFT;
+                }
+                if(new Integer(3).equals(o))
+                {
+                    return Rotation.ROT180D;
+                }
+                if(new Integer(6).equals(o))
+                {
+                    return Rotation.RIGHT;
+                }
+            }            
         }
         return Rotation.NONE;
     }
 
     private byte[] getThumbnail() throws Exception
     {
-        @SuppressWarnings("unchecked")
-        List<TiffImageMetadata.Directory> dirs = metadata.getExif().getDirectories();
-        for(TiffImageMetadata.Directory dir : dirs)
+        if(metadata != null)
         {
-            if(dir.getJpegImageData() !=null)
+            @SuppressWarnings("unchecked")
+            List<TiffImageMetadata.Directory> dirs = metadata.getExif().getDirectories();
+            for(TiffImageMetadata.Directory dir : dirs)
             {
-                return adjustForRotation(dir.getJpegImageData().data);
-            }
+                if(dir.getJpegImageData() !=null)
+                {
+                    return adjustForRotation(dir.getJpegImageData().data);
+                }
+            }            
         }
         return null;
     }
@@ -165,13 +171,16 @@ public class ImageReader
     private Date getTime() throws ImageReadException, ParseException
     {
         Date time = null;
-        TiffField timeField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-        if(timeField != null && timeField.getValue() != null)
+        if(metadata != null)
         {
-            DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-            format.setTimeZone(zone);
+            TiffField timeField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+            if(timeField != null && timeField.getValue() != null)
+            {
+                DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+                format.setTimeZone(zone);
 
-            time = format.parse(((String)timeField.getValue()).substring(0, 19));
+                time = format.parse(((String)timeField.getValue()).substring(0, 19));
+            }            
         }
         return time;
     }
