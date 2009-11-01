@@ -10,6 +10,7 @@ import de.brazzy.nikki.util.ImageReaderimport de.micromata.opengis.kml.v_2_2_0.
     Day day
     Waypoint waypoint
     byte[] thumbnail
+    boolean export
     
     public String getLongDescription()
     {

@@ -96,6 +96,7 @@ class Directory extends ListDataModel<Day>{
         }        
         
         fireContentsChanged(this, 0, this.data.size()-1)
+        worker.progress = 0
     }  
 
     public void save()

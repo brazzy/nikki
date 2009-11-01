@@ -1,9 +1,12 @@
-- Zeit anzeigen?
+- Zeit in KML anzeigen?
 - autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 
+- Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
+- Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)
+- Thumbnail-Größe bei schon rotierten Bildern
 - Einlesen der Bilddaten
   - alternative Datumsfelder nutzen
   - verschiedene Speicherorte von thumbnails
@@ -15,8 +18,10 @@
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
 - GPS-Daten in Bilder schreiben
-- Sansealn komplett durch MediaUtils ersetzen?
+- Sanselan komplett durch MediaUtils ersetzen?
+- Nachfragen beim Überscheiben
 
+v Checkbox zur Auswahl welche Bilder exportiert werden
 v Reihenfolge in Google Maps
 v Dateiname 0009
 v Bei Scan Zeitzone nicht nachfragen wenn DB schon vorhanden

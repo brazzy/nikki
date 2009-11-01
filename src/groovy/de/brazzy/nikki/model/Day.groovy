@@ -117,22 +117,24 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         def imgIndex = 0;
         images.sort{ it.time }
         images.each{ Image image ->
-            Placemark pm = doc.createAndAddPlacemark()
-                .withName(imgIndexFmt.format(imgIndex++) + (image.title ?: ""))
-                .withDescription(image.longDescription)
-                .withVisibility(true)
-             pm.createAndSetPoint()
-                .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
-             pm.createAndAddStyle()
-               .createAndSetIconStyle()
-               .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
-               .createAndSetIcon()
-               .withHref("thumbs/"+image.fileName)
-
-            ImageReader reader = new ImageReader(new File(directory.path, image.fileName), null)
-            store(reader.scale(592, false), "images/"+image.fileName, out)
-            store(reader.scale(96, true), "thumbs/"+image.fileName, out)
-            
+            if(image.export)
+            {
+                Placemark pm = doc.createAndAddPlacemark()
+                    .withName(imgIndexFmt.format(imgIndex++) + (image.title ?: ""))
+                    .withDescription(image.longDescription)
+                    .withVisibility(true)
+                 pm.createAndSetPoint()
+                    .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
+                 pm.createAndAddStyle()
+                   .createAndSetIconStyle()
+                   .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
+                   .createAndSetIcon()
+                   .withHref("thumbs/"+image.fileName)
+    
+                ImageReader reader = new ImageReader(new File(directory.path, image.fileName), null)
+                store(reader.scale(592, false), "images/"+image.fileName, out)
+                store(reader.scale(96, true), "thumbs/"+image.fileName, out)
+            }
             worker.progress = new Integer((int)(++count / images.size * 100))
         }
         
@@ -152,6 +154,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
         kml.marshal(out)
         out.closeEntry()
         out.close()
+        worker.progress = 0
     }
     
     private store(byte[] imgData, String name, ZipOutputStream out)

@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,6 +39,7 @@ public class ImageView extends JPanel
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
     private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("globe.gif")));
+    private JCheckBox export = new JCheckBox("export");
     
     private Image value;
 
@@ -101,7 +103,10 @@ public class ImageView extends JPanel
         layout.setAutoCreateContainerGaps(true);        
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(title)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(title)
+                .addComponent(export)
+            )
             .addGroup(
                 layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -125,7 +130,10 @@ public class ImageView extends JPanel
         );
         layout.setVerticalGroup(
             layout.createSequentialGroup()
-            .addComponent(title, (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight())
+            .addGroup(layout.createParallelGroup()
+                    .addComponent(title, (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight(), (int)title.getPreferredSize().getHeight())
+                    .addComponent(export)
+            )
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(filenameLabel)
                     .addComponent(filename)
@@ -188,12 +196,14 @@ public class ImageView extends JPanel
         }
         icon.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
+        export.setSelected(value.getExport());
     }
 
     public Image getValue()
     {
         value.setDescription(textArea.getText());
         value.setTitle(title.getText());
+        value.setExport(export.isSelected());
         return value;
     }    
 
