@@ -1,5 +1,7 @@
+- Datumsanzeige in Tagesliste und bei Bilddetails und Dateiname
+- autom. Speichern beim Schliessen und vor Export
+- Scannen neu hinzugefügter Bilder
 - Zeit in KML anzeigen?
-- autom. Speichern beim Schliessen
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
@@ -21,6 +23,7 @@
 - Sanselan komplett durch MediaUtils ersetzen?
 - Nachfragen beim Überscheiben
 
+v Exception: URI is not hierarchical
 v Checkbox zur Auswahl welche Bilder exportiert werden
 v Reihenfolge in Google Maps
 v Dateiname 0009

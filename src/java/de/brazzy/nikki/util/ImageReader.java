@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 
 import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.ImageWriteException;
 import org.apache.sanselan.Sanselan;
@@ -45,7 +45,7 @@ public class ImageReader
     {
         try
         {
-            errorIcon = FileUtils.readFileToByteArray(new File(ImageReader.class.getResource("noimage.jpg").toURI()));
+            errorIcon = IOUtils.toByteArray(ImageReader.class.getResourceAsStream("noimage.jpg"));
         }
         catch (Exception e)
         {
