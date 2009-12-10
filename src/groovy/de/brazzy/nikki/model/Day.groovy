@@ -15,8 +15,7 @@ import de.micromata.opengis.kml.v_2_2_0.Kmlimport de.micromata.opengis.kml.v_2_
     
     public String toString()
     {        
-        def format = DateFormat.getDateInstance();
-        format.timeZone = directory.zone;
+        def format = new RelativeDateFormat(directory.zone)
         (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
