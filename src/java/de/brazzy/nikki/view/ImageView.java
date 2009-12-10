@@ -166,7 +166,9 @@ public class ImageView extends JPanel
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            time.setText(DateFormat.getDateTimeInstance().format(value.getTime()));
+            DateFormat fmt = DateFormat.getDateTimeInstance();
+            fmt.setTimeZone(value.getDay().getDirectory().getZone());
+            time.setText(fmt.format(value.getTime()));
             if(value.getWaypoint() != null)
             {
                 long diff = (value.getTime().getTime() - value.getWaypoint().getTimestamp().getTime()) / 1000;                
