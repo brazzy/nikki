@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project map_kmz">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/tmp/Nikki.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="E:/projects_checkout/map_kmz/groovy-out"/>
+            <fileset dir="E:/projects_checkout/map_kmz/out"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/commons-io-1.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/sanselan-0.97-incubator.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Programme/Java/groovy-1.6.4/embeddable/groovy-all-1.6.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Programme/Java/eclipse_3.4.1/plugins/org.junit4_4.3.1/junit.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/JavaAPIforKml.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/jaxb-api.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/jaxb-impl.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/mediautil-1.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/imagescaling_0_8_1.jar"/>
+        </jar>
+    </target>
+</project>
