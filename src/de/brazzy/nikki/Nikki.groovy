@@ -24,6 +24,7 @@ import javax.swing.JOptionPane
 import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
+import de.brazzy.nikki.util.Dialogs
 
 /**
  * @author Michael Borgwardt
@@ -33,10 +34,12 @@ public class Nikki{
 
     def view;
     def model;
+    def dialogs;
 
-    public void build(boolean usePreferences){
+    public void build(boolean usePreferences, Dialogs dialogs){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         view = NikkiFrame.create()
+        this.dialogs = dialogs
         model = new NikkiModel(usePreferences)
         view.dirList.model = model        
         def selListener = { it ->
@@ -56,11 +59,10 @@ public class Nikki{
         view.dirList.addListSelectionListener(selListener)
         
         view.addButton.actionPerformed={
-            def fc = new JFileChooser(model.selectionDir)
-            fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-            if(fc.showOpenDialog(view.frame) == JFileChooser.APPROVE_OPTION){
-                model.selectionDir = fc.getSelectedFile().getParentFile()
-                model.add(new Directory(path:fc.getSelectedFile()))
+            def selectedFile = dialogs.askDirectory(model.selectionDir);
+            if(selectedFile){
+                model.selectionDir = selectedFile.getParentFile()
+                model.add(new Directory(path:selectedFile))
             }
         }
         view.deleteButton.actionPerformed={
@@ -77,11 +79,10 @@ public class Nikki{
         view.scanButton.actionPerformed={
             if(!view.dirList.selectedValue.hasPersistent())
             {
-                ScanOptions opt = new ScanOptions(view.dirList.selectedValue.zone);
-                int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)
-                if(pressed == JOptionPane.OK_OPTION)
+                def zone = dialogs.askTimeZone(view.dirList.selectedValue.zone)
+                if(zone)
                 {
-                    view.dirList.selectedValue.zone = opt.timezone
+                    view.dirList.selectedValue.zone = zone
                 }
                 else
                 {
@@ -112,25 +113,22 @@ public class Nikki{
         } as ListSelectionListener
         view.dayList.addListSelectionListener(selListener)
 
-        view.tagButton.actionPerformed={  
-            GeotagOptions opt = new GeotagOptions();
-            int pressed = JOptionPane.showConfirmDialog(view.frame, opt, "Geotagging options", JOptionPane.OK_CANCEL_OPTION)            
-            
-            if(pressed == JOptionPane.OK_OPTION)
+        view.tagButton.actionPerformed={
+            def offset = dialogs.askOffset();
+            if(offset != null)
             {
-                view.dayList.selectedValue.geotag(opt.offset)
+                view.dayList.selectedValue.geotag(offset)
             }
         }
         view.exportButton.actionPerformed={
             def day = view.dayList.selectedValue
             def format = new RelativeDateFormat(day.directory.zone);
-            def fc = new JFileChooser(model.exportDir);
-            fc.fileSelectionMode = JFileChooser.FILES_ONLY            
-            fc.selectedFile = new File(model.exportDir, EXPORT_FILE_NAME + format.format(day.date) +".kmz");
-            if(fc.showSaveDialog(view.frame) == JFileChooser.APPROVE_OPTION){
-                model.exportDir = fc.getSelectedFile().getParentFile()
+            def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + format.format(day.date) +".kmz");
+
+            if(selectedFile){
+                model.exportDir = selectedFile.getParentFile()
                 ExportWorker worker = new ExportWorker(
-                    day, new ZipOutputStream(new FileOutputStream(fc.getSelectedFile())))
+                    day, new ZipOutputStream(new FileOutputStream(selectedFile)))
                 worker.addPropertyChangeListener(progressListener)
                 worker.execute()
             }

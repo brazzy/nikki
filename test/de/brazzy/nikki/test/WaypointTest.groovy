@@ -1,6 +1,15 @@
 package de.brazzy.nikki.test
 
-import de.brazzy.nikki.model.GeoCoordinateimport de.brazzy.nikki.model.Cardinalimport de.brazzy.nikki.model.Waypointimport java.util.Dateimport de.brazzy.nikki.model.Directoryimport de.brazzy.nikki.model.Dayimport java.text.DateFormatimport java.text.SimpleDateFormatimport de.brazzy.nikki.model.Image/**
+import de.brazzy.nikki.model.GeoCoordinate
+import de.brazzy.nikki.model.Cardinal
+import de.brazzy.nikki.model.Waypoint
+import java.util.Date
+import de.brazzy.nikki.model.Directory
+import de.brazzy.nikki.model.Day
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import de.brazzy.nikki.model.Image
+/**
  * @author Brazil
  */
 public class WaypointTest extends GroovyTestCase{
