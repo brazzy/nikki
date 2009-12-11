@@ -6,7 +6,7 @@ import java.util.prefs.Preferences
  * @author Michael Borgwardt
  *
  */
-public class NikkiModel extends ListDataModel{    
+public class NikkiModel extends ListDataModel<Directory>{
     public static final long serialVersionUID = 1;
 
     public static final String PREF_KEY_DIRECTORIES = "directories"
@@ -18,32 +18,44 @@ public class NikkiModel extends ListDataModel{
     
     File selectionDir
     File exportDir
+    boolean usePrefs
     
     public void setSelectionDir(File f)
     {
-        Preferences.userNodeForPackage(this.class).put(PREF_KEY_SELECTION_DIR, f.absolutePath)
+        if(usePrefs)
+        {
+            Preferences.userNodeForPackage(this.class).put(PREF_KEY_SELECTION_DIR, f.absolutePath)
+        }
         this.selectionDir = f;
     }
     public void setExportDir(File f)
     {
-        Preferences.userNodeForPackage(this.class).put(PREF_KEY_EXPORT_DIR, f.absolutePath)
+        if(usePrefs)
+        {
+            Preferences.userNodeForPackage(this.class).put(PREF_KEY_EXPORT_DIR, f.absolutePath)
+        }
         this.exportDir = f;
     }
 
-    public NikkiModel()
+    public NikkiModel(boolean usePrefs)
     {
+        this.usePrefs = usePrefs
         selectionDir = new File(prefs.get(PREF_KEY_SELECTION_DIR, System.getProperty("user.dir")))
         exportDir = new File(prefs.get(PREF_KEY_EXPORT_DIR, System.getProperty("user.dir")))
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, null);
-        if(dirs)
+        
+        if(usePrefs)
         {
-            dirs = dirs.split(SEP)
-            dirs.each{
-                if(it && it.length()>0)
-                {
-                    super.add(new Directory(path: new File(it)))
+            def dirs = prefs.get(PREF_KEY_DIRECTORIES, null);
+            if(dirs)
+            {
+                dirs = dirs.split(SEP)
+                dirs.each{
+                    if(it && it.length()>0)
+                    {
+                        super.add(new Directory(path: new File(it)))
+                    }
                 }
-            }            
+            }
         }
     }
     
@@ -51,15 +63,19 @@ public class NikkiModel extends ListDataModel{
     public void add(Directory d)
     {
         super.add(d)
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, SEP)
-        prefs.put(PREF_KEY_DIRECTORIES, dirs+d.path.absolutePath+SEP)
-        //println(prefs.get(PREF_KEY_DIRECTORIES, SEP))
+        if(usePrefs)
+        {
+            def dirs = prefs.get(PREF_KEY_DIRECTORIES, SEP)
+            prefs.put(PREF_KEY_DIRECTORIES, dirs+d.path.absolutePath+SEP)
+        }
     }
     public boolean remove(Directory d)
     {
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, "")
-        prefs.put(PREF_KEY_DIRECTORIES, dirs.replace(SEP+d.path.absolutePath+SEP, SEP))
-        //println(prefs.get(PREF_KEY_DIRECTORIES, SEP))
+        if(usePrefs)
+        {
+            def dirs = prefs.get(PREF_KEY_DIRECTORIES, "")
+            prefs.put(PREF_KEY_DIRECTORIES, dirs.replace(SEP+d.path.absolutePath+SEP, SEP))
+        }
         return super.remove(d)
     }
 

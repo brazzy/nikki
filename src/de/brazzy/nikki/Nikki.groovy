@@ -30,14 +30,14 @@ import de.brazzy.nikki.view.GeotagOptions
  */
 public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
-    
-    public static void start(){
+
+    def view;
+    def model;
+
+    public void build(boolean usePreferences){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        def view = NikkiFrame.create()
-        view.frame.pack()
-        view.frame.show()
-        
-        def model = new NikkiModel()
+        view = NikkiFrame.create()
+        model = new NikkiModel(usePreferences)
         view.dirList.model = model        
         def selListener = { it ->
             def sel = view.dirList.selectedValue
@@ -135,5 +135,13 @@ public class Nikki{
                 worker.execute()
             }
         }
-    }    
+    }
+
+    public void start(){
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        view.frame.pack()
+        view.frame.show()
+    }
+
+
 }

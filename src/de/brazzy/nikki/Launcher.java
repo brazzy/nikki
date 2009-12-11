@@ -10,6 +10,8 @@ public class Launcher
 {
     public static void main(String[] args)
     {
-        Nikki.start();
+        Nikki n = new Nikki();
+        n.build(true);
+        n.start();
     }
 }
