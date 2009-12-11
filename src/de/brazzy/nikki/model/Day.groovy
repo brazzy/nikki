@@ -10,6 +10,7 @@ import de.micromata.opengis.kml.v_2_2_0.LineString
 import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
+import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.util.ImageReader
 import javax.swing.SwingWorker
 import java.util.TimeZone

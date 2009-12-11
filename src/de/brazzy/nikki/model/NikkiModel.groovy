@@ -1,11 +1,12 @@
 package de.brazzy.nikki.model
 
-import java.util.prefs.Preferences
+import java.util.prefs.Preferences
+
 /**
  * @author Michael Borgwardt
  *
  */
-public class NikkiModel extends ListDataModel<Directory>{    
+public class NikkiModel extends ListDataModel{    
     public static final long serialVersionUID = 1;
 
     public static final String PREF_KEY_DIRECTORIES = "directories"
