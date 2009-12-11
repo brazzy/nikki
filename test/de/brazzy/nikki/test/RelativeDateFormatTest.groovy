@@ -1,6 +1,14 @@
 package de.brazzy.nikki.test
 
-import de.brazzy.nikki.util.RelativeDateFormatimport java.util.TimeZoneimport java.text.DateFormatimport java.text.SimpleDateFormatimport groovy.util.GroovyTestCaseimport de.brazzy.nikki.model.Dayimport de.brazzy.nikki.model.Directoryimport de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.RelativeDateFormat
+import java.util.TimeZone
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import groovy.util.GroovyTestCase
+import de.brazzy.nikki.model.Day
+import de.brazzy.nikki.model.Directory
+import de.brazzy.nikki.util.ImageReader
+
 public class RelativeDateFormatTest extends GroovyTestCase{
     DateFormat formatGMT
     DateFormat format12
@@ -70,6 +78,5 @@ public class RelativeDateFormatTest extends GroovyTestCase{
         def dir = new Directory(zone: TimeZone.getTimeZone("Etc/GMT+11"))
         def day = new Day(date: normal, directory: dir)
         assertEquals("2009-10-01 (0, 0)", day.toString())
-        assertEquals("2009-10-01 (0, 0)", ImageReader.class.getResource("noimage.jpg"))
     }
 }
