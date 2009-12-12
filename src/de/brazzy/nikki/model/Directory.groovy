@@ -16,7 +16,13 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
-import java.beans.XMLDecoderimport java.beans.XMLEncoderimport java.util.Dateimport javax.swing.SwingWorkerimport java.util.TimeZoneimport de.brazzy.nikki.util.RelativeDateFormat
+import java.beans.XMLDecoder
+import java.beans.XMLEncoder
+import java.util.Date
+import javax.swing.SwingWorker
+import java.util.TimeZone
+import de.brazzy.nikki.util.RelativeDateFormat
+
 class Directory extends ListDataModel<Day>{
     public static final long serialVersionUID = 1;
     
@@ -105,6 +111,7 @@ class Directory extends ListDataModel<Day>{
         def output = new ObjectOutputStream(
                 new BufferedOutputStream(
                 new FileOutputStream(persist)))
+       output.writeObject(this.zone)
        output.writeObject(this.data)
        output.writeObject(this.images)
        output.writeObject(this.waypointFiles)
@@ -124,6 +131,7 @@ class Directory extends ListDataModel<Day>{
             def input = new ObjectInputStream(
                         new BufferedInputStream(
                         new FileInputStream(persist)))
+            this.zone = input.readObject()
             this.data = input.readObject()
             this.data.each
             {
