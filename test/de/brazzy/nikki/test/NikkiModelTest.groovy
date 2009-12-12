@@ -75,12 +75,15 @@ class NikkiModelTest extends GroovyTestCase {
         dir = new Directory(path: tmpdir);
         model.add(dir)
         view.dirList.selectedIndex = 0
+        IOUtils.copy(NikkiModelTest.class.getResourceAsStream("IMG2009-11-12.JPG"),
+            new FileOutputStream(new File(tmpdir, "IMG2009-11-12.JPG")));
         
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
-        assertEquals(1, dir.size())
-        assertEquals(tmpdir.name + " (1, 0)", model[0].toString())
+        assertEquals(2, dir.size())
+        assertEquals(tmpdir.name + " (2, 0)", model[0].toString())
         assertEquals("2009-11-11 (1, 0)", dir[0].toString())
+        assertEquals("2009-11-12 (1, 0)", dir[1].toString())
     }
 }
 
