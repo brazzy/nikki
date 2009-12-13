@@ -17,7 +17,7 @@ public class AllTest extends TestSuite{
         TestSuite s=new AllTest();
         s.addTestSuite(RelativeDateFormatTest.class);
         s.addTestSuite(WaypointTest.class);
-        s.addTestSuite(NikkiModelTest.class);
+        s.addTestSuite(GuiTest.class);
         s.addTestSuite(DirectoryTest.class);
         return s;
     }

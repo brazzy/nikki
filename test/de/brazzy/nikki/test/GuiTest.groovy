@@ -12,7 +12,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author Brazil
  */
-class NikkiModelTest extends GroovyTestCase {
+class GuiTest extends GroovyTestCase {
 
     TestDialogs dialogs
     NikkiModel model
