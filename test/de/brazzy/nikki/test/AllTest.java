@@ -2,14 +2,6 @@ package de.brazzy.nikki.test;
 
 import junit.framework.TestSuite;
 
-/**
- * TODO:
- * - Einlesen / Anfertigen von Thumbnails (mit/ohne Rotation)
- * - Einlesen der Zeit und vorhandener Geodaten
- * - Einlesen von WaypointFiles
- * - Geotagging (mit/ohne Offset)
- * - Export
- */
 public class AllTest extends TestSuite{
 
     public static TestSuite suite()
@@ -19,6 +11,8 @@ public class AllTest extends TestSuite{
         s.addTestSuite(WaypointTest.class);
         s.addTestSuite(GuiTest.class);
         s.addTestSuite(DirectoryTest.class);
+        s.addTestSuite(DayTest.class);
+        s.addTestSuite(ImageTest.class);
         return s;
     }
 }

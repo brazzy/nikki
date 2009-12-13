@@ -8,8 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * TODO: export, geotag
- *
  * @author Brazil
  */
 class GuiTest extends GroovyTestCase {
@@ -49,6 +47,7 @@ class GuiTest extends GroovyTestCase {
 
     public void testScanSaveRescan()
     {
+        // TODO: waypointFiles
         TimeZone zone = TimeZone.getTimeZone("GMT+10");
         File tmpdir = File.createTempFile("nikkitest",null)
         tmpdir.delete();
@@ -88,6 +87,16 @@ class GuiTest extends GroovyTestCase {
         assertEquals(tmpdir.name + " (2, 0)", model[0].toString())
         assertEquals("2009-11-11 (1, 0)", dir[0].toString())
         assertEquals("2009-11-12 (1, 0)", dir[1].toString())
+    }
+
+    public void testExport()
+    {
+        // TODO
+    }
+
+    public void testGeotag()
+    {
+        // TODO
     }
 }
 

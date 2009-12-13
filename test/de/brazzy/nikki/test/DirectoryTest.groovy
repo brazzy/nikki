@@ -5,6 +5,7 @@ import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.Waypoint
+import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.RelativeDateFormat
@@ -12,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * TODO: testToString, scan/rescan mit waypoints
+ * TODO: scan/rescan mit waypointFiles
  *
  * @author Brazil
  */
@@ -46,6 +47,34 @@ public class DirectoryTest extends GroovyTestCase {
             new FileOutputStream(new File(tmpDir.path, name)))
     }
 
+    private Image constructImage()
+    {
+        Day day = new Day(date: DAY1, directory:tmpDir)
+        tmpDir.add(day);
+        Waypoint wp = new Waypoint(day: day, timestamp: TIME,
+            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 1.5d),
+            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10d))
+        Image image = new Image(fileName: IMAGE1, title:"testTitle",
+            description:"testDescription", day: day, thumbnail: THUMB,
+            export: true, time: TIME, waypoint: wp)
+        day.images.add(image)
+        return image
+    }
+
+    public void testDirectoryToString()
+    {
+        assertEquals(tmpDir.path.name+" (0, 0)", tmpDir.toString())
+        tmpDir.images[IMAGE1] = new Image(fileName: IMAGE1);
+        assertEquals(tmpDir.path.name+" (1, 0)", tmpDir.toString())
+        tmpDir.images[IMAGE2] = new Image(fileName: IMAGE2);
+        assertEquals(tmpDir.path.name+" (2, 0)", tmpDir.toString())
+        tmpDir.waypointFiles[IMAGE1] = new WaypointFile(fileName: IMAGE1);
+        assertEquals(tmpDir.path.name+" (2, 1)", tmpDir.toString())
+        tmpDir.images.remove(IMAGE1)
+        tmpDir.waypointFiles.remove(IMAGE1)
+        assertEquals(tmpDir.path.name+" (1, 0)", tmpDir.toString())
+    }
+
     public void testScan()
     {
         copyFile(IMAGE1)
@@ -72,20 +101,6 @@ public class DirectoryTest extends GroovyTestCase {
         assertNotNull(image.thumbnail)
         assertSame(day, image.day)
         assertEquals(DAY1, FORMAT.stripTime(image.time))
-    }
-
-    private Image constructImage()
-    {
-        Day day = new Day(date: DAY1, directory:tmpDir)
-        tmpDir.add(day);
-        Waypoint wp = new Waypoint(day: day, timestamp: TIME,
-            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 1.5d),
-            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10d))
-        Image image = new Image(fileName: IMAGE1, title:"testTitle",
-            description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: TIME, waypoint: wp)
-        day.images.add(image)
-        return image
     }
 
     public void testSave()
