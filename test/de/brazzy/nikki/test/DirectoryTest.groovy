@@ -1,90 +1,155 @@
 package de.brazzy.nikki.test
 
 import de.brazzy.nikki.Nikki
-import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Day
+import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.Waypoint
+import de.brazzy.nikki.model.GeoCoordinate
+import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.RelativeDateFormat
-import de.brazzy.nikki.view.NikkiFrame
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * TODO: testToString, scan/rescan mit waypoints
  *
  * @author Brazil
  */
-public class DirectoryTest extends AbstractNikkiTest {
+public class DirectoryTest extends GroovyTestCase {
     private static final TimeZone ZONE = TimeZone.getTimeZone("GMT+10")
     private static final RelativeDateFormat FORMAT = new RelativeDateFormat(ZONE)
     private static final String DATE1 = "2009-11-11";
     private static final String DATE2 = "2009-11-12";
+    private static final String IMAGE1 = "IMG${DATE1}.JPG";
+    private static final String IMAGE2 = "IMG${DATE2}.JPG";
     private static final Date DAY1 = FORMAT.stripTime(FORMAT.parse(DATE1));
     private static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
+    private static final Date TIME = new Date(DAY1.time+(60*60*5))
+    private static final byte[] THUMB = [1 , 2 , 3] as byte[]
 
     Directory tmpDir;
 
     public void setUp()
     {
-        super.setUp()
         File tmpFile = File.createTempFile("nikkitest",null)
         tmpFile.delete()
         tmpFile.mkdir()
         tmpFile.deleteOnExit()
         tmpDir = new Directory(path: tmpFile)
-        model.add(tmpDir)
-        view.dirList.selectedIndex = 0
+        tmpDir.zone = ZONE
     }
 
     private void copyFile(String name)
     {
-        IOUtils.copy(NikkiModelTest.class.getResourceAsStream(name),
+        IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
             new FileOutputStream(new File(tmpDir.path, name)))
     }
 
     public void testScan()
     {
-        assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
-        copyFile("IMG${DATE1}.JPG")
-        dialogs.add(ZONE)
+        copyFile(IMAGE1)
 
-        view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        tmpDir.scan(null)
         assertEquals(1, tmpDir.images.size())
         assertEquals(0, tmpDir.waypointFiles.size())
-        assertEquals(tmpDir.path.name + " (1, 0)", model[0].toString())
         assertEquals(1, tmpDir.size())
 
         Day day = tmpDir[0]
         assertSame(tmpDir, day.directory)
-        assertEquals(0, day.waypoints.size)
-        assertEquals(1, day.images.size)
-        assertSame(day.images[0], tmpDir.images["IMG${DATE1}.JPG"])
-        assertEquals(day.date, DAY1)
+        assertEquals(0, day.waypoints.size())
+        assertEquals(1, day.images.size())
+        assertSame(day.images[0], tmpDir.images[IMAGE1])
+        assertEquals(DAY1, day.date)
         assertEquals("$DATE1 (1, 0)", day.toString())
+
+        Image image = day.images[0]
+        assertEquals(IMAGE1, image.fileName)
+        assertNull(image.title)
+        assertNull(image.description)
+        assertNull(image.waypoint)
+        assertFalse(image.export)
+        assertNotNull(image.thumbnail)
+        assertSame(day, image.day)
+        assertEquals(DAY1, FORMAT.stripTime(image.time))
     }
-    
-    public void testSaveRescan()
+
+    private Image constructImage()
     {
-        testScan()
+        Day day = new Day(date: DAY1, directory:tmpDir)
+        tmpDir.add(day);
+        Waypoint wp = new Waypoint(day: day, timestamp: TIME,
+            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 1.5d),
+            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10d))
+        Image image = new Image(fileName: IMAGE1, title:"testTitle",
+            description:"testDescription", day: day, thumbnail: THUMB,
+            export: true, time: TIME, waypoint: wp)
+        day.images.add(image)
+        return image
+    }
 
+    public void testSave()
+    {
+        Image image = constructImage()
+        tmpDir.images[IMAGE1] = image
+
+        assertEquals(0, tmpDir.path.list().length)
+        assertFalse(tmpDir.hasPersistent())
+        tmpDir.save()
+        assertTrue(tmpDir.hasPersistent())
         assertEquals(1, tmpDir.path.list().length)
-        view.saveButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
-        assertEquals(2, tmpDir.path.list().length)
+    }
 
-        model.remove(tmpDir)
+    public void testRescan()
+    {
+        copyFile(IMAGE1)
+        Image image = constructImage()
+        tmpDir.images[IMAGE1] = image
+        tmpDir.save()
+
         tmpDir = new Directory(path: tmpDir.path);
-        model.add(tmpDir)
-        view.dirList.selectedIndex = 0
-        copyFile("IMG${DATE2}.JPG");
+        copyFile(IMAGE2);
+        assertEquals(TimeZone.getDefault(), tmpDir.zone)
 
-        view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        tmpDir.scan(null)
         assertEquals(2, tmpDir.size())
-        assertEquals(tmpDir.path.name + " (2, 0)", model[0].toString())
+        assertEquals(2, tmpDir.images.size())
+        assertEquals(0, tmpDir.waypointFiles.size())
         assertEquals(ZONE, tmpDir.zone)
-        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
-        assertEquals(DATE2+" (1, 0)", tmpDir[1].toString())
+
+        Day day1 = tmpDir[0]
+        Day day2 = tmpDir[1]
+
+        assertEquals(0, day1.waypoints.size())
+        assertEquals(DAY1, day1.date)
+        assertSame(day1.directory, tmpDir)
+
+        assertEquals(1, day1.images.size())
+        Image image1 = day1.images[0]
+        assertSame(image1, tmpDir.images[IMAGE1])
+        assertEquals("testTitle", image1.title)
+        assertEquals("testDescription", image1.description)
+        assertEquals(day1, image1.day)
+        assertEquals(THUMB, image1.thumbnail)
+        assertTrue(image1.export)
+        assertEquals(TIME, image1.time)
+        Waypoint wp = image1.waypoint
+        assertNotNull(wp)
+        assertEquals(day1, wp.day)
+        assertEquals(TIME, wp.timestamp, )
+        assertEquals(-1.5d, wp.latitude.value)
+        assertEquals(10d, wp.longitude.value)
+
+        assertEquals(1, day2.images.size())
+        Image image2 = day2.images[0]
+        assertEquals(IMAGE2, image2.fileName)
+        assertNull(image2.title)
+        assertNull(image2.description)
+        assertNull(image2.waypoint)
+        assertFalse(image2.export)
+        assertNotNull(image2.thumbnail)
+        assertSame(day2, image2.day)
+        assertEquals(DAY2, FORMAT.stripTime(image2.time))
     }
 
 }

@@ -48,7 +48,7 @@ class Directory extends ListDataModel<Day>{
     
     public void scan(SwingWorker worker)
     {
-        worker.progress = 0;
+        worker?.progress = 0;
         readPersistent()
         
         def days = new HashMap()
@@ -83,7 +83,7 @@ class Directory extends ListDataModel<Day>{
                 image.day = day
             }
             
-            worker.progress = new Integer((int)(++count / imageFiles.length * 100))
+            worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
         }
 
         def nmeaFiles = path.listFiles(FILTER_NMEA);
@@ -102,7 +102,7 @@ class Directory extends ListDataModel<Day>{
         }        
         
         fireContentsChanged(this, 0, this.data.size()-1)
-        worker.progress = 0
+        worker?.progress = 0
     }  
 
     public void save()

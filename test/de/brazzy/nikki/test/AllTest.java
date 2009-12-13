@@ -7,7 +7,6 @@ import junit.framework.TestSuite;
  * - Einlesen / Anfertigen von Thumbnails (mit/ohne Rotation)
  * - Einlesen der Zeit und vorhandener Geodaten
  * - Einlesen von WaypointFiles
- * - Daten vollständig nach Rescan (incl. Zeitzone)
  * - Geotagging (mit/ohne Offset)
  * - Export
  */
