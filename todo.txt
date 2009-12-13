@@ -4,6 +4,8 @@
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
+- Daten in Bilder schreiben, statt Nikki.db
+- Sanselan komplett durch MediaUtils ersetzen?
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
 - Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)
@@ -17,8 +19,6 @@
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen
-- GPS-Daten in Bilder schreiben
-- Sanselan komplett durch MediaUtils ersetzen?
 - Nachfragen beim Überscheiben
 
 v Testbarkeit
