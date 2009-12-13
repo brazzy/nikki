@@ -1,6 +1,5 @@
-- Datumsanzeige in Tagesliste und bei Bilddetails und Dateiname
+- Testabdeckung verbessern
 - autom. Speichern beim Schliessen und vor Export
-- Scannen neu hinzugefügter Bilder
 - Zeit in KML anzeigen?
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
@@ -14,7 +13,6 @@
   - verschiedene Speicherorte von thumbnails
   - GPS
 - Eliminieren von Waypoints, die zu nah zusammen sind
-- Testbarkeit
 - Individuelle Tabellenzeilenhöhe
 - Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
@@ -23,6 +21,9 @@
 - Sanselan komplett durch MediaUtils ersetzen?
 - Nachfragen beim Überscheiben
 
+v Testbarkeit
+v Datumsanzeige in Tagesliste und bei Bilddetails und Dateiname
+v Scannen neu hinzugefügter Bilder
 v Exception: URI is not hierarchical
 v Checkbox zur Auswahl welche Bilder exportiert werden
 v Reihenfolge in Google Maps
