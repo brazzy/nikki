@@ -7,30 +7,29 @@ import java.text.SimpleDateFormat
 import de.brazzy.nikki.model.Image
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.zip.ZipOutputStream
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipEntry
+import org.apache.commons.io.IOUtils;
 
 /**
- * TODO:
- * - Export
  * @author Brazil
  */
-class DayTest extends GroovyTestCase{
+class DayTest extends AbstractNikkiTest{
 
     public void testDayToString()
     {
-        def dir = new Directory(zone: TimeZone.getTimeZone("Etc/GMT+11"))
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd")
-        format.timeZone = dir.zone
-        Day d = new Day(directory: dir, date: format.parse("2009-10-10"))
-        assertEquals("2009-10-10 (0, 0)", d.toString())
+        Day d = new Day(directory: tmpDir, date: FORMAT.parse(DATE1))
+        assertEquals(DATE1+" (0, 0)", d.toString())
         d.images.add(new Image())
-        assertEquals("2009-10-10 (1, 0)", d.toString())
+        assertEquals(DATE1+" (1, 0)", d.toString())
         d.images.add(new Image())
-        assertEquals("2009-10-10 (2, 0)", d.toString())
+        assertEquals(DATE1+" (2, 0)", d.toString())
         d.waypoints.add(new Waypoint())
-        assertEquals("2009-10-10 (2, 1)", d.toString())
+        assertEquals(DATE1+" (2, 1)", d.toString())
         d.images.remove(1)
         d.waypoints.remove(0)
-        assertEquals("2009-10-10 (1, 0)", d.toString())
+        assertEquals(DATE1+" (1, 0)", d.toString())
     }
 
     public void testGeotag()
@@ -66,7 +65,8 @@ class DayTest extends GroovyTestCase{
         assertSame(wp16, im15h.waypoint)
         assertSame(wp16, im17.waypoint)
 
-        day.geotag(90*60)
+        day.images.each{ it.waypoint = null }
+        day.geotag(90)
 
         assertSame(wp14, im12.waypoint)
         assertSame(wp16, im14.waypoint)
@@ -76,6 +76,48 @@ class DayTest extends GroovyTestCase{
         assertSame(wp14, im13l.waypoint)
         assertSame(wp16, im15h.waypoint)
         assertSame(wp16, im17.waypoint)
+    }
+
+    public void testExport()
+    {
+        copyFile(IMAGE1)
+        Day day = new Day(directory: tmpDir, date: FORMAT.parse(DATE1))
+        Image image = constructImage(DAY1, IMAGE1)
+        day.images.add(image)
+        File file = new File(tmpDir.path, "export"+DATE1+".kmz")
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file))
+        day.export(out, null)
+        ZipInputStream input = new ZipInputStream(new FileInputStream(file))
+        ZipEntry entry;
+
+        entry = input.getNextEntry()
+        assertEquals(entry.getName(), "images/");
+        assertEquals(entry.getSize(), 0);
+
+        entry = input.getNextEntry()
+        assertEquals(entry.getName(), "thumbs/");
+        assertEquals(entry.getSize(), 0);
+
+        entry = input.getNextEntry()
+        assertEquals(entry.getName(), "images/"+IMAGE1);
+        assertTrue(entry.getSize() > 0);
+
+        entry = input.getNextEntry()
+        assertEquals(entry.getName(), "thumbs/"+IMAGE1);
+        assertTrue(entry.getSize() > 0);
+
+        entry = input.getNextEntry()
+        assertEquals(entry.getName(), "diary.kml");
+
+        String kml = IOUtils.toString(input, "UTF-8")
+        assertTrue(kml.length() > 0)
+        assertTrue(kml.contains("&lt;img src='images/"+IMAGE1))
+        assertTrue(kml.contains("&lt;p&gt;testDescription&lt;/p&gt;"))
+        assertTrue(kml.contains("<name>000 testTitle</name>"))
+        assertTrue(kml.contains("<href>thumbs/"+IMAGE1+"</href>"))
+
+        assertNull(input.getNextEntry())
+        input.close()
     }
 
 }
