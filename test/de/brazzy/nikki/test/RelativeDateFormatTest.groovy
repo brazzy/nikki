@@ -71,12 +71,5 @@ public class RelativeDateFormatTest extends GroovyTestCase{
         assertEquals("2009-10-01", holiday.format(early))
         assertEquals("2009-10-01", holiday.format(late))
         assertEquals("2009-10-01", holiday.format(noon))
-    }
-    
-    public void testDayToString()
-    {
-        def dir = new Directory(zone: TimeZone.getTimeZone("Etc/GMT+11"))
-        def day = new Day(date: normal, directory: dir)
-        assertEquals("2009-10-01 (0, 0)", day.toString())
-    }
+    }    
 }

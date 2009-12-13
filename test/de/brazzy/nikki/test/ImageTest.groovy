@@ -9,5 +9,9 @@ package de.brazzy.nikki.test
  */
 class ImageTest extends GroovyTestCase{
 
+    public void testThumbnail()
+    {
+        
+    }
 }
 

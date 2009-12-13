@@ -106,7 +106,7 @@ class Day extends AbstractTableModel implements Externalizable
     
     public void export(ZipOutputStream out, SwingWorker worker)
     {
-        worker.progress = 0;
+        worker?.progress = 0;
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
         doc.createAndAddStyle().withId("track")
@@ -150,7 +150,7 @@ class Day extends AbstractTableModel implements Externalizable
                 store(reader.scale(592, false), "images/"+image.fileName, out)
                 store(reader.scale(96, true), "thumbs/"+image.fileName, out)
             }
-            worker.progress = new Integer((int)(++count / images.size * 100))
+            worker?.progress = new Integer((int)(++count / images.size * 100))
         }
         
         LineString ls;        
@@ -169,7 +169,7 @@ class Day extends AbstractTableModel implements Externalizable
         kml.marshal(out)
         out.closeEntry()
         out.close()
-        worker.progress = 0
+        worker?.progress = 0
     }
     
     private store(byte[] imgData, String name, ZipOutputStream out)
