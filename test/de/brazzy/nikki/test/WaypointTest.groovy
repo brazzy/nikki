@@ -3,12 +3,11 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.model.Waypoint
-import java.util.Date
 import de.brazzy.nikki.model.Directory
-import de.brazzy.nikki.model.Day
+import de.brazzy.nikki.model.WaypointFile
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import de.brazzy.nikki.model.Image
+
 /**
  * @author Brazil
  */
@@ -61,7 +60,28 @@ public class WaypointTest extends GroovyTestCase{
 
     public void testParseWaypointFile()
     {
-        // TODO
+        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
+        Directory dir = new Directory()
+
+        WaypointFile f = WaypointFile.parse(dir, new File(getClass().getResource("20091111.nmea").toURI()))
+
+        assertSame(dir, f.directory)
+        assertEquals("20091111.nmea", f.fileName)
+        assertEquals(2, f.waypoints.size())
+
+        Waypoint wp1 = f.waypoints[0]
+        assertSame(f, wp1.file)
+        assertEquals(fmt.parse("GMT 2009-11-11 05:09:04"), wp1.timestamp)
+        assertTrue(133 < wp1.longitude.value)
+        assertTrue(wp1.longitude.value < 134)
+        assertTrue(-24 < wp1.latitude.value)
+        assertTrue(wp1.latitude.value < -23)
+
+        Waypoint wp2 = f.waypoints[1]
+        assertSame(f, wp2.file)
+        assertEquals(fmt.parse("GMT 2009-11-11 06:00:33"), wp2.timestamp)
+        assertTrue(wp1.longitude.value < wp2.longitude.value)
+        assertTrue(wp2.latitude.value > wp1.latitude.value)
     }
 
 }
