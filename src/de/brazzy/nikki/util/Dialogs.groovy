@@ -5,7 +5,7 @@ import javax.swing.JOptionPane
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 
-class UserDialogs implements Dialogs
+class Dialogs
 {
     def parentComponent
 

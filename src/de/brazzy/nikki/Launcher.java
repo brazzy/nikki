@@ -1,6 +1,6 @@
 package de.brazzy.nikki;
 
-import de.brazzy.nikki.util.UserDialogs;
+import de.brazzy.nikki.util.Dialogs;
 import de.brazzy.nikki.view.NikkiFrame;
 
 /**
@@ -12,7 +12,7 @@ public class Launcher
 {
     public static void main(String[] args)
     {
-        UserDialogs d= new UserDialogs();
+        Dialogs d = new Dialogs();
         Nikki n = new Nikki();
         n.build(true, d);
         d.setParentComponent(((NikkiFrame)n.getView()).getFrame());

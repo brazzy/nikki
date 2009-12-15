@@ -5,24 +5,28 @@ import de.brazzy.nikki.util.Dialogs
  *
  * @author Brazil
  */
-class TestDialogs implements Dialogs{
+class TestDialogs extends Dialogs{
     def queue = []
 
+    @Override
     public File askDirectory(File startDir)
     {
         return queue.remove(0)
     }
 
+    @Override
     public File askFile(File dir, String defaultFileName)
     {
         return queue.remove(0)
     }
 
+    @Override
     public Integer askOffset()
     {
         return queue.remove(0)
     }
 
+    @Override
     public TimeZone askTimeZone(TimeZone defaultZone)
     {
         return queue.remove(0)
