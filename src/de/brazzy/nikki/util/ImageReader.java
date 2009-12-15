@@ -93,12 +93,7 @@ public class ImageReader
                 image.setTime(getTime());
             }
             
-            byte[] th = getThumbnail();
-            if(th == null)
-            {
-                th = scale(THUMBNAIL_SIZE, false);
-            }
-            image.setThumbnail(th);
+            image.setThumbnail(getThumbnail());
         }
         catch (Throwable e)
         {
@@ -110,8 +105,12 @@ public class ImageReader
         return image;
     }
 
-    private Rotation getRotation() throws ImageReadException
+    public Rotation getRotation() throws ImageReadException
     {
+        if(rotation != null)
+        {
+            return rotation;
+        }
         if(metadata != null)
         {
             TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
@@ -135,7 +134,7 @@ public class ImageReader
         return Rotation.NONE;
     }
 
-    private byte[] getThumbnail() throws Exception
+    public byte[] getThumbnail() throws Exception
     {
         if(metadata != null)
         {
@@ -143,13 +142,13 @@ public class ImageReader
             List<TiffImageMetadata.Directory> dirs = metadata.getExif().getDirectories();
             for(TiffImageMetadata.Directory dir : dirs)
             {
-                if(dir.getJpegImageData() !=null)
+                if(dir.getJpegImageData() !=null && dir.getJpegImageData().length > 0)
                 {
                     return adjustForRotation(dir.getJpegImageData().data);
                 }
             }            
         }
-        return null;
+        return scale(THUMBNAIL_SIZE, false);
     }
 
     private byte[] adjustForRotation(byte[] result) throws LLJTranException, IOException
@@ -168,7 +167,7 @@ public class ImageReader
         }
     }
 
-    private Date getTime() throws ImageReadException, ParseException
+    public Date getTime() throws ImageReadException, ParseException
     {
         Date time = null;
         if(metadata != null)
