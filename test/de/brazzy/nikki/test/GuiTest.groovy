@@ -10,7 +10,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Brazil
  */
-class GuiTest extends GroovyTestCase {
+class GuiTest extends AbstractNikkiTest {
 
     TestDialogs dialogs
     NikkiModel model
@@ -18,6 +18,7 @@ class GuiTest extends GroovyTestCase {
 
     public void setUp()
     {
+        super.setUp()
         dialogs = new TestDialogs()
         def nikki = new Nikki()
         nikki.build(false, dialogs)
@@ -48,45 +49,38 @@ class GuiTest extends GroovyTestCase {
     public void testScanSaveRescan()
     {
         // TODO: waypointFiles
-        TimeZone zone = TimeZone.getTimeZone("GMT+10");
-        File tmpdir = File.createTempFile("nikkitest",null)
-        tmpdir.delete();
-        tmpdir.mkdir();
-        tmpdir.deleteOnExit()
-        Directory dir = new Directory(path: tmpdir);
-        model.add(dir)
-        assertEquals(tmpdir.name + " (0, 0)", model[0].toString())
+        model.add(tmpDir)
+        assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
         view.dirList.selectedIndex = 0
-        IOUtils.copy(NikkiModelTest.class.getResourceAsStream("IMG2009-11-11.JPG"),
-            new FileOutputStream(new File(tmpdir, "IMG2009-11-11.JPG")));
-        dialogs.add(zone)
+        copyFile(IMAGE1)
+        dialogs.add(ZONE)
 
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
-        assertEquals(1, dir.size())
-        assertEquals(tmpdir.name + " (1, 0)", model[0].toString())
-        assertEquals("2009-11-11 (1, 0)", dir[0].toString())
+        assertTrue(dialogs.isQueueEmpty())
+        assertEquals(1, tmpDir.size())
+        assertEquals(tmpDir.path.name + " (1, 0)", model[0].toString())
+        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
 
-        assertEquals(1, tmpdir.list().length)
+        assertEquals(1, tmpDir.path.list().length)
         view.saveButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
-        assertEquals(2, tmpdir.list().length)
+        assertEquals(2, tmpDir.path.list().length)
 
-        model.remove(dir)
-        dir = new Directory(path: tmpdir);
-        assertEquals(TimeZone.getDefault(), dir.zone)
-        model.add(dir)
+        model.remove(tmpDir)
+        tmpDir = new Directory(path: tmpDir.path);
+        assertEquals(TimeZone.getDefault(), tmpDir.zone)
+        model.add(tmpDir)
         view.dirList.selectedIndex = 0
-        IOUtils.copy(NikkiModelTest.class.getResourceAsStream("IMG2009-11-12.JPG"),
-            new FileOutputStream(new File(tmpdir, "IMG2009-11-12.JPG")));
+        copyFile(IMAGE2)
 
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
-        assertEquals(2, dir.size())
-        assertEquals(zone, dir.zone)
-        assertEquals(tmpdir.name + " (2, 0)", model[0].toString())
-        assertEquals("2009-11-11 (1, 0)", dir[0].toString())
-        assertEquals("2009-11-12 (1, 0)", dir[1].toString())
+        assertEquals(2, tmpDir.size())
+        assertEquals(ZONE, tmpDir.zone)
+        assertEquals(tmpDir.path.name + " (2, 0)", model[0].toString())
+        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
+        assertEquals(DATE2+" (1, 0)", tmpDir[1].toString())
     }
 
     public void testExport()
