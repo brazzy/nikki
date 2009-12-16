@@ -4,8 +4,14 @@ import groovy.swing.SwingBuilder
 import java.awt.BorderLayout as BL
 import javax.swing.JSplitPane
 import javax.swing.BoxLayout
-import javax.swing.ImageIconimport javax.swing.border.EmptyBorderimport groovy.model.DefaultTableModelimport javax.swing.table.DefaultTableModelimport javax.swing.JFrame
+import javax.swing.ImageIcon
+import javax.swing.border.EmptyBorder
+import groovy.model.DefaultTableModel
+import javax.swing.table.DefaultTableModel
+import javax.swing.JFrame
+
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.util.Dialogs
 
 /**
  * @author Michael Borgwardt
@@ -23,7 +29,7 @@ public class NikkiFrame{
     def imageTable
     def progressBar
     
-    public static NikkiFrame create(){
+    public static NikkiFrame create(Dialogs dialogs){
         def swing = new SwingBuilder()
         def result = new NikkiFrame()
         
@@ -62,8 +68,8 @@ public class NikkiFrame{
         }
         
         result.frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE;
-        result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer())
-        result.imageTable.setDefaultEditor(Object.class, new ImageRenderer())
+        result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs))
+        result.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs))
         
         return result;
     }    

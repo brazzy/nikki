@@ -32,6 +32,12 @@ class TestDialogs extends Dialogs{
         return queue.remove(0)
     }
 
+    @Override
+    public void open(File f)
+    {
+        assert f.equals(queue.remove(0))
+    }
+
     public boolean isQueueEmpty()
     {
         return queue.isEmpty()

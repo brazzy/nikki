@@ -19,7 +19,6 @@ class ImageTest extends GroovyTestCase{
 
     public void testThumbnail()
     {
-        // TODO
         assertEquals(Rotation.LEFT, reader.rotation)
         def thumb = reader.createImage().thumbnail
         assertNotNull(thumb)
@@ -40,17 +39,15 @@ class ImageTest extends GroovyTestCase{
 
     public void testReadExif()
     {
-        // TODO
-        // Einlesen vorhandener Geodaten
+        // TODO: Einlesen vorhandener Geodaten
         def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
         assertEquals(fmt.parse("GMT 2009-11-11 19:10:27"), reader.getTime())
     }
 
-    public void testTitle()
-    {
-        // TODO
-        // Einlesen der Nikki-Daten
-    }
+//    public void testTitle()
+//    {
+//        // TODO: Einlesen der Nikki-Daten
+//    }
 
     public void offsetFinder()
     {

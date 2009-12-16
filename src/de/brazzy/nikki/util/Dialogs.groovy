@@ -1,5 +1,6 @@
 package de.brazzy.nikki.util
 
+import java.awt.Desktop
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import de.brazzy.nikki.view.ScanOptions
@@ -40,6 +41,11 @@ class Dialogs
         ScanOptions opt = new ScanOptions(defaultZone)
         int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
+    }
+
+    public void open(File f)
+    {
+        Desktop.getDesktop().open(f);
     }
 }
 

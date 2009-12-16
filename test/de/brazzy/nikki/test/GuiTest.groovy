@@ -6,6 +6,7 @@ import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.view.NikkiFrame
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import java.text.SimpleDateFormat
 
 /**
  * @author Brazil
@@ -48,24 +49,24 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testScanSaveRescan()
     {
-        // TODO: waypointFiles
         model.add(tmpDir)
         assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
         view.dirList.selectedIndex = 0
         copyFile(IMAGE1)
+        copyFile("20091111.nmea")
         dialogs.add(ZONE)
 
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
-        assertEquals(tmpDir.path.name + " (1, 0)", model[0].toString())
-        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
+        assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
+        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
 
-        assertEquals(1, tmpDir.path.list().length)
-        view.saveButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
         assertEquals(2, tmpDir.path.list().length)
+        view.saveButton.actionListeners[0].actionPerformed()
+        Thread.sleep(500);
+        assertEquals(3, tmpDir.path.list().length)
 
         model.remove(tmpDir)
         tmpDir = new Directory(path: tmpDir.path);
@@ -73,24 +74,45 @@ class GuiTest extends AbstractNikkiTest {
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         copyFile(IMAGE2)
+        copyFile("20091112.nmea")
 
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
         assertEquals(2, tmpDir.size())
         assertEquals(ZONE, tmpDir.zone)
-        assertEquals(tmpDir.path.name + " (2, 0)", model[0].toString())
-        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
-        assertEquals(DATE2+" (1, 0)", tmpDir[1].toString())
+        assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
+        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
+        assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 
-    public void testExport()
+    public void testGeotagExport()
     {
-        // TODO
-    }
+        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
+        copyFile(IMAGE1)
+        copyFile("20091111.nmea")
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        dialogs.add(ZONE)
+        view.scanButton.actionListeners[0].actionPerformed()
+        Thread.sleep(1000);
+        assertTrue(dialogs.isQueueEmpty())
+        assertNull(model[0].images[IMAGE1].waypoint)
 
-    public void testGeotag()
-    {
-        // TODO
+        view.dayList.selectedIndex = 0
+        dialogs.add(Integer.valueOf(-15 * 60 * 60))
+        view.tagButton.actionListeners[0].actionPerformed()
+        Thread.sleep(100);
+        assertTrue(dialogs.isQueueEmpty())
+        def wp = model[0].images[IMAGE1].waypoint
+        assertNotNull(wp)
+        assertEquals(fmt.parse("GMT 2009-11-11 05:09:04"), wp.timestamp)
+
+        dialogs.add(new File(tmpDir.path, "export.kmz"))
+        assertEquals(2, tmpDir.path.list().length)
+        view.exportButton.actionListeners[0].actionPerformed()
+        Thread.sleep(1000);
+        assertTrue(dialogs.isQueueEmpty())
+        assertEquals(3, tmpDir.path.list().length)
     }
 }
 

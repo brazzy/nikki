@@ -18,7 +18,7 @@ import org.apache.commons.io.IOUtils;
  */
 class AbstractNikkiTest extends GroovyTestCase
 {
-    protected static final TimeZone ZONE = TimeZone.getTimeZone("Etc/GMT+10")
+    protected static final TimeZone ZONE = TimeZone.getTimeZone("Etc/GMT-10")
     protected static final RelativeDateFormat FORMAT = new RelativeDateFormat(ZONE)
     protected static final String DATE1 = "2009-11-11";
     protected static final String DATE2 = "2009-11-12";

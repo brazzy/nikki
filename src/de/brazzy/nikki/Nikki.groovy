@@ -38,7 +38,7 @@ public class Nikki{
 
     public void build(boolean usePreferences, Dialogs dialogs){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        view = NikkiFrame.create()
+        view = NikkiFrame.create(dialogs)
         this.dialogs = dialogs
         model = new NikkiModel(usePreferences)
         view.dirList.model = model        

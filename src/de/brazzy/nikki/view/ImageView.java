@@ -2,7 +2,6 @@ package de.brazzy.nikki.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.util.Dialogs;
 
 
 public class ImageView extends JPanel
@@ -43,7 +43,7 @@ public class ImageView extends JPanel
     
     private Image value;
 
-    public ImageView()
+    public ImageView(final Dialogs dialogs)
     {
         super(new BorderLayout());
         setBorder(new EmptyBorder(5,5,5,5));
@@ -71,7 +71,7 @@ public class ImageView extends JPanel
                     File tmpFile = File.createTempFile("nikki", ".kml");
                     OutputStream tmpOut = new FileOutputStream(tmpFile);
                     value.offsetFinder(tmpOut);
-                    Desktop.getDesktop().open(tmpFile);
+                    dialogs.open(tmpFile);
                 }
                 catch (Exception ex)
                 {

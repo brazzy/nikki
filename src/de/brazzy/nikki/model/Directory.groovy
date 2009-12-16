@@ -131,8 +131,16 @@ class Directory extends ListDataModel<Day>{
             def input = new ObjectInputStream(
                         new BufferedInputStream(
                         new FileInputStream(persist)))
-            this.zone = input.readObject()
-            this.data = input.readObject()
+            def next = input.readObject()
+            if(next instanceof TimeZone) // alte Daten behandeln, TODO: entfernen
+            {
+                this.zone = next
+                this.data = input.readObject()
+            }
+            else
+            {
+                this.data = next
+            }
             this.data.each
             {
                 it.directory = this

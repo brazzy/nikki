@@ -15,7 +15,10 @@ public class RelativeDateFormat extends SimpleDateFormat{
     public RelativeDateFormat(TimeZone zone)
     {
         super("yyyy-MM-dd")
-        this.timeZone = zone
+        if(zone)
+        {
+            this.timeZone = zone
+        }
     }
 
     /**

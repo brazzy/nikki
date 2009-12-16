@@ -31,7 +31,7 @@ class Day extends AbstractTableModel implements Externalizable
     
     public String toString()
     {        
-        def format = new RelativeDateFormat(directory.zone)
+        def format = new RelativeDateFormat(directory?.zone)
         (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
