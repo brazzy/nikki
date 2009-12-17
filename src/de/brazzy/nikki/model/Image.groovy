@@ -8,7 +8,8 @@ import de.micromata.opengis.kml.v_2_2_0.KmlFactory
 import java.text.NumberFormat
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
-    
+    public static final String OFFSET_FINDER_COLOR = "801977FF";
+    public static final double OFFSET_FINDER_SCALE = 3.0
     String fileName
     String title
     String description
@@ -38,8 +39,8 @@ class Image implements Serializable{
 
         doc.createAndAddStyle().withId("image")
             .createAndSetIconStyle()
-            .withScale(3.0)
-            .withColor("801977FF")
+            .withScale(OFFSET_FINDER_SCALE)
+            .withColor(OFFSET_FINDER_COLOR)
 
         doc.createAndAddPlacemark()
             .withName(title)

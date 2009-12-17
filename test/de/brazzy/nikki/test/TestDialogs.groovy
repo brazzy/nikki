@@ -7,6 +7,7 @@ import de.brazzy.nikki.util.Dialogs
  */
 class TestDialogs extends Dialogs{
     def queue = []
+    def opened
 
     @Override
     public File askDirectory(File startDir)
@@ -35,7 +36,11 @@ class TestDialogs extends Dialogs{
     @Override
     public void open(File f)
     {
-        assert f.equals(queue.remove(0))
+        if(opened)
+        {
+            throw new IllegalStateException("Already present: "+opened)
+        }
+        opened = f
     }
 
     public boolean isQueueEmpty()
@@ -46,6 +51,13 @@ class TestDialogs extends Dialogs{
     public void add(stuff)
     {
         queue.add(stuff)
+    }
+
+    public File getOpened()
+    {
+        def result = opened
+        opened = null
+        return result
     }
 }
 

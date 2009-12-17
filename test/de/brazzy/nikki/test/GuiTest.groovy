@@ -114,5 +114,10 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(3, tmpDir.path.list().length)
     }
+
+    public void testOffsetFinder()
+    {
+        // TODO
+    }
 }
 
