@@ -21,6 +21,7 @@ is divided into following sections:
         -->
 <project xmlns:j2seproject1="http://www.netbeans.org/ns/j2se-project/1" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxrpc="http://www.netbeans.org/ns/j2se-project/jax-rpc" basedir=".." default="default" name="map_kmz-impl">
     <import file="groovy-build.xml"/>
+    <taskdef classpath="lib/cobertura.jar;lib/log4j-1.2.9.jar;lib/asm-3.0.jar;lib/asm-tree-3.0.jar;lib/jakarta-oro-2.0.8.jar" resource="tasks.properties"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
             <not>
@@ -637,8 +638,16 @@ is divided into following sections:
         <mkdir dir="${build.test.classes.dir}"/>
     </target>
     <target name="-pre-compile-test">
-        <!-- Empty placeholder for easier customization. -->
-        <!-- You can override this target in the ../build.xml file. -->
+        <echo message="custom!" />
+        <delete dir="${build.instrumented.dir}" />
+        <delete dir="${build.report.cobertura.dir}" />
+        <mkdir dir="${build.instrumented.dir}" />
+        <mkdir dir="${build.report.cobertura.dir}" />
+        <cobertura-instrument todir="${build.instrumented.dir}">
+        <fileset dir="${build.classes.dir}">
+        <include name="**/*.class"/>
+        </fileset>
+        </cobertura-instrument>
     </target>
     <target if="do.depend.true" name="-compile-test-depend">
         <j2seproject3:depend classpath="${javac.test.classpath}" destdir="${build.test.classes.dir}" srcdir="${test.test.dir}"/>
@@ -683,7 +692,13 @@ is divided into following sections:
         <j2seproject3:junit testincludes="**/*Test.java"/>
     </target>
     <target depends="init,compile-test,-pre-test-run,-do-test-run" if="have.tests" name="-post-test-run">
-        <fail if="tests.failed" unless="ignore.failing.tests">Some tests failed; see details above.</fail>
+        <echo message="custom!" />
+        <fail if="tests.failed">Some tests failed; see details above.</fail>
+        <!-- You can disable the html portion if you are using the hudson plugin and rely on the xml -->
+        <cobertura-report format="html" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
+        <!-- Used by the hudson plug-in -->
+        <cobertura-report format="xml" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
+        <delete file="cobertura.ser" />
     </target>
     <target depends="init" if="have.tests" name="test-report"/>
     <target depends="init" if="netbeans.home+have.tests" name="-test-browse"/>

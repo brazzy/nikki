@@ -115,7 +115,7 @@ class DayTest extends AbstractNikkiTest{
         assertTrue(kml.contains("&lt;p&gt;testDescription&lt;/p&gt;"))
         assertTrue(kml.contains("<name>000 testTitle</name>"))
         assertTrue(kml.contains("<href>thumbs/"+IMAGE1+"</href>"))
-
+        // TODO: XmlSlurper verwenden
         assertNull(input.getNextEntry())
         input.close()
     }

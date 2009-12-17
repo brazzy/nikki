@@ -22,4 +22,5 @@
             <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/map_kmz/lib/imagescaling_0_8_1.jar"/>
         </jar>
     </target>
+
 </project>
