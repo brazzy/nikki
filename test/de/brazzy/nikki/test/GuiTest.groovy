@@ -4,6 +4,8 @@ import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.view.NikkiFrame
+import de.brazzy.nikki.view.ScanOptions
+import de.brazzy.nikki.view.GeotagOptions
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import java.text.SimpleDateFormat
@@ -119,5 +121,27 @@ class GuiTest extends AbstractNikkiTest {
     {
         // TODO
     }
+
+    public void testScanOptions()
+    {
+        String[] zones = TimeZone.getAvailableIDs();
+        Arrays.sort(zones);
+
+        ScanOptions op = new ScanOptions(TimeZone.getTimeZone("GMT"))
+        assertEquals("GMT", op.getTimezone().getID())
+        op.combobox.selectedIndex = 1;
+        assertEquals(zones[1], op.getTimezone().getID())
+    }
+
+    public void testGeotagOptions()
+    {
+        GeotagOptions op = new GeotagOptions()
+        assertEquals(0, op.getOffset())
+        op.spinner.value = op.spinner.nextValue;
+        assertEquals(10, op.getOffset())
+        op.spinner.value = -100;
+        assertEquals(-100, op.getOffset())
+    }
+
 }
 
