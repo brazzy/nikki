@@ -62,5 +62,35 @@ class Image implements Serializable{
         out.close()
     }
 
-
+    private void geotag(long milliOffset)
+    {
+        def imagetime = new Date(time.time + milliOffset)
+        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp:imagetime))
+        if(index>=0) // direct hit
+        {
+            waypoint = day.waypoints[index]
+        }
+        else if(-index==day.waypoints.size()+1) // after all WPs
+        {
+            waypoint = day.waypoints[day.waypoints.size()-1]
+        }
+        else if(index == -1) // before all WPs
+        {
+            waypoint = day.waypoints[0]
+        }
+        else
+        {
+            def before = day.waypoints[-(index+2)]
+            def after = day.waypoints[-(index+1)]
+            if(imagetime.time - before.timestamp.time >
+               after.timestamp.time - imagetime.time)
+            {
+                waypoint = after
+            }
+            else
+            {
+                waypoint = before
+            }
+        }
+    }
 }

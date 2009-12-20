@@ -42,14 +42,14 @@ class DayTest extends AbstractNikkiTest{
         def wp14 = new Waypoint(timestamp: fmt.parse(dat+"14:00"))
         def wp16 = new Waypoint(timestamp: fmt.parse(dat+"16:00"))
 
-        def im08 = new Image(time: fmt.parse(dat+"08:00"))
-        def im11 = new Image(time: fmt.parse(dat+"11:00"))
-        def im13l = new Image(time: fmt.parse(dat+"12:45"))
-        def im15h = new Image(time: fmt.parse(dat+"15:10"))
-        def im17 = new Image(time: fmt.parse(dat+"17:00"))
-        def im12 = new Image(time: fmt.parse(dat+"12:00"))
-        def im14 = new Image(time: fmt.parse(dat+"14:00"))
-        def im16 = new Image(time: fmt.parse(dat+"16:00"))
+        def im08 = new Image(time: fmt.parse(dat+"08:00"), day:day)
+        def im11 = new Image(time: fmt.parse(dat+"11:00"), day:day)
+        def im13l = new Image(time: fmt.parse(dat+"12:45"), day:day)
+        def im15h = new Image(time: fmt.parse(dat+"15:10"), day:day)
+        def im17 = new Image(time: fmt.parse(dat+"17:00"), day:day)
+        def im12 = new Image(time: fmt.parse(dat+"12:00"), day:day)
+        def im14 = new Image(time: fmt.parse(dat+"14:00"), day:day)
+        def im16 = new Image(time: fmt.parse(dat+"16:00"), day:day)
 
         day.images = [im08, im13l, im11, im14, im16, im12, im17, im15h]
         day.waypoints = [wp14, wp16, wp12]

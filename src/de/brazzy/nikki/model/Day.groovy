@@ -68,40 +68,11 @@ class Day extends AbstractTableModel implements Externalizable
         images = oi.readObject()
         date = oi.readObject()
     }
-    
+
     public void geotag(int offset = 0)
     {
         waypoints.sort()
-        images.each{ image ->
-            def imagetime = new Date(image.time.time + (offset*1000))
-            def index = Collections.binarySearch(waypoints, new Waypoint(timestamp:imagetime))
-            if(index>=0) // direct hit
-            {
-                image.waypoint = waypoints[index]
-            }
-            else if(-index==waypoints.size()+1) // after all WPs
-            {
-                image.waypoint = waypoints[waypoints.size()-1]
-            }
-            else if(index == -1) // before all WPs
-            {
-                image.waypoint = waypoints[0]
-            }
-            else
-            {
-                def before = waypoints[-(index+2)]
-                def after = waypoints[-(index+1)]
-                if(imagetime.time - before.timestamp.time > 
-                   after.timestamp.time - imagetime.time)
-                {
-                    image.waypoint = after
-                }
-                else
-                {
-                    image.waypoint = before
-                }
-            }
-        }
+        images*.geotag(offset*1000)
     }
     
     public void export(ZipOutputStream out, SwingWorker worker)

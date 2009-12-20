@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat
  * @author Brazil
  *
  * TODO: Synchronisation mit Worker-Threads statt sleep()
- * TODO: Buttonzustände testen
  */
 class GuiTest extends AbstractNikkiTest {
 
@@ -56,6 +55,10 @@ class GuiTest extends AbstractNikkiTest {
         view.deleteButton.actionListeners[0].actionPerformed()
         assertEquals(1, model.size())
         assertEquals("tmp2 (0, 0)", model[0].toString())
+    }
+
+    public void testButtons()
+    {
     }
 
     public void testScanSaveRescan()
