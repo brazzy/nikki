@@ -26,7 +26,8 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final String IMAGE2 = "IMG${DATE2}.JPG";
     protected static final Date DAY1 = FORMAT.stripTime(FORMAT.parse(DATE1));
     protected static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
-    protected static final Date TIME = new Date(DAY1.time+(60*60*5))
+    protected static final Date TIME1 = new Date(DAY1.time+(60*60*5*1000))
+    protected static final Date TIME2 = new Date(DAY2.time+(60*60*5*1000))
     protected static final byte[] THUMB = [1 , 2 , 3, 4, 5, 6, 7, 8] as byte[]
 
     protected Directory tmpDir;
@@ -47,16 +48,41 @@ class AbstractNikkiTest extends GroovyTestCase
             new FileOutputStream(new File(tmpDir.path, name)))
     }
 
+    protected WaypointFile constructWaypointFile(Date date, String fileName)
+    {
+        Day day = tmpDir.find{ it.date.equals(date)}
+        if(!day)
+        {
+            day = new Day(date: date, directory:tmpDir)
+            tmpDir.add(day);
+        }
+        WaypointFile file = new WaypointFile(fileName: fileName, directory:tmpDir)
+        file.waypoints.add(constructWaypoint(day, 1))
+        file.waypoints.add(constructWaypoint(day, 2))
+        day.waypoints.addAll(file.waypoints)
+        return file
+    }
+
+    protected Waypoint constructWaypoint(Day day, int index)
+    {
+        Waypoint wp = new Waypoint(day: day, timestamp: new Date(day.date.time + (60*60*1000*index)),
+            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
+            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
+        return wp
+    }
+
     protected Image constructImage(Date date, String fileName)
     {
-        Day day = new Day(date: date, directory:tmpDir)
-        tmpDir.add(day);
-        Waypoint wp = new Waypoint(day: day, timestamp: TIME,
-            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 1.5d),
-            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10d))
+        Day day = tmpDir.find{ it.date.equals(date)}
+        if(!day)
+        {
+            day = new Day(date: date, directory:tmpDir)
+            tmpDir.add(day);
+        }
+        Waypoint wp = constructWaypoint(day, 5)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: TIME, waypoint: wp)
+            export: true, time: wp.timestamp, waypoint: wp)
         day.images.add(image)
         return image
     }

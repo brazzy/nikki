@@ -3,6 +3,9 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
+import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.Waypoint
+import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
@@ -12,6 +15,9 @@ import java.text.SimpleDateFormat
 
 /**
  * @author Brazil
+ *
+ * TODO: Synchronisation mit Worker-Threads statt sleep()
+ * TODO: Buttonzustände testen
  */
 class GuiTest extends AbstractNikkiTest {
 
@@ -31,6 +37,9 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testAdd()
     {
+        assertEquals(0, model.size())
+        dialogs.add(null)
+        view.addButton.actionListeners[0].actionPerformed()
         assertEquals(0, model.size())
         dialogs.add(new File("C:\\tmp"))
         view.addButton.actionListeners[0].actionPerformed()
@@ -56,8 +65,14 @@ class GuiTest extends AbstractNikkiTest {
         view.dirList.selectedIndex = 0
         copyFile(IMAGE1)
         copyFile("20091111.nmea")
-        dialogs.add(ZONE)
 
+        dialogs.add(null)
+        view.scanButton.actionListeners[0].actionPerformed()
+        Thread.sleep(1000);
+        assertTrue(dialogs.isQueueEmpty())
+        assertEquals(0, tmpDir.size())
+
+        dialogs.add(ZONE)
         view.scanButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
         assertTrue(dialogs.isQueueEmpty())
@@ -87,39 +102,77 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 
-    public void testGeotagExport()
+    public void testGeotag()
     {
         def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
-        copyFile(IMAGE1)
-        copyFile("20091111.nmea")
+        Image image = constructImage(DAY1, IMAGE1)
+        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
+        tmpDir.waypointFiles.put("dummy", wpf)
+        tmpDir.images.put(IMAGE1, image)
+        tmpDir.add(image.day)
+        image.waypoint = null
+        assertNull(model[0].images[IMAGE1].waypoint)
         view.dirList.selectedIndex = 0
-        dialogs.add(ZONE)
-        view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        view.dayList.selectedIndex = 0
+
+        dialogs.add(null)
+        view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
         assertNull(model[0].images[IMAGE1].waypoint)
 
-        view.dayList.selectedIndex = 0
-        dialogs.add(Integer.valueOf(-15 * 60 * 60))
+        dialogs.add(Integer.valueOf(-5 * 60 * 60))
         view.tagButton.actionListeners[0].actionPerformed()
-        Thread.sleep(100);
         assertTrue(dialogs.isQueueEmpty())
         def wp = model[0].images[IMAGE1].waypoint
         assertNotNull(wp)
-        assertEquals(fmt.parse("GMT 2009-11-11 05:09:04"), wp.timestamp)
+        assertEquals(fmt.parse("GMT 2009-11-10 15:00:00"), wp.timestamp)
+    }
 
-        dialogs.add(new File(tmpDir.path, "export.kmz"))
-        assertEquals(2, tmpDir.path.list().length)
+    public void testExport()
+    {
+        copyFile(IMAGE1)
+        Image image = constructImage(DAY1, IMAGE1)
+        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
+        model.add(tmpDir)
+        tmpDir.waypointFiles.put("dummy", wpf)
+        tmpDir.images.put(IMAGE1, image)
+        tmpDir.add(image.day)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+
+
+        assertEquals(1, tmpDir.path.list().length)
+        dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
         Thread.sleep(1000);
         assertTrue(dialogs.isQueueEmpty())
-        assertEquals(3, tmpDir.path.list().length)
+        assertEquals(1, tmpDir.path.list().length)
+
+        dialogs.add(new File(tmpDir.path, "export.kmz"))
+        view.exportButton.actionListeners[0].actionPerformed()
+        Thread.sleep(1000);
+        assertTrue(dialogs.isQueueEmpty())
+        assertEquals(2, tmpDir.path.list().length)
     }
 
     public void testOffsetFinder()
     {
-        // TODO
+        Image image = constructImage(DAY1, IMAGE1)
+        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
+        model.add(tmpDir)
+        tmpDir.waypointFiles.put("dummy", wpf)
+        tmpDir.images.put(IMAGE1, image)
+        tmpDir.add(image.day)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        editor.geoLink.actionListeners[0].actionPerformed()
+        def file = dialogs.getOpened()
+        assertNotNull(file)
+        assertTrue(file.name.endsWith(".kml"))
     }
 
     public void testScanOptions()

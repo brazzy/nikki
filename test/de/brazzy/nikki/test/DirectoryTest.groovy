@@ -105,13 +105,13 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertEquals(day1, image1.day)
         assertEquals(THUMB, image1.thumbnail)
         assertTrue(image1.export)
-        assertEquals(TIME, image1.time)
+        assertEquals(TIME1, image1.time)
         Waypoint wp = image1.waypoint
         assertNotNull(wp)
         assertEquals(day1, wp.day)
-        assertEquals(TIME, wp.timestamp, )
-        assertEquals(-1.5d, wp.latitude.value)
-        assertEquals(10d, wp.longitude.value)
+        assertEquals(TIME1, wp.timestamp, )
+        assertEquals(-5d, wp.latitude.value)
+        assertEquals(25d, wp.longitude.value)
 
         assertEquals(1, day2.images.size())
         Image image2 = day2.images[0]

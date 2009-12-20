@@ -1,7 +1,13 @@
 package de.brazzy.nikki.model
 
 import javax.swing.AbstractListModel
-import java.io.ObjectInputimport java.lang.ClassNotFoundExceptionimport java.io.IOExceptionimport java.io.ObjectOutputimport java.io.ObjectInputpublic class ListDataModel<T> extends AbstractListModel
+import java.io.ObjectInput
+import java.lang.ClassNotFoundException
+import java.io.IOException
+import java.io.ObjectOutput
+import java.io.ObjectInput
+
+public class ListDataModel<T> extends AbstractListModel
 {
     public static final long serialVersionUID = 1;
 
@@ -28,7 +34,11 @@ import java.io.ObjectInputimport java.lang.ClassNotFoundExceptionimport java.i
         return false;
     }
     
-    
+    public boolean contains(T d)
+    {
+        return data.contains(d)
+    }
+
     int getSize()
     {
         return data.size()
