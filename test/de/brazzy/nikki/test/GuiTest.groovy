@@ -4,6 +4,7 @@ import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.view.NikkiFrame
@@ -59,6 +60,64 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testButtons()
     {
+        assertTrue(view.addButton.enabled)
+        assertFalse(view.deleteButton.enabled)
+        assertFalse(view.scanButton.enabled)
+        assertFalse(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
+
+        model.add(tmpDir)
+        assertTrue(view.addButton.enabled)
+        assertFalse(view.deleteButton.enabled)
+        assertFalse(view.scanButton.enabled)
+        assertFalse(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
+
+        view.dirList.selectedIndex = 0
+        assertTrue(view.addButton.enabled)
+        assertTrue(view.deleteButton.enabled)
+        assertTrue(view.scanButton.enabled)
+        assertTrue(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
+
+        tmpDir.images.put(IMAGE1, constructImage(DAY1, IMAGE1))
+        assertTrue(view.addButton.enabled)
+        assertTrue(view.deleteButton.enabled)
+        assertTrue(view.scanButton.enabled)
+        assertTrue(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
+
+        view.dayList.selectedIndex = 0
+        assertTrue(view.addButton.enabled)
+        assertTrue(view.deleteButton.enabled)
+        assertTrue(view.scanButton.enabled)
+        assertTrue(view.saveButton.enabled)
+        assertTrue(view.tagButton.enabled)
+        assertTrue(view.exportButton.enabled)
+
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        assertTrue(editor.geoLink.enabled)
+
+        view.dayList.clearSelection()
+        assertTrue(view.addButton.enabled)
+        assertTrue(view.deleteButton.enabled)
+        assertTrue(view.scanButton.enabled)
+        assertTrue(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
+
+        view.dirList.clearSelection()
+        assertTrue(view.addButton.enabled)
+        assertFalse(view.deleteButton.enabled)
+        assertFalse(view.scanButton.enabled)
+        assertFalse(view.saveButton.enabled)
+        assertFalse(view.tagButton.enabled)
+        assertFalse(view.exportButton.enabled)
     }
 
     public void testScanSaveRescan()
