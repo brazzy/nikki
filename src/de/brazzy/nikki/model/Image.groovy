@@ -34,6 +34,11 @@ class Image implements Serializable{
     
     public void offsetFinder(OutputStream out)
     {
+        if(!waypoint)
+        {
+            day.waypoints.sort()
+            geotag(0)
+        }
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
 

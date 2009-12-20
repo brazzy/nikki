@@ -61,7 +61,6 @@ public class ImageView extends JPanel
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
         geoLink.setMargin(new Insets(0,0,0,0));
-        geoLink.setDisabledIcon(new ImageIcon(ImageView.class.getResource("globe_grey.gif")));
         geoLink.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e)
@@ -80,22 +79,6 @@ public class ImageView extends JPanel
                 }
             }            
         });
-
-//        geoLink.addActionListener(new ActionListener(){
-//            @Override
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                try
-//                {
-//                    Waypoint wp = value.getWaypoint();
-//                    Desktop.getDesktop().browse(new URI("http://maps.google.com/maps?ll="+wp.getLatitude().getValue()+","+wp.getLongitude().getValue()));
-//                }
-//                catch (Exception ex)
-//                {
-//                    JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
-//                }
-//            }            
-//        });
 
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -154,7 +137,7 @@ public class ImageView extends JPanel
         timeDiff.setColumns(5);
         latitude.setEditable(false);
         longitude.setEditable(false);
-        geoLink.setEnabled(false);
+        geoLink.setEnabled(true);
     }
 
     public void setValue(Image value)
@@ -188,13 +171,11 @@ public class ImageView extends JPanel
         {
             latitude.setText(value.getWaypoint().getLatitude().toString());
             longitude.setText(value.getWaypoint().getLongitude().toString());            
-            geoLink.setEnabled(true);
         }
         else
         {
             latitude.setText("?");
             longitude.setText("?");            
-            geoLink.setEnabled(false);
         }
         icon.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());

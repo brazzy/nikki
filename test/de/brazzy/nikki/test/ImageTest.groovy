@@ -63,7 +63,6 @@ class ImageTest extends GroovyTestCase{
         im.time = wp1.timestamp
         Day d = new Day(waypoints: [ wp1, wp2])
         im.day = d
-        im.waypoint = wp1
         def out = new ByteArrayOutputStream()
         im.offsetFinder(out)
         def str = new String(out.toByteArray())
@@ -82,7 +81,6 @@ class ImageTest extends GroovyTestCase{
         assertNotNull(placemarks[1].Point)
         assertEquals(placemarks[2].name.text(), "13")
         assertNotNull(placemarks[2].Point)
-
     }
 }
 
