@@ -21,14 +21,7 @@ public class ExportWorker extends SwingWorker<Void, Void>
     @Override
     protected Void doInBackground() throws Exception
     {
-        try
-        {
-            day.export(out, this);            
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        day.export(out, this);            
         return null;
     }   
 
