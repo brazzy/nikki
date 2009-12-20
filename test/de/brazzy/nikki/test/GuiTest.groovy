@@ -16,20 +16,19 @@ import java.text.SimpleDateFormat
 
 /**
  * @author Brazil
- *
- * TODO: Synchronisation mit Worker-Threads statt sleep()
  */
 class GuiTest extends AbstractNikkiTest {
 
     TestDialogs dialogs
     NikkiModel model
     NikkiFrame view
+    Nikki nikki
 
     public void setUp()
     {
         super.setUp()
         dialogs = new TestDialogs()
-        def nikki = new Nikki()
+        nikki = new Nikki()
         nikki.build(false, dialogs)
         model = nikki.model
         view = nikki.view
@@ -130,13 +129,13 @@ class GuiTest extends AbstractNikkiTest {
 
         dialogs.add(null)
         view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(0, tmpDir.size())
 
         dialogs.add(ZONE)
         view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
@@ -144,7 +143,7 @@ class GuiTest extends AbstractNikkiTest {
 
         assertEquals(2, tmpDir.path.list().length)
         view.saveButton.actionListeners[0].actionPerformed()
-        Thread.sleep(500);
+        dialogs.registerWorker(null)
         assertEquals(3, tmpDir.path.list().length)
 
         model.remove(tmpDir)
@@ -156,7 +155,7 @@ class GuiTest extends AbstractNikkiTest {
         copyFile("20091112.nmea")
 
         view.scanButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        dialogs.registerWorker(null)
         assertEquals(2, tmpDir.size())
         assertEquals(ZONE, tmpDir.zone)
         assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
@@ -207,13 +206,13 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(1, tmpDir.path.list().length)
         dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.path.list().length)
 
         dialogs.add(new File(tmpDir.path, "export.kmz"))
         view.exportButton.actionListeners[0].actionPerformed()
-        Thread.sleep(1000);
+        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(2, tmpDir.path.list().length)
     }

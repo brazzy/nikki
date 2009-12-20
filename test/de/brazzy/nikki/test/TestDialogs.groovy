@@ -1,5 +1,6 @@
 package de.brazzy.nikki.test
 import de.brazzy.nikki.util.Dialogs
+import javax.swing.SwingWorker
 
 /**
  *
@@ -7,6 +8,7 @@ import de.brazzy.nikki.util.Dialogs
  */
 class TestDialogs extends Dialogs{
     def queue = []
+    def worker
     def opened
 
     @Override
@@ -41,6 +43,16 @@ class TestDialogs extends Dialogs{
             throw new IllegalStateException("Already present: "+opened)
         }
         opened = f
+    }
+
+    @Override
+    public void registerWorker(SwingWorker worker)
+    {
+        if(this.worker)
+        {
+            this.worker.get()
+        }
+        this.worker = worker
     }
 
     public boolean isQueueEmpty()

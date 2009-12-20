@@ -32,9 +32,9 @@ import de.brazzy.nikki.util.Dialogs
 public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
 
-    def view;
-    def model;
-    def dialogs;
+    def view
+    def model
+    def dialogs
 
     public void build(boolean usePreferences, Dialogs dialogs){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -92,6 +92,7 @@ public class Nikki{
             ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
+            dialogs.registerWorker(worker)
         }
         view.saveButton.actionPerformed={            
             view.dirList.selectedValue.save()
@@ -131,6 +132,7 @@ public class Nikki{
                     day, new ZipOutputStream(new FileOutputStream(selectedFile)))
                 worker.addPropertyChangeListener(progressListener)
                 worker.execute()
+                dialogs.registerWorker(worker)
             }
         }
     }
@@ -140,6 +142,4 @@ public class Nikki{
         view.frame.pack()
         view.frame.show()
     }
-
-
 }

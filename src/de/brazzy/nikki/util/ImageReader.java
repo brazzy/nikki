@@ -224,16 +224,5 @@ public class ImageReader
     {
         return lastHeight;
     }
-    
-    public static void main(String[] args) throws Exception
-    {
-        File f = new File("E:\\tmp\\test\\IMG_3487.JPG");
-        File th = new File("E:\\tmp\\test\\IMG_3487_th.JPG");
-        ImageReader reader = new ImageReader(f, TimeZone.getDefault());
-        byte[] b = reader.scale(400, true);
-        FileUtils.writeByteArrayToFile(th, b);
-        Runtime.getRuntime().exec(new String[]{"C:\\Programme\\IrfanView\\i_view32.exe", th.getAbsolutePath()});
-        System.out.println(reader.getLastHeight());
-    }
 
 }

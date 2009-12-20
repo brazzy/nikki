@@ -644,9 +644,11 @@ is divided into following sections:
         <mkdir dir="${build.instrumented.dir}" />
         <mkdir dir="${build.report.cobertura.dir}" />
         <cobertura-instrument todir="${build.instrumented.dir}">
-        <fileset dir="${build.classes.dir}">
-        <include name="**/*.class"/>
-        </fileset>
+            <fileset dir="${build.classes.dir}">
+                <include name="**/*.class"/>
+                <exclude name="**/Launcher.class" />
+                <exclude name="**/Dialogs.class" />
+            </fileset>
         </cobertura-instrument>
     </target>
     <target if="do.depend.true" name="-compile-test-depend">

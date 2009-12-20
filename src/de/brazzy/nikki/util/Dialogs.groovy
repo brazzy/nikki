@@ -5,6 +5,7 @@ import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
+import javax.swing.SwingWorker
 
 class Dialogs
 {
@@ -46,6 +47,11 @@ class Dialogs
     public void open(File f)
     {
         Desktop.getDesktop().open(f);
+    }
+
+    public void registerWorker(SwingWorker worker)
+    {
+
     }
 }
 
