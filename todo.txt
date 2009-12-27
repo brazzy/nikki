@@ -1,12 +1,12 @@
-- Testabdeckung verbessern
-- autom. Speichern beim Schliessen und vor Export
-- Daten in Bilder schreiben, statt Nikki.db
+- autom. Datenübernahme vor Save/Export
 - Sanselan komplett durch MediaUtils ersetzen?
+- Daten in Bilder schreiben, statt Nikki.db
 - Zeit in KML anzeigen?
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 - Fehler bei Export ohne Geotag
+- Rückfrage bei Schliessen mit ungespeicherten Änderungen
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
 - Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)
@@ -22,6 +22,7 @@
 - mehr GPS-Formate lesen
 - Nachfragen beim Überscheiben
 
+v Testabdeckung verbessern
 v Testbarkeit
 v Datumsanzeige in Tagesliste und bei Bilddetails und Dateiname
 v Scannen neu hinzugefügter Bilder
