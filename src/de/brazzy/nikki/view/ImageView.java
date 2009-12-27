@@ -166,6 +166,14 @@ public class ImageView extends JPanel
                     timeDiff.setForeground(Color.BLACK);                    
                 }
             }
+            else
+            {
+                timeDiff.setText(null);
+            }
+        }
+        else
+        {
+            time.setText(null);
         }
         if(value.getWaypoint() != null)
         {

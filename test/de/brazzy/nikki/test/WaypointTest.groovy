@@ -63,10 +63,10 @@ public class WaypointTest extends GroovyTestCase{
         def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
         Directory dir = new Directory()
 
-        WaypointFile f = WaypointFile.parse(dir, new File(getClass().getResource("20091111.nmea").toURI()))
+        WaypointFile f = WaypointFile.parse(dir, new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()))
 
         assertSame(dir, f.directory)
-        assertEquals("20091111.nmea", f.fileName)
+        assertEquals(AbstractNikkiTest.WAYPOINTS1, f.fileName)
         assertEquals(2, f.waypoints.size())
 
         Waypoint wp1 = f.waypoints[0]

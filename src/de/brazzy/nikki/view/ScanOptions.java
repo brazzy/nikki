@@ -22,13 +22,18 @@ public class ScanOptions extends JPanel
         {
             combobox.setSelectedItem(selected.getID());
         }
+        else
+        {
+            combobox.setSelectedItem(null);
+        }
         add(new JLabel("Camera time zone"));
         add(combobox);
     }
 
     public TimeZone getTimezone()
     {
-        return TimeZone.getTimeZone((String) combobox.getSelectedItem());
+        return combobox.getSelectedItem() == null ? null :
+            TimeZone.getTimeZone((String) combobox.getSelectedItem());
     }
 
 }

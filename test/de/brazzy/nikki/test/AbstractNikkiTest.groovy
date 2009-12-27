@@ -24,6 +24,8 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final String DATE2 = "2009-11-12";
     protected static final String IMAGE1 = "IMG${DATE1}.JPG";
     protected static final String IMAGE2 = "IMG${DATE2}.JPG";
+    protected static final String WAYPOINTS1 = "20091111.nmea";
+    protected static final String WAYPOINTS2 = "20091112.nmea";
     protected static final Date DAY1 = FORMAT.stripTime(FORMAT.parse(DATE1));
     protected static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
     protected static final Date TIME1 = new Date(DAY1.time+(60*60*5*1000))

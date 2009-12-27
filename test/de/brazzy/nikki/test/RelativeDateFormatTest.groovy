@@ -72,4 +72,10 @@ public class RelativeDateFormatTest extends GroovyTestCase{
         assertEquals("2009-10-01", holiday.format(late))
         assertEquals("2009-10-01", holiday.format(noon))
     }    
+
+    public void testDefault()
+    {
+        def deflt = new RelativeDateFormat(null)
+        assertEquals(deflt.timeZone, TimeZone.getDefault())
+    }
 }

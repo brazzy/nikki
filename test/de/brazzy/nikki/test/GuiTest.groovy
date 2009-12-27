@@ -13,6 +13,7 @@ import de.brazzy.nikki.view.GeotagOptions
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 /**
  * @author Brazil
@@ -125,7 +126,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
         view.dirList.selectedIndex = 0
         copyFile(IMAGE1)
-        copyFile("20091111.nmea")
+        copyFile(WAYPOINTS1)
 
         dialogs.add(null)
         view.scanButton.actionListeners[0].actionPerformed()
@@ -152,7 +153,7 @@ class GuiTest extends AbstractNikkiTest {
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         copyFile(IMAGE2)
-        copyFile("20091112.nmea")
+        copyFile(WAYPOINTS2)
 
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
@@ -236,6 +237,71 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(file.name.endsWith(".kml"))
     }
 
+    public void testImageView()
+    {
+        DateFormat fmt = DateFormat.getDateTimeInstance();
+        fmt.setTimeZone(ZONE)
+        Image image1 = constructImage(DAY1, IMAGE1)
+        Image image2 = constructImage(DAY1, IMAGE2)
+        Image image3 = constructImage(DAY1, IMAGE2)
+        Image image4 = constructImage(DAY1, IMAGE2)
+        model.add(tmpDir)
+        tmpDir.images.put(IMAGE1, image1)
+        tmpDir.images.put(IMAGE2, image2)
+        tmpDir.add(image1.day)
+
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        assertEquals("testTitle", editor.title.text)
+        assertEquals("testDescription", editor.textArea.text)
+        assertEquals(IMAGE1, editor.filename.text)
+        assertEquals(fmt.format(image1.time), editor.time.text)
+        assertEquals("0", editor.timeDiff.text)
+        assertEquals(image1.waypoint.latitude.toString(), editor.latitude.text)
+        assertEquals(image1.waypoint.longitude.toString(), editor.longitude.text)
+        assertTrue(editor.export.selected)
+
+        editor.title.text = "changedTitle"
+        editor.textArea.text = "changedDescription"
+        editor.export.selected = false
+
+        image2.title = "otherTitle"
+        image2.description = "otherDescription"
+        image2.time = null
+        image2.waypoint = null
+
+        view.imageTable.editCellAt(1,0)
+
+        assertEquals("changedTitle", image1.title)
+        assertEquals("changedDescription", image1.description)
+        assertFalse(image1.export)
+
+        editor = view.imageTable.editorComponent
+        assertEquals("otherTitle", editor.title.text)
+        assertEquals("otherDescription", editor.textArea.text)
+        assertEquals(IMAGE2, editor.filename.text)
+        assertEquals("", editor.time.text)
+        assertEquals("", editor.timeDiff.text)
+        assertEquals("?", editor.latitude.text)
+        assertEquals("?", editor.longitude.text)
+        assertTrue(editor.export.selected)
+
+        image3.waypoint = null
+        view.imageTable.editCellAt(2,0)
+        editor = view.imageTable.editorComponent
+        assertEquals(fmt.format(image3.time), editor.time.text)
+        assertEquals("", editor.timeDiff.text)
+
+        image4.waypoint.timestamp = new Date(image4.waypoint.timestamp.time+2000)
+        view.imageTable.editCellAt(3,0)
+        editor = view.imageTable.editorComponent
+        assertEquals(fmt.format(image3.time), editor.time.text)
+        assertEquals("-2", editor.timeDiff.text)
+    }
+
     public void testScanOptions()
     {
         String[] zones = TimeZone.getAvailableIDs();
@@ -245,6 +311,9 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals("GMT", op.getTimezone().getID())
         op.combobox.selectedIndex = 1;
         assertEquals(zones[1], op.getTimezone().getID())
+
+        op = new ScanOptions(null)
+        assertNull(op.getTimezone())
     }
 
     public void testGeotagOptions()
