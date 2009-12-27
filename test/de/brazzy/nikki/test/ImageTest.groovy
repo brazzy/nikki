@@ -75,11 +75,11 @@ class ImageTest extends GroovyTestCase{
 
         def placemarks = finder.Document.Placemark
         assertEquals(3, placemarks.size())
-        assertEquals(placemarks[0].name.text(), "testTitle")
-        assertEquals(placemarks[0].styleUrl.text(), "#image")
-        assertEquals(placemarks[1].name.text(), "0")
+        assertEquals("testTitle", placemarks[0].name.text())
+        assertEquals("#image", placemarks[0].styleUrl.text())
+        assertEquals("0", placemarks[1].name.text())
         assertNotNull(placemarks[1].Point)
-        assertEquals(placemarks[2].name.text(), "13")
+        assertEquals("13", placemarks[2].name.text())
         assertNotNull(placemarks[2].Point)
     }
 }

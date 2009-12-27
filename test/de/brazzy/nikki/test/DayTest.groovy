@@ -111,11 +111,14 @@ class DayTest extends AbstractNikkiTest{
 
         String kml = IOUtils.toString(input, "UTF-8")
         assertTrue(kml.length() > 0)
-        assertTrue(kml.contains("&lt;img src='images/"+IMAGE1))
+        def finder = new XmlSlurper().parseText(kml)
+        def placemarks = finder.Document.Placemark
+        assertEquals(1, placemarks.size())
+        def pm = placemarks[0]
+        assertEquals("000 testTitle", pm.name.text())
+        assertEquals("thumbs/"+IMAGE1, pm.Style.IconStyle.Icon.href.text())
         assertTrue(kml.contains("&lt;p&gt;testDescription&lt;/p&gt;"))
-        assertTrue(kml.contains("<name>000 testTitle</name>"))
-        assertTrue(kml.contains("<href>thumbs/"+IMAGE1+"</href>"))
-        // TODO: XmlSlurper verwenden
+
         assertNull(input.getNextEntry())
         input.close()
     }
