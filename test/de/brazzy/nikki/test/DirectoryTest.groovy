@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * TODO: scan/rescan mit waypointFiles, rescan mit entfernten images und waypointFiles
+ * TODO: rescan mit entfernten images und waypointFiles
  *
  * @author Brazil
  */
@@ -36,19 +36,22 @@ public class DirectoryTest extends AbstractNikkiTest {
     public void testScan()
     {
         copyFile(IMAGE1)
+        copyFile(WAYPOINTS1)
 
         tmpDir.scan(null)
         assertEquals(1, tmpDir.images.size())
-        assertEquals(0, tmpDir.waypointFiles.size())
+        assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
 
         Day day = tmpDir[0]
         assertSame(tmpDir, day.directory)
-        assertEquals(0, day.waypoints.size())
+        assertEquals(2, day.waypoints.size())
         assertEquals(1, day.images.size())
         assertSame(day.images[0], tmpDir.images[IMAGE1])
+        assertSame(day.waypoints[0], tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
+        assertSame(day.waypoints[1], tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
         assertEquals(DAY1, day.date)
-        assertEquals("$DATE1 (1, 0)", day.toString())
+        assertEquals("$DATE1 (1, 2)", day.toString())
 
         Image image = day.images[0]
         assertEquals(IMAGE1, image.fileName)
@@ -65,6 +68,8 @@ public class DirectoryTest extends AbstractNikkiTest {
     {
         Image image = constructImage(DAY1, IMAGE1)
         tmpDir.images[IMAGE1] = image
+        WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
+        tmpDir.waypointFiles[WAYPOINTS1] = file
 
         assertEquals(0, tmpDir.path.list().length)
         assertFalse(tmpDir.hasPersistent())
@@ -76,26 +81,32 @@ public class DirectoryTest extends AbstractNikkiTest {
     public void testRescan()
     {
         copyFile(IMAGE1)
+        copyFile(WAYPOINTS1)
         Image image = constructImage(DAY1, IMAGE1)
         tmpDir.images[IMAGE1] = image
+        WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
+        tmpDir.waypointFiles[WAYPOINTS1] = file
         tmpDir.save()
 
-        tmpDir = new Directory(path: tmpDir.path);
-        copyFile(IMAGE2);
+        tmpDir = new Directory(path: tmpDir.path)
+        copyFile(IMAGE2)
+        copyFile(WAYPOINTS2)
         assertEquals(TimeZone.getDefault(), tmpDir.zone)
 
         tmpDir.scan(null)
         assertEquals(2, tmpDir.size())
         assertEquals(2, tmpDir.images.size())
-        assertEquals(0, tmpDir.waypointFiles.size())
+        assertEquals(2, tmpDir.waypointFiles.size())
         assertEquals(ZONE, tmpDir.zone)
 
         Day day1 = tmpDir[0]
         Day day2 = tmpDir[1]
 
-        assertEquals(0, day1.waypoints.size())
+        assertEquals(2, day1.waypoints.size())
         assertEquals(DAY1, day1.date)
         assertSame(day1.directory, tmpDir)
+        assertEquals(file.waypoints[0].latitude.value, day1.waypoints[0].latitude.value)
+        assertEquals(file.waypoints[0].timestamp, day1.waypoints[0].timestamp)
 
         assertEquals(1, day1.images.size())
         Image image1 = day1.images[0]
@@ -123,6 +134,8 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertNotNull(image2.thumbnail)
         assertSame(day2, image2.day)
         assertEquals(DAY2, FORMAT.stripTime(image2.time))
+        assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
+        assertEquals(DAY2, FORMAT.stripTime(day2.waypoints[1].timestamp))
     }
 
 }
