@@ -1,10 +1,5 @@
 package de.brazzy.nikki.model;
 
-import org.apache.sanselan.formats.jpeg.JpegImageMetadata
-import org.apache.sanselan.Sanselan
-import org.apache.sanselan.formats.tiff.constants.TagInfo
-import org.apache.sanselan.formats.tiff.constants.TiffConstants
-import org.apache.sanselan.formats.tiff.TiffField
 import java.io.FilenameFilter
 import java.text.SimpleDateFormat
 import java.util.HashMap

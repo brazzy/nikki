@@ -18,7 +18,7 @@ class ImageTest extends GroovyTestCase{
 
     public void setUp()
     {
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
             TimeZone.getTimeZone("GMT"))
     }
 
@@ -31,7 +31,7 @@ class ImageTest extends GroovyTestCase{
         assertEquals(120, thumb.width)
         assertEquals(160, thumb.height)
 
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
             TimeZone.getTimeZone("GMT"))
         assertEquals(Rotation.NONE, reader.rotation)
         thumb = reader.createImage().thumbnail

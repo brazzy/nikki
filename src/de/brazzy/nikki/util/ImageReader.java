@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
@@ -21,21 +19,16 @@ import javax.swing.border.EtchedBorder;
 import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.sanselan.ImageReadException;
-import org.apache.sanselan.ImageWriteException;
-import org.apache.sanselan.Sanselan;
-import org.apache.sanselan.SanselanConstants;
-import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
-import org.apache.sanselan.formats.tiff.TiffField;
-import org.apache.sanselan.formats.tiff.TiffImageMetadata;
-import org.apache.sanselan.formats.tiff.constants.TiffConstants;
 
 import com.mortennobel.imagescaling.ResampleOp;
 
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Rotation;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import mediautil.gen.directio.SplitInputStream;
+import mediautil.image.jpeg.Exif;
 
 public class ImageReader
 {    
@@ -55,11 +48,12 @@ public class ImageReader
 
     private File file;
     private TimeZone zone;
-    private JpegImageMetadata metadata;
+    private Exif metadata;
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
     private BufferedImage mainImage;
+    private Exception exception;
     
     public ImageReader(File file, TimeZone zone)
     {
@@ -68,16 +62,14 @@ public class ImageReader
         this.zone = zone;
         try
         {
-            this.metadata = (JpegImageMetadata) Sanselan.getMetadata(file, Collections.singletonMap(SanselanConstants.PARAM_KEY_READ_THUMBNAILS, Boolean.TRUE));            
+            LLJTran llj = new LLJTran(file);
+            llj.read(LLJTran.READ_INFO, true);
+            this.metadata = (Exif) llj.getImageInfo();
             this.rotation = getRotation();
         }
-        catch(IOException e)
+        catch(Exception e)
         {
-            e.printStackTrace();
-        }
-        catch(ImageReadException e)
-        {
-            e.printStackTrace();            
+            this.exception = e;
         }
     }
 
@@ -105,7 +97,7 @@ public class ImageReader
         return image;
     }
 
-    public Rotation getRotation() throws ImageReadException
+    public Rotation getRotation()
     {
         if(rotation != null)
         {
@@ -113,19 +105,18 @@ public class ImageReader
         }
         if(metadata != null)
         {
-            TiffField orientField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_ORIENTATION);
-            if(orientField != null && orientField.getValue() != null)
+            int orientation = metadata.getOrientation();
+            if(orientation > 0)
             { // see http://sylvana.net/jpegcrop/exif_orientation.html
-                Integer o = (Integer) orientField.getValue();
-                if(new Integer(8).equals(o))
+                if(orientation==8)
                 {
                     return Rotation.LEFT;
                 }
-                if(new Integer(3).equals(o))
+                if(orientation==3)
                 {
                     return Rotation.ROT180D;
                 }
-                if(new Integer(6).equals(o))
+                if(orientation==6)
                 {
                     return Rotation.RIGHT;
                 }
@@ -138,15 +129,11 @@ public class ImageReader
     {
         if(metadata != null)
         {
-            @SuppressWarnings("unchecked")
-            List<TiffImageMetadata.Directory> dirs = metadata.getExif().getDirectories();
-            for(TiffImageMetadata.Directory dir : dirs)
+            byte[] thumb = metadata.getThumbnailBytes();
+            if(thumb != null && thumb.length > 0)
             {
-                if(dir.getJpegImageData() !=null && dir.getJpegImageData().length > 0)
-                {
-                    return adjustForRotation(dir.getJpegImageData().data);
-                }
-            }            
+                return adjustForRotation(thumb);
+            }
         }
         return scale(THUMBNAIL_SIZE, false);
     }
@@ -167,24 +154,24 @@ public class ImageReader
         }
     }
 
-    public Date getTime() throws ImageReadException, ParseException
+    public Date getTime() throws ParseException
     {
         Date time = null;
         if(metadata != null)
         {
-            TiffField timeField = metadata.findEXIFValue(TiffConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-            if(timeField != null && timeField.getValue() != null)
+            String date = metadata.getDataTimeOriginalString();
+            if(date != null)
             {
                 DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
                 format.setTimeZone(zone);
 
-                time = format.parse(((String)timeField.getValue()).substring(0, 19));
+                time = format.parse(date.substring(0, 19));
             }            
         }
         return time;
     }
 
-    public byte[] scale(int toWidth, boolean paintBorder) throws IOException, ImageWriteException, LLJTranException
+    public byte[] scale(int toWidth, boolean paintBorder) throws IOException, LLJTranException
     {
         if(mainImage == null)
         {
