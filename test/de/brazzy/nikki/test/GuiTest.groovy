@@ -302,6 +302,32 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals("-2", editor.timeDiff.text)
     }
 
+    public void testAutoCommit()
+    {
+        DateFormat fmt = DateFormat.getDateTimeInstance();
+        fmt.setTimeZone(ZONE)
+        Image image = constructImage(DAY1, IMAGE1)
+        model.add(tmpDir)
+        tmpDir.images.put(IMAGE1, image)
+        tmpDir.add(image.day)
+
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        editor.title.text = "changedTitle"
+        assertEquals("testTitle", image.title)
+        dialogs.add(null)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertEquals("changedTitle", image.title)
+
+        editor.title.text = "otherTitle"
+        view.saveButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        assertEquals("otherTitle", image.title)
+    }
+
     public void testScanOptions()
     {
         String[] zones = TimeZone.getAvailableIDs();

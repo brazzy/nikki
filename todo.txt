@@ -1,4 +1,3 @@
-- autom. Datenübernahme vor Save/Export
 - Sanselan komplett durch MediaUtils ersetzen?
 - Daten in Bilder schreiben, statt Nikki.db
 - Zeit in KML anzeigen?
@@ -22,6 +21,7 @@
 - mehr GPS-Formate lesen
 - Nachfragen beim Überscheiben
 
+v autom. Datenübernahme vor Save/Export
 v Testabdeckung verbessern
 v Testbarkeit
 v Datumsanzeige in Tagesliste und bei Bilddetails und Dateiname

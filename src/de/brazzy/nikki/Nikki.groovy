@@ -94,7 +94,8 @@ public class Nikki{
             worker.execute()
             dialogs.registerWorker(worker)
         }
-        view.saveButton.actionPerformed={            
+        view.saveButton.actionPerformed={
+            view.imageTable.editorComponent?.getValue()
             view.dirList.selectedValue.save()
         }
         
@@ -122,6 +123,7 @@ public class Nikki{
             }
         }
         view.exportButton.actionPerformed={
+            view.imageTable.editorComponent?.getValue()
             def day = view.dayList.selectedValue
             def format = new RelativeDateFormat(day.directory.zone);
             def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + format.format(day.date) +".kmz");
