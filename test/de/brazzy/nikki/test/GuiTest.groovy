@@ -30,7 +30,7 @@ class GuiTest extends AbstractNikkiTest {
         super.setUp()
         dialogs = new TestDialogs()
         nikki = new Nikki()
-        nikki.build(false, dialogs)
+        nikki.build(GuiTest.class, dialogs)
         model = nikki.model
         view = nikki.view
     }

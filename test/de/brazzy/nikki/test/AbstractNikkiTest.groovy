@@ -11,6 +11,7 @@ import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.RelativeDateFormat
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import java.util.prefs.Preferences
 
 /**
  *
@@ -42,6 +43,13 @@ class AbstractNikkiTest extends GroovyTestCase
         tmpFile.deleteOnExit()
         tmpDir = new Directory(path: tmpFile)
         tmpDir.zone = ZONE
+    }
+
+    public void tearDown()
+    {
+        Preferences p = Preferences.userNodeForPackage(getClass())
+        p.removeNode()
+        p.flush()
     }
 
     protected void copyFile(String name)

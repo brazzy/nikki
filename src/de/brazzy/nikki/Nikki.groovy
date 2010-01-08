@@ -36,11 +36,11 @@ public class Nikki{
     def model
     def dialogs
 
-    public void build(boolean usePreferences, Dialogs dialogs){
+    public void build(Class prefsClass, Dialogs dialogs){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         view = NikkiFrame.create(dialogs)
         this.dialogs = dialogs
-        model = new NikkiModel(usePreferences)
+        model = new NikkiModel(prefsClass)
         view.dirList.model = model        
         def selListener = { it ->
             def sel = view.dirList.selectedValue

@@ -8,6 +8,7 @@ public class IntegrationTest extends TestSuite{
     {
         TestSuite s=new IntegrationTest();
         s.addTestSuite(GuiTest.class);
+        s.addTestSuite(PrefsTest.class);
         return s;
     }
 }
