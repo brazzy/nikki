@@ -54,8 +54,10 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected void copyFile(String name)
     {
+        def stream = new FileOutputStream(new File(tmpDir.path, name))
         IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
-            new FileOutputStream(new File(tmpDir.path, name)))
+            stream)
+        stream.close()
     }
 
     protected WaypointFile constructWaypointFile(Date date, String fileName)

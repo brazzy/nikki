@@ -14,6 +14,7 @@ class Image implements Serializable{
     String title
     String description
     Date time
+    TimeZone zone
     Day day
     Waypoint waypoint
     byte[] thumbnail
@@ -32,6 +33,11 @@ class Image implements Serializable{
         return writer.toString()
     }
     
+    public void save(File directory)
+    {
+
+    }
+
     public void offsetFinder(OutputStream out)
     {
         if(!waypoint)

@@ -63,6 +63,7 @@ v TextArea mit Scrollbar, oder Höhe der Tabellenzelle anpassen
 v Daten zu Verzeichnis im jeweiligen Verzeichnis wg. Backup
 v Domainmodels mit Swing-Model-Interfaces
 
+http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
 http://labs.micromata.de/display/jak/Home
 http://www.tutego.de/blog/javainsel/2009/09/thema-der-woche-programmieren-mit-einem.html
 http://commons.apache.org/sanselan/

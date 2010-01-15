@@ -9,8 +9,9 @@ import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.RelativeDateFormat
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import de.brazzy.nikki.util.ImageReader
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 
 /**
  * TODO: rescan mit entfernten images und waypointFiles
@@ -55,16 +56,14 @@ public class DirectoryTest extends AbstractNikkiTest {
 
         Image image = day.images[0]
         assertEquals(IMAGE1, image.fileName)
-        assertNull(image.title)
-        assertNull(image.description)
-        assertNull(image.waypoint)
-        assertFalse(image.export)
+        assertEquals("Überschrift", image.title)
+        assertEquals("America/Cancun", image.zone.ID)
         assertNotNull(image.thumbnail)
         assertSame(day, image.day)
         assertEquals(DAY1, FORMAT.stripTime(image.time))
     }
 
-    public void testSave()
+    public void testSaveDirectory()
     {
         Image image = constructImage(DAY1, IMAGE1)
         tmpDir.images[IMAGE1] = image

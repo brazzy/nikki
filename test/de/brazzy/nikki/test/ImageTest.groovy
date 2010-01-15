@@ -12,7 +12,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Brazil
  */
-class ImageTest extends GroovyTestCase{
+class ImageTest extends AbstractNikkiTest{
 
     ImageReader reader
 
@@ -44,15 +44,16 @@ class ImageTest extends GroovyTestCase{
 
     public void testReadExif()
     {
-        // TODO: Einlesen vorhandener Geodaten
         def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
-        assertEquals(fmt.parse("GMT 2009-11-11 19:10:27"), reader.getTime())
+        assertEquals(fmt.parse("GMT 2009-11-11 19:10:27"), reader.time)
+        assertTrue(reader.export)
+        assertEquals("America/Cancun", reader.timeZone.ID)
+        assertEquals("Überschrift", reader.title)
+        assertEquals("Kommentar\näöüß", reader.description)
+        assertNotNull(reader.waypoint)
+        assertEquals(45.5f, reader.waypoint.latitude.value)
+        assertEquals(-16.5f, reader.waypoint.longitude.value)
     }
-
-//    public void testTitle()
-//    {
-//        // TODO: Einlesen der Nikki-Daten
-//    }
 
     public void testOffsetFinder()
     {
@@ -81,6 +82,40 @@ class ImageTest extends GroovyTestCase{
         assertNotNull(placemarks[1].Point)
         assertEquals("13", placemarks[2].name.text())
         assertNotNull(placemarks[2].Point)
+    }
+
+    public void testSaveImage()
+    {
+        copyFile(IMAGE1)
+        long baseTime = System.currentTimeMillis()-100000
+        File file = new File(tmpDir.path, IMAGE1)
+        assertTrue(file.setLastModified(baseTime))
+
+        Image image = constructImage(DAY1, IMAGE1)
+        tmpDir.images[IMAGE1] = image
+
+        assertTrue(file.lastModified() == baseTime)
+        image.save(tmpDir.path)
+        assertFalse(file.lastModified() == baseTime)
+
+        assertTrue(file.setLastModified(baseTime))
+        image.save(tmpDir.path)
+        assertTrue(file.lastModified() == baseTime)
+
+        image.description = "Ü\nß"
+        image.title = "ä#'\n\n<>"
+        image.export = false
+        image.save(tmpDir.path)
+        assertFalse(file.lastModified() == baseTime)
+
+        ImageReader reader = new ImageReader(file)
+        assertEquals(ZONE.ID, reader.timeZone.ID)
+        assertEquals("Ü\nß", reader.description)
+        assertEquals("ä#'\n\n<>", reader.title)
+        assertEquals(-5.0f, reader.waypoint.latitude.value)
+        assertEquals(25.0f, reader.waypoint.longitude.value)
+        assertFalse(reader.export)
+
     }
 }
 

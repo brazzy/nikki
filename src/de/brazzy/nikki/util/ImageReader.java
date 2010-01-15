@@ -22,16 +22,26 @@ import mediautil.image.jpeg.LLJTranException;
 import org.apache.commons.io.IOUtils;
 
 import com.mortennobel.imagescaling.ResampleOp;
-
+import de.brazzy.nikki.model.Cardinal;
+import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.Rotation;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import mediautil.gen.directio.SplitInputStream;
+import java.io.UnsupportedEncodingException;
+import mediautil.gen.Rational;
+import mediautil.image.jpeg.Entry;
 import mediautil.image.jpeg.Exif;
+import mediautil.image.jpeg.IFD;
 
 public class ImageReader
-{    
+{
+    private static final String ENTRY_NIKKI_CONTENT = "Application-specific data of the Nikki GPS/Photo log tool http://www.brazzy.de/nikki";
+    private static final int ENTRY_NIKKI = 1;
+    private static final int ENTRY_TIMEZONE = 2;
+    private static final int ENTRY_TITLE = 3;
+    private static final int ENTRY_DESCRIPTION = 4;
+    private static final int ENTRY_EXPORT = 5;
+
     private static final int THUMBNAIL_SIZE = 180;
     private static byte[] errorIcon;
     static
@@ -49,6 +59,8 @@ public class ImageReader
     private File file;
     private TimeZone zone;
     private Exif metadata;
+    private IFD nikkiIFD;
+    private IFD gpsIFD;
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
@@ -65,6 +77,21 @@ public class ImageReader
             LLJTran llj = new LLJTran(file);
             llj.read(LLJTran.READ_INFO, true);
             this.metadata = (Exif) llj.getImageInfo();
+            if(metadata != null && metadata.getIFDs() != null &&
+               metadata.getIFDs().length > 0 && metadata.getIFDs()[0] != null)
+            {
+                IFD mainIFD = metadata.getIFDs()[0];
+                this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
+
+                if(mainIFD.getIFD(Exif.EXIFOFFSET) != null)
+                {
+                    IFD appnote = mainIFD.getIFD(Exif.EXIFOFFSET).getIFD(Exif.APPLICATIONNOTE);
+                    if(appnote != null && ENTRY_NIKKI_CONTENT.equals(appnote.getEntry(ENTRY_NIKKI, 0).getValue(0)))
+                    {
+                        this.nikkiIFD = appnote;
+                    }
+                }
+            }
             this.rotation = getRotation();
         }
         catch(Exception e)
@@ -80,12 +107,13 @@ public class ImageReader
 
         try
         {            
-            if(metadata != null)
-            {
-                image.setTime(getTime());
-            }
-            
+            image.setTime(getTime());
             image.setThumbnail(getThumbnail());
+            image.setWaypoint(getWaypoint());
+            image.setTitle(getTitle());
+            image.setDescription(getDescription());
+            image.setExport(isExport());
+            image.setZone(getTimeZone());
         }
         catch (Throwable e)
         {
@@ -169,6 +197,91 @@ public class ImageReader
             }            
         }
         return time;
+    }
+
+    private String getUTF8(int tagName)
+    {
+        if(nikkiIFD == null)
+        {
+            return null;
+        }
+        Entry entry = nikkiIFD.getEntry(tagName, 0);
+        if(entry==null)
+        {
+            return null;
+        }
+
+        Object[] values = entry.getValues();
+        byte[] bytes = new byte[values.length];
+        for(int i=0; i<values.length; i++)
+        {
+            bytes[i] = (byte)((Integer)values[i]).intValue();
+        }
+
+        try
+        {
+            return new String(bytes, "UTF-8");
+        }
+        catch(UnsupportedEncodingException ex)
+        {
+            throw new IllegalStateException("Can't happen", ex);
+        }
+    }
+
+    public String getTitle()
+    {
+        return getUTF8(ENTRY_TITLE);
+    }
+
+    public String getDescription()
+    {
+        return getUTF8(ENTRY_DESCRIPTION);
+    }
+
+    public boolean isExport()
+    {
+        if(nikkiIFD == null)
+        {
+            return false;
+        }
+        Integer export = (Integer)nikkiIFD.getEntry(ENTRY_EXPORT, 0).getValue(0);
+        return export != null && export != 0;
+    }
+
+    public Waypoint getWaypoint()
+    {
+        if(gpsIFD == null)
+        {
+            return null;
+        }
+        Entry e;
+        GeoCoordinate lat = new GeoCoordinate();
+        GeoCoordinate lon = new GeoCoordinate();
+        Waypoint result = new Waypoint();
+        result.setLatitude(lat);
+        result.setLongitude(lon);
+
+        e = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
+        lat.setDirection(Cardinal.parse((String) e.getValue(0)));
+        e = gpsIFD.getEntry(Exif.GPSLatitude, 0);
+        lat.setMagnitude(((Rational)e.getValue(0)).floatValue());
+
+        e = gpsIFD.getEntry(Exif.GPSLongitudeRef, 0);
+        lon.setDirection(Cardinal.parse((String) e.getValue(0)));
+        e = gpsIFD.getEntry(Exif.GPSLongitude, 0);
+        lon.setMagnitude(((Rational)e.getValue(0)).floatValue());
+
+        return result;
+    }
+
+    public TimeZone getTimeZone()
+    {
+        if(nikkiIFD == null)
+        {
+            return null;
+        }
+        String zoneID = (String)nikkiIFD.getEntry(ENTRY_TIMEZONE, 0).getValue(0);
+        return zoneID == null ? null : TimeZone.getTimeZone(zoneID);
     }
 
     public byte[] scale(int toWidth, boolean paintBorder) throws IOException, LLJTranException
