@@ -18,6 +18,7 @@ class ImageTest extends AbstractNikkiTest{
 
     public void setUp()
     {
+        super.setUp()
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
             TimeZone.getTimeZone("GMT"))
     }
@@ -115,7 +116,35 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(-5.0f, reader.waypoint.latitude.value)
         assertEquals(25.0f, reader.waypoint.longitude.value)
         assertFalse(reader.export)
+    }
 
+    private void checkPropertyModified(def image, def propName, def newValue)
+    {
+        assertFalse(image.modified)
+        image[propName] = image[propName]
+        assertFalse(image.modified)
+        image[propName] = newValue
+        assertTrue(image.modified)
+        image.modified = false
+    }
+
+    public void testModified()
+    {
+        copyFile(IMAGE1)
+        Image image = reader.createImage()
+        checkPropertyModified(image, 'title', 'changed')
+        checkPropertyModified(image, 'description', 'changed')
+        checkPropertyModified(image, 'fileName', 'changed')
+        checkPropertyModified(image, 'time', new Date())
+        checkPropertyModified(image, 'zone', ZONE)
+        checkPropertyModified(image, 'day', new Day())
+        checkPropertyModified(image, 'thumbnail', new byte[0])
+        checkPropertyModified(image, 'export', false)
+        checkPropertyModified(image, 'waypoint', null)
+        image.title= "other"
+        assertTrue(image.modified)
+        image.save(tmpDir.path)
+        assertFalse(image.modified)
     }
 }
 

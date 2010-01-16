@@ -10,6 +10,9 @@ class Image implements Serializable{
     public static final long serialVersionUID = 1;
     public static final String OFFSET_FINDER_COLOR = "801977FF";
     public static final double OFFSET_FINDER_SCALE = 3.0
+
+    boolean modified
+
     String fileName
     String title
     String description
@@ -19,7 +22,23 @@ class Image implements Serializable{
     Waypoint waypoint
     byte[] thumbnail
     boolean export
-    
+
+    void setProperty(String name, value)
+    {
+        if(name == "modified")
+        {
+            this.modified = value
+            return
+        }
+        if(this[name]==value)
+        {
+            return
+        }
+        this.modified = true
+        this.@"$name"=value
+    }
+
+
     public String getLongDescription()
     {
         def writer = new StringWriter()  
