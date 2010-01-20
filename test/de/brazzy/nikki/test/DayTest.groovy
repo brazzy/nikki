@@ -34,7 +34,7 @@ class DayTest extends AbstractNikkiTest{
 
     public void testGeotag()
     {
-        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
+        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
         def dat = "GMT 2009-01-01 12:"
 
         def day = new Day()

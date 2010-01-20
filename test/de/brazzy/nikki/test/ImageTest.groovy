@@ -8,6 +8,7 @@ import de.brazzy.nikki.model.Waypoint
 import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 import org.apache.commons.io.IOUtils;
+import java.util.Arrays
 
 /**
  * @author Brazil
@@ -21,6 +22,29 @@ class ImageTest extends AbstractNikkiTest{
         super.setUp()
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
             TimeZone.getTimeZone("GMT"))
+    }
+
+    public void testTimezone()
+    {
+        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
+        assertEquals("Australia/North", reader.timeZone.ID)
+        assertEquals(fmt.parse("GMT 2009-11-11 09:40:27"), reader.time)
+        def image = reader.createImage()
+        assertEquals("Australia/North", image.zone.ID)
+
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
+            TimeZone.getTimeZone("CET"))
+        assertEquals("CET", reader.timeZone.ID)
+        assertEquals(fmt.parse("GMT 2009-11-12 09:10:10"), reader.time)
+        image = reader.createImage()
+        assertEquals("CET", image.zone.ID)
+
+        def deflt = TimeZone.getDefault()
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
+            null)
+        assertEquals(deflt.ID, reader.timeZone.ID)
+        image = reader.createImage()
+        assertEquals(deflt.ID, image.zone.ID)
     }
 
     public void testThumbnail()
@@ -45,10 +69,8 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testReadExif()
     {
-        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
-        assertEquals(fmt.parse("GMT 2009-11-11 19:10:27"), reader.time)
         assertTrue(reader.export)
-        assertEquals("America/Cancun", reader.timeZone.ID)
+        assertEquals("Australia/North", reader.timeZone.ID)
         assertEquals("Überschrift", reader.title)
         assertEquals("Kommentar\näöüß", reader.description)
         assertNotNull(reader.waypoint)
@@ -106,6 +128,7 @@ class ImageTest extends AbstractNikkiTest{
         image.description = "Ü\nß"
         image.title = "ä#'\n\n<>"
         image.export = false
+        image.thumbnails = [-77, 1, 100, 0, -42] as byte[]
         image.save(tmpDir.path)
         assertFalse(file.lastModified() == baseTime)
 
@@ -113,6 +136,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(ZONE.ID, reader.timeZone.ID)
         assertEquals("Ü\nß", reader.description)
         assertEquals("ä#'\n\n<>", reader.title)
+        assertTrue(Arrays.equals(reader.thumbnail, [-77, 1, 100, 0, -42] as byte[]))
         assertEquals(-5.0f, reader.waypoint.latitude.value)
         assertEquals(25.0f, reader.waypoint.longitude.value)
         assertFalse(reader.export)

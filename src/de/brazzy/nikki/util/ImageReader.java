@@ -57,7 +57,7 @@ public class ImageReader
     }
 
     private File file;
-    private TimeZone zone;
+    private TimeZone scanZone;
     private Exif metadata;
     private IFD nikkiIFD;
     private IFD gpsIFD;
@@ -71,7 +71,7 @@ public class ImageReader
     {
         super();
         this.file = file;
-        this.zone = zone;
+        this.scanZone = zone == null ? TimeZone.getDefault() : zone;
         try
         {
             LLJTran llj = new LLJTran(file);
@@ -107,13 +107,13 @@ public class ImageReader
 
         try
         {            
-            image.setTime(getTime());
             image.setThumbnail(getThumbnail());
             image.setWaypoint(getWaypoint());
             image.setTitle(getTitle());
             image.setDescription(getDescription());
             image.setExport(isExport());
             image.setZone(getTimeZone());
+            image.setTime(getTime());
         }
         catch (Throwable e)
         {
@@ -191,7 +191,7 @@ public class ImageReader
             if(date != null)
             {
                 DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-                format.setTimeZone(zone);
+                format.setTimeZone(getTimeZone());
 
                 time = format.parse(date.substring(0, 19));
             }            
@@ -278,10 +278,17 @@ public class ImageReader
     {
         if(nikkiIFD == null)
         {
-            return null;
+            return this.scanZone;
         }
         String zoneID = (String)nikkiIFD.getEntry(ENTRY_TIMEZONE, 0).getValue(0);
-        return zoneID == null ? null : TimeZone.getTimeZone(zoneID);
+        if(zoneID != null)
+        {
+            return TimeZone.getTimeZone(zoneID);
+        }
+        else
+        {
+            return this.scanZone;
+        }
     }
 
     public byte[] scale(int toWidth, boolean paintBorder) throws IOException, LLJTranException

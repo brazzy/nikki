@@ -57,7 +57,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         Image image = day.images[0]
         assertEquals(IMAGE1, image.fileName)
         assertEquals("Überschrift", image.title)
-        assertEquals("America/Cancun", image.zone.ID)
+        assertEquals("Australia/North", image.zone.ID)
         assertNotNull(image.thumbnail)
         assertSame(day, image.day)
         assertEquals(DAY1, FORMAT.stripTime(image.time))

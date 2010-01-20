@@ -56,11 +56,16 @@ public class PrepImage {
         e = (Exif) llj.getImageInfo();
         
 
-        IFD data = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
         IFD mainIFD = e.getIFDs()[0];
         IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
         IFD gpsIfd = mainIFD.getIFD(Exif.GPSINFO);
-        exifIFD.addIFD(data);
+
+        IFD data = exifIFD.getIFD(Exif.APPLICATIONNOTE);
+        if(data==null)
+        {
+            data = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
+            exifIFD.addIFD(data);
+        }
         Entry entry;
 
 
@@ -92,7 +97,7 @@ public class PrepImage {
         data.addEntry(1, entry);
 
         entry = new Entry(Exif.ASCII);
-        entry.setValue(0, "America/Cancun");
+        entry.setValue(0, "Australia/North");
         data.addEntry(2, entry); // Timezone
 
         entry = new Entry(Exif.UNDEFINED);

@@ -166,7 +166,7 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testGeotag()
     {
-        def fmt = new SimpleDateFormat("Z yyyy-MM-dd HH:mm:ss");
+        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
         Image image = constructImage(DAY1, IMAGE1)
         WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
