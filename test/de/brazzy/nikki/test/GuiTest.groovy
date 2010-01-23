@@ -188,7 +188,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         def wp = model[0].images[IMAGE1].waypoint
         assertNotNull(wp)
-        assertEquals(fmt.parse("GMT 2009-11-10 15:00:00"), wp.timestamp)
+        assertEquals(fmt.parse("GMT 2009-11-10 15:30:00"), wp.timestamp)
     }
 
     public void testExport()

@@ -19,7 +19,7 @@ import java.util.prefs.Preferences
  */
 class AbstractNikkiTest extends GroovyTestCase
 {
-    protected static final TimeZone ZONE = TimeZone.getTimeZone("Etc/GMT-10")
+    protected static final TimeZone ZONE = TimeZone.getTimeZone("Australia/North")
     protected static final RelativeDateFormat FORMAT = new RelativeDateFormat(ZONE)
     protected static final String DATE1 = "2009-11-11";
     protected static final String DATE2 = "2009-11-12";
@@ -31,7 +31,7 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
     protected static final Date TIME1 = new Date(DAY1.time+(60*60*5*1000))
     protected static final Date TIME2 = new Date(DAY2.time+(60*60*5*1000))
-    protected static final byte[] THUMB = [1 , 2 , 3, 4, 5, 6, 7, 8] as byte[]
+    protected static final byte[] THUMB = new BigInteger("FFD8FFE000104A46494600010101004800480000FFDB004300FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000B080001000101011100FFC40014000100000000000000000000000000000003FFC40014100100000000000000000000000000000000FFDA0008010100003F0037FFD9", 16).toByteArray()
 
     protected Directory tmpDir;
 
@@ -94,7 +94,7 @@ class AbstractNikkiTest extends GroovyTestCase
         Waypoint wp = constructWaypoint(day, 5)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: wp.timestamp, waypoint: wp)
+            export: true, time: wp.timestamp, waypoint: wp, modified: true, zone:ZONE)
         day.images.add(image)
         return image
     }

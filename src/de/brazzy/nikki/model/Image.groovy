@@ -6,6 +6,7 @@ import de.micromata.opengis.kml.v_2_2_0.Document
 import de.micromata.opengis.kml.v_2_2_0.Coordinate
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory
 import java.text.NumberFormat
+import de.brazzy.nikki.util.ImageWriter
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
     public static final String OFFSET_FINDER_COLOR = "801977FF";
@@ -54,7 +55,11 @@ class Image implements Serializable{
     
     public void save(File directory)
     {
-
+        if(modified)
+        {
+            new ImageWriter(this, directory).saveImage()
+        }
+        modified = false
     }
 
     public void offsetFinder(OutputStream out)

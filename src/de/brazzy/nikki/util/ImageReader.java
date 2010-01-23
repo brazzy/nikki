@@ -31,16 +31,9 @@ import java.io.UnsupportedEncodingException;
 import mediautil.gen.Rational;
 import mediautil.image.jpeg.Entry;
 import mediautil.image.jpeg.Exif;
-import mediautil.image.jpeg.IFD;
 
-public class ImageReader
+public class ImageReader extends ImageDataIO
 {
-    private static final String ENTRY_NIKKI_CONTENT = "Application-specific data of the Nikki GPS/Photo log tool http://www.brazzy.de/nikki";
-    private static final int ENTRY_NIKKI = 1;
-    private static final int ENTRY_TIMEZONE = 2;
-    private static final int ENTRY_TITLE = 3;
-    private static final int ENTRY_DESCRIPTION = 4;
-    private static final int ENTRY_EXPORT = 5;
 
     private static final int THUMBNAIL_SIZE = 180;
     private static byte[] errorIcon;
@@ -56,48 +49,17 @@ public class ImageReader
         }
     }
 
-    private File file;
     private TimeZone scanZone;
-    private Exif metadata;
-    private IFD nikkiIFD;
-    private IFD gpsIFD;
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
     private BufferedImage mainImage;
-    private Exception exception;
     
     public ImageReader(File file, TimeZone zone)
     {
-        super();
+        super(file, LLJTran.READ_INFO);
         this.file = file;
         this.scanZone = zone == null ? TimeZone.getDefault() : zone;
-        try
-        {
-            LLJTran llj = new LLJTran(file);
-            llj.read(LLJTran.READ_INFO, true);
-            this.metadata = (Exif) llj.getImageInfo();
-            if(metadata != null && metadata.getIFDs() != null &&
-               metadata.getIFDs().length > 0 && metadata.getIFDs()[0] != null)
-            {
-                IFD mainIFD = metadata.getIFDs()[0];
-                this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
-
-                if(mainIFD.getIFD(Exif.EXIFOFFSET) != null)
-                {
-                    IFD appnote = mainIFD.getIFD(Exif.EXIFOFFSET).getIFD(Exif.APPLICATIONNOTE);
-                    if(appnote != null && ENTRY_NIKKI_CONTENT.equals(appnote.getEntry(ENTRY_NIKKI, 0).getValue(0)))
-                    {
-                        this.nikkiIFD = appnote;
-                    }
-                }
-            }
-            this.rotation = getRotation();
-        }
-        catch(Exception e)
-        {
-            this.exception = e;
-        }
     }
 
     public Image createImage()
@@ -168,12 +130,12 @@ public class ImageReader
 
     private byte[] adjustForRotation(byte[] result) throws LLJTranException, IOException
     {
-        if(rotation != null && rotation != Rotation.NONE)
+        if(getRotation() != null && getRotation() != Rotation.NONE)
         {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             LLJTran llj = new LLJTran(new ByteArrayInputStream(result));
             llj.read(true);
-            llj.transform(out, rotation.getLLJTranConstant(), 0);
+            llj.transform(out, getRotation().getLLJTranConstant(), 0);
             return out.toByteArray();
         }
         else
@@ -248,7 +210,7 @@ public class ImageReader
         return export != null && export != 0;
     }
 
-    public Waypoint getWaypoint()
+    public Waypoint getWaypoint() throws ParseException
     {
         if(gpsIFD == null)
         {
@@ -260,6 +222,7 @@ public class ImageReader
         Waypoint result = new Waypoint();
         result.setLatitude(lat);
         result.setLongitude(lon);
+        result.setTimestamp(getTime());
 
         e = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
         lat.setDirection(Cardinal.parse((String) e.getValue(0)));

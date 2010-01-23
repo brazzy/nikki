@@ -141,6 +141,13 @@ class Directory extends ListDataModel<Day>{
                 it.directory = this
             }
             this.images = input.readObject()
+            this.images.values().each{
+                if(!it.zone)
+                {
+                    it.zone = this.zone
+                }
+            }
+
             this.waypointFiles = input.readObject()
             input.close()
         }

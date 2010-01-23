@@ -8,6 +8,7 @@
 - (API-)Dokumentation/Lizenz
 - I18n
 - JAR-Skript
+- Logging und Fehlerpopups
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
 - Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)

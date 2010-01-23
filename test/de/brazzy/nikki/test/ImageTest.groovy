@@ -110,7 +110,7 @@ class ImageTest extends AbstractNikkiTest{
     public void testSaveImage()
     {
         copyFile(IMAGE1)
-        long baseTime = System.currentTimeMillis()-100000
+        long baseTime = System.currentTimeMillis()-10000000
         File file = new File(tmpDir.path, IMAGE1)
         assertTrue(file.setLastModified(baseTime))
 
@@ -128,18 +128,19 @@ class ImageTest extends AbstractNikkiTest{
         image.description = "Ü\nß"
         image.title = "ä#'\n\n<>"
         image.export = false
-        image.thumbnails = [-77, 1, 100, 0, -42] as byte[]
+        byte[] th = image.thumbnail
         image.save(tmpDir.path)
         assertFalse(file.lastModified() == baseTime)
 
-        ImageReader reader = new ImageReader(file)
+        ImageReader reader = new ImageReader(file, null)
         assertEquals(ZONE.ID, reader.timeZone.ID)
         assertEquals("Ü\nß", reader.description)
         assertEquals("ä#'\n\n<>", reader.title)
-        assertTrue(Arrays.equals(reader.thumbnail, [-77, 1, 100, 0, -42] as byte[]))
         assertEquals(-5.0f, reader.waypoint.latitude.value)
         assertEquals(25.0f, reader.waypoint.longitude.value)
         assertFalse(reader.export)
+        def thumb = reader.thumbnail
+        assertTrue(Arrays.equals(thumb, th))
     }
 
     private void checkPropertyModified(def image, def propName, def newValue)
@@ -158,14 +159,15 @@ class ImageTest extends AbstractNikkiTest{
         Image image = reader.createImage()
         checkPropertyModified(image, 'title', 'changed')
         checkPropertyModified(image, 'description', 'changed')
+        def origName = image.fileName
         checkPropertyModified(image, 'fileName', 'changed')
         checkPropertyModified(image, 'time', new Date())
-        checkPropertyModified(image, 'zone', ZONE)
+        checkPropertyModified(image, 'zone', TimeZone.getTimeZone("GMT"))
         checkPropertyModified(image, 'day', new Day())
-        checkPropertyModified(image, 'thumbnail', new byte[0])
+        checkPropertyModified(image, 'thumbnail', null)
         checkPropertyModified(image, 'export', false)
         checkPropertyModified(image, 'waypoint', null)
-        image.title= "other"
+        image.fileName = origName
         assertTrue(image.modified)
         image.save(tmpDir.path)
         assertFalse(image.modified)
