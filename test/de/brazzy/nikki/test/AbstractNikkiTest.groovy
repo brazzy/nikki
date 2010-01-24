@@ -31,7 +31,7 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
     protected static final Date TIME1 = new Date(DAY1.time+(60*60*5*1000))
     protected static final Date TIME2 = new Date(DAY2.time+(60*60*5*1000))
-    protected static final byte[] THUMB = new BigInteger("FFD8FFE000104A46494600010101004800480000FFDB004300FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC0000B080001000101011100FFC40014000100000000000000000000000000000003FFC40014100100000000000000000000000000000000FFDA0008010100003F0037FFD9", 16).toByteArray()
+    protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
 
     protected Directory tmpDir;
 
@@ -54,10 +54,12 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected void copyFile(String name)
     {
-        def stream = new FileOutputStream(new File(tmpDir.path, name))
+        File f = new File(tmpDir.path, name)
+        def stream = new FileOutputStream(f)
         IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
             stream)
         stream.close()
+        f.deleteOnExit()
     }
 
     protected WaypointFile constructWaypointFile(Date date, String fileName)

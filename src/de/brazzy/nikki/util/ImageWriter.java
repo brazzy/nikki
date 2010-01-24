@@ -37,6 +37,11 @@ public class ImageWriter extends ImageDataIO
     public ImageWriter(Image img, File directory)
     {
         super(new File(directory.getPath(), img.getFileName()), LLJTran.READ_ALL);
+        if(this.exception != null)
+        {
+            throw new RuntimeException(this.exception);
+        }
+
         this.image = img;
 
         if(metadata == null)
@@ -156,7 +161,7 @@ public class ImageWriter extends ImageDataIO
     }
 
     private void writeThumbnail() throws IOException
-    {
+    { // TODO: überschreiben eines existierenden Thumbnails?
         llj.removeThumbnail();
         if(image.getThumbnail() != null && !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
                              ImageResources.EXT_JPG))

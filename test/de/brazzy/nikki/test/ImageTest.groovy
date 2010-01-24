@@ -109,13 +109,13 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testSaveImage()
     {
-        copyFile(IMAGE1)
+        copyFile(IMAGE2)
         long baseTime = System.currentTimeMillis()-10000000
-        File file = new File(tmpDir.path, IMAGE1)
+        File file = new File(tmpDir.path, IMAGE2)
         assertTrue(file.setLastModified(baseTime))
 
-        Image image = constructImage(DAY1, IMAGE1)
-        tmpDir.images[IMAGE1] = image
+        Image image = constructImage(DAY2, IMAGE2)
+        tmpDir.images[IMAGE2] = image
 
         assertTrue(file.lastModified() == baseTime)
         image.save(tmpDir.path)

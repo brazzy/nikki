@@ -38,9 +38,10 @@ public class ImageDataIO {
                 IFD mainIFD = metadata.getIFDs()[0];
                 this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
 
-                if(mainIFD.getIFD(Exif.EXIFOFFSET) != null)
+                IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
+                if(exifIFD != null && exifIFD.getIFDs() != null)
                 {
-                    this.nikkiIFD = mainIFD.getIFD(Exif.EXIFOFFSET).getIFD(Exif.APPLICATIONNOTE);
+                    this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
                     if(this.nikkiIFD != null && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD.getEntry(ENTRY_NIKKI, 0).getValue(0)))
                     {
                         throw new IllegalArgumentException("Foreign Appnote IFD present");
