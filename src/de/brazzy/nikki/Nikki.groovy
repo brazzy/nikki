@@ -25,6 +25,7 @@ import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.util.SaveWorker
 
 /**
  * @author Michael Borgwardt
@@ -96,7 +97,10 @@ public class Nikki{
         }
         view.saveButton.actionPerformed={
             view.imageTable.editorComponent?.getValue()
-            view.dirList.selectedValue.save()
+            SaveWorker worker = new SaveWorker(view.dirList.selectedValue)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
+            dialogs.registerWorker(worker)
         }
         
         selListener = { it ->

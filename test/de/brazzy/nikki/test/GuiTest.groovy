@@ -127,6 +127,8 @@ class GuiTest extends AbstractNikkiTest {
         view.dirList.selectedIndex = 0
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
+        def imgFile = new File(tmpDir.path, IMAGE1)
+        def timestamp = imgFile.lastModified()
 
         dialogs.add(null)
         view.scanButton.actionListeners[0].actionPerformed()
@@ -145,16 +147,17 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(2, tmpDir.path.list().length)
         view.saveButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
-        assertEquals(3, tmpDir.path.list().length)
+        assertTrue(imgFile.lastModified() > timestamp)
+        assertEquals(2, tmpDir.path.list().length)
 
         model.remove(tmpDir)
         tmpDir = new Directory(path: tmpDir.path);
-        assertEquals(TimeZone.getDefault(), tmpDir.zone)
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
 
+        dialogs.add(ZONE)
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertEquals(2, tmpDir.size())
@@ -304,6 +307,7 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testAutoCommit()
     {
+        copyFile(IMAGE1)
         DateFormat fmt = DateFormat.getDateTimeInstance();
         fmt.setTimeZone(ZONE)
         Image image = constructImage(DAY1, IMAGE1)

@@ -67,7 +67,7 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
-    public void saveImage() throws IOException
+    public void saveImage() throws Exception
     {
         try {
             writeTitle();
@@ -116,12 +116,18 @@ public class ImageWriter extends ImageDataIO
 
     private void writeTitle()
     {
-        nikkiIFD.addEntry(ENTRY_TITLE, utf8Entry(image.getTitle()));
+        if(image.getTitle() != null)
+        {
+            nikkiIFD.addEntry(ENTRY_TITLE, utf8Entry(image.getTitle()));
+        }
     }
 
     private void writeDescription()
     {
-        nikkiIFD.addEntry(ENTRY_DESCRIPTION, utf8Entry(image.getDescription()));
+        if(image.getDescription() != null)
+        {
+            nikkiIFD.addEntry(ENTRY_DESCRIPTION, utf8Entry(image.getDescription()));
+        }
     }
 
     private void writeTimezone()
@@ -162,8 +168,9 @@ public class ImageWriter extends ImageDataIO
 
     private void writeThumbnail() throws IOException
     { // TODO: überschreiben eines existierenden Thumbnails?
-        llj.removeThumbnail();
-        if(image.getThumbnail() != null && !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
+        //llj.removeThumbnail();
+        if(metadata.getThumbnailBytes() == null &&  image.getThumbnail() != null &&
+           !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
                              ImageResources.EXT_JPG))
         {
             throw new IllegalStateException();

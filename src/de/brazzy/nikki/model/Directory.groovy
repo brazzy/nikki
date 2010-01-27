@@ -100,8 +100,23 @@ class Directory extends ListDataModel<Day>{
         worker?.progress = 0
     }  
 
-    public void save()
+    public void saveNew(SwingWorker worker)
     {
+        worker?.progress = 0;
+        def count = 0;
+        images.values().each{
+            if(new File(this.path, it.fileName).exists())
+            {
+                it.save(this.path)
+            }
+            worker?.progress = new Integer((int)(++count / images.size() * 100));
+        }
+
+        worker?.progress = 0;
+    }
+
+    public void save()
+    { // TODO: entfernen
         def persist = new File(this.path, PERSIST_FILE)        
         def output = new ObjectOutputStream(
                 new BufferedOutputStream(
@@ -114,12 +129,12 @@ class Directory extends ListDataModel<Day>{
     }
     
     public boolean hasPersistent()
-    {
+    { // TODO: entfernen
         return new File(this.path, PERSIST_FILE).exists()
     }
     
     private void readPersistent()
-    {
+    { // TODO: entfernen
         def persist = new File(this.path, PERSIST_FILE)        
         if(this.images.size()==0 && persist.exists())
         {

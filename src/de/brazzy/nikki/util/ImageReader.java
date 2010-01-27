@@ -76,6 +76,8 @@ public class ImageReader extends ImageDataIO
             image.setExport(isExport());
             image.setZone(getTimeZone());
             image.setTime(getTime());
+            image.setModified(false);
+            llj.freeMemory();
         }
         catch (Throwable e)
         {
