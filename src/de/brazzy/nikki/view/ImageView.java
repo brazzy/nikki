@@ -150,7 +150,7 @@ public class ImageView extends JPanel
         if(value.getTime() != null)
         {
             DateFormat fmt = DateFormat.getDateTimeInstance();
-            fmt.setTimeZone(value.getDay().getDirectory().getZone());
+            fmt.setTimeZone(value.getZone() == null ? value.getDay().getDirectory().getZone() : value.getZone());
             time.setText(fmt.format(value.getTime()));
             if(value.getWaypoint() != null)
             {

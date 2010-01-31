@@ -53,14 +53,15 @@ class Directory extends ListDataModel<Day>{
 
         int count = 0;
         def imageFiles = path.listFiles(FILTER_JPG)
-        // Datum gemäß der Foto-Zeitzone verwenden
-        def format = new RelativeDateFormat(zone)
         
         imageFiles.each{
             if(!this.images[it.name])
             {
                 Image image = new ImageReader(it, zone).createImage()
                 this.images[it.name] = image
+
+                // Datum gemäß der Foto-Zeitzone verwenden
+                def format = new RelativeDateFormat(image.zone == null ? zone : image.zone)
 
                 def date = image.time == null ? null : format.stripTime(image.time)
                 def day = days[date]
@@ -107,7 +108,14 @@ class Directory extends ListDataModel<Day>{
         images.values().each{
             if(new File(this.path, it.fileName).exists())
             {
-                it.save(this.path)
+                try
+                {
+                    it.save(this.path)
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace()
+                }
             }
             worker?.progress = new Integer((int)(++count / images.size() * 100));
         }

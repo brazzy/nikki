@@ -78,17 +78,14 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            if(!view.dirList.selectedValue.hasPersistent())
+            def zone = dialogs.askTimeZone(view.dirList.selectedValue.zone)
+            if(zone)
             {
-                def zone = dialogs.askTimeZone(view.dirList.selectedValue.zone)
-                if(zone)
-                {
-                    view.dirList.selectedValue.zone = zone
-                }
-                else
-                {
-                    return
-                }
+                view.dirList.selectedValue.zone = zone
+            }
+            else
+            {
+                return
             }
             ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
             worker.addPropertyChangeListener(progressListener)
