@@ -19,7 +19,7 @@ class DayTest extends AbstractNikkiTest{
 
     public void testDayToString()
     {
-        Day d = new Day(directory: tmpDir, date: FORMAT.parse(DATE1))
+        Day d = new Day(directory: tmpDir, date: DAY1)
         assertEquals(DATE1+" (0, 0)", d.toString())
         d.images.add(new Image())
         assertEquals(DATE1+" (1, 0)", d.toString())
@@ -81,7 +81,7 @@ class DayTest extends AbstractNikkiTest{
     public void testExport()
     {
         copyFile(IMAGE1)
-        Day day = new Day(directory: tmpDir, date: FORMAT.parse(DATE1))
+        Day day = new Day(directory: tmpDir, date: DAY1)
         Image image = constructImage(DAY1, IMAGE1)
         day.images.add(image)
         File file = new File(tmpDir.path, "export"+DATE1+".kmz")

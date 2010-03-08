@@ -2,15 +2,23 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="util"/>
+	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/asm-tree-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/cobertura.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar" sourcepath="E:/projects_checkout/map_kmz/lib/sanselan-0.97-incubator-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Programme/Java/groovy-1.6.4/embeddable/groovy-all-1.6.4.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/JavaAPIforKml.jar" sourcepath="E:/projects_checkout/map_kmz/lib/JavaAPIforKml-sources.jar"/>
+	<classpathentry kind="lib" path="lib/imagescaling_0_8_1.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="lib/JavaAPIforKml.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="lib/mediautil-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/imagescaling_0_8_1.jar" sourcepath="lib/imagescaling_src__0_8_1.zip"/>
-	<classpathentry kind="output" path="out"/>
+	<classpathentry kind="lib" path="lib/joda-time-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.9.jar"/>
+	<classpathentry kind="lib" path="lib/mediautil-1.0_patched.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry kind="lib" path="lib/jsi-1.0b2p1.jar"/>
+	<classpathentry kind="lib" path="lib/trove-0.1.8.jar"/>
+	<classpathentry kind="output" path="build/"/>
 </classpath>

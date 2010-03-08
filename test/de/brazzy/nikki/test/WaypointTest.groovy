@@ -7,6 +7,7 @@ import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.WaypointFile
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import org.joda.time.DateTime
 
 /**
  * @author Brazil
@@ -45,7 +46,7 @@ public class WaypointTest extends GroovyTestCase{
         final String line = '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D'
         Waypoint wp = Waypoint.parse(new Directory(), null, line);
 
-        assertEquals(wp.timestamp, Date.parse("yyyy-MM-dd HH:mm:ss.SSS z", "2009-07-27 07:12:32.000 GMT"))
+        assertEquals(wp.timestamp, new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.forID("GMT")))
 
         def coord = wp.latitude
         assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
@@ -60,7 +61,6 @@ public class WaypointTest extends GroovyTestCase{
 
     public void testParseWaypointFile()
     {
-        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
         Directory dir = new Directory()
 
         WaypointFile f = WaypointFile.parse(dir, new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()))
@@ -71,7 +71,7 @@ public class WaypointTest extends GroovyTestCase{
 
         Waypoint wp1 = f.waypoints[0]
         assertSame(f, wp1.file)
-        assertEquals(fmt.parse("GMT 2009-11-11 05:09:04"), wp1.timestamp)
+        assertEquals(new DateTime(2009, 11, 11, 5, 9, 4, 0, DateTimeZone.forID("GMT")), wp1.timestamp)
         assertTrue(133 < wp1.longitude.value)
         assertTrue(wp1.longitude.value < 134)
         assertTrue(-24 < wp1.latitude.value)
@@ -79,7 +79,7 @@ public class WaypointTest extends GroovyTestCase{
 
         Waypoint wp2 = f.waypoints[1]
         assertSame(f, wp2.file)
-        assertEquals(fmt.parse("GMT 2009-11-11 06:00:33"), wp2.timestamp)
+        assertEquals(new DateTime(2009, 11, 11, 6 , 0, 3, 0, DateTimeZone.forID("GMT")), wp2.timestamp)
         assertTrue(wp1.longitude.value < wp2.longitude.value)
         assertTrue(wp2.latitude.value > wp1.latitude.value)
     }

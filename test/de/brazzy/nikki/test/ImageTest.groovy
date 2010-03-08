@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 import org.apache.commons.io.IOUtils;
 import java.util.Arrays
+import org.joda.time.DateTimeZone
 
 /**
  * @author Brazil
@@ -21,7 +22,7 @@ class ImageTest extends AbstractNikkiTest{
     {
         super.setUp()
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
-            TimeZone.getTimeZone("GMT"))
+            DateTimeZone.forID("GMT"))
     }
 
     public void testTimezone()

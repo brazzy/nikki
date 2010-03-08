@@ -24,6 +24,9 @@ import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 
 public class ImageView extends JPanel
@@ -149,12 +152,11 @@ public class ImageView extends JPanel
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            DateFormat fmt = DateFormat.getDateTimeInstance();
-            fmt.setTimeZone(value.getZone() == null ? value.getDay().getDirectory().getZone() : value.getZone());
-            time.setText(fmt.format(value.getTime()));
+            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeNoMillis();
+            time.setText(fmt.print(value.getTime()));
             if(value.getWaypoint() != null)
             {
-                long diff = (value.getTime().getTime() - value.getWaypoint().getTimestamp().getTime()) / 1000;                
+                long diff = (value.getTime().getMillis() - value.getWaypoint().getTimestamp().getMillis()) / 1000;
                 timeDiff.setText(String.valueOf(diff));
                 timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
                 if(Math.abs(diff) > DIFF_THRESHOLD)

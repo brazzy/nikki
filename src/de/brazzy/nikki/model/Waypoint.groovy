@@ -2,38 +2,42 @@ package de.brazzy.nikki.model;
 
 import java.text.SimpleDateFormat
 import java.text.DateFormat
-import java.util.TimeZone
-import de.brazzy.nikki.util.RelativeDateFormat
+import org.joda.time.Instant
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
+
+import de.brazzy.nikki.util.TimezoneFinder;
+
 class Waypoint implements Serializable, Comparable{
     public static final long serialVersionUID = 1;
     
-    WaypointFile file;
-    Day day;
-    Date timestamp;
-    GeoCoordinate latitude;
-    GeoCoordinate longitude;
+    WaypointFile file
+    Day day
+    Instant timestamp
+    DateTimeZone zone;
+    GeoCoordinate latitude
+    GeoCoordinate longitude
     
-    public static Waypoint parse(Directory dir, WaypointFile wpFile, String line)
+    public static Waypoint parse(WaypointFile wpFile, String line, TimezoneFinder finder)
     {
-        final PARSE_FORMAT = new SimpleDateFormat('ddMMyyHHmmss.SSS')
-        PARSE_FORMAT.timeZone = TimeZone.getTimeZone(TimeZone.GMT_ID)
+        final PARSE_FORMAT = DateTimeFormat.forStyle('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
         
         def result = new Waypoint()
         result.file = wpFile
         def data = line.trim().tokenize(',')
-        result.timestamp = PARSE_FORMAT.parse(data[9]+data[1])
+        result.timestamp = PARSE_FORMAT.parseDateTime(data[9]+data[1]).toInstant()
         result.latitude = GeoCoordinate.parse(data[3], data[4])
         result.longitude = GeoCoordinate.parse(data[5], data[6])
+        result.zone = finder.find(result.latitude, result.longitude)
 
-        def dateFformat = new RelativeDateFormat(dir.zone)
-
-	    Day d = dir.data.find{
-            dateFformat.sameDay(it.date, result.timestamp)
-	    }
+        def date = result.timestamp.toDateTime(result.zone).toLocalDate()
+        Day d = wpFile.directory.data.find{
+            it.date == date
+        }
         if(!d)
         {
-            d = new Day(directory: dir, date: dateFformat.stripTime(result.timestamp))
-            dir.add(d)
+            d = new Day(directory: wpFile.directory, date: date)
+            wpFile.directory.add(d)
         }
         result.day = d
         d.waypoints.add(result)            

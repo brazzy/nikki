@@ -1,21 +1,20 @@
 package de.brazzy.nikki.view;
 
 import java.util.Arrays;
-import java.util.TimeZone;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.joda.time.DateTimeZone;
 
 public class ScanOptions extends JPanel
 {
     private JComboBox combobox = new JComboBox();
 
-    public ScanOptions(TimeZone selected)
+    public ScanOptions(DateTimeZone selected)
     {
-        String[] zones = TimeZone.getAvailableIDs();
+        String[] zones = (String[]) DateTimeZone.getAvailableIDs().toArray(new String[0]);
         Arrays.sort(zones);
         combobox.setModel(new DefaultComboBoxModel(zones));
         if(selected != null)
@@ -30,10 +29,10 @@ public class ScanOptions extends JPanel
         add(combobox);
     }
 
-    public TimeZone getTimezone()
+    public DateTimeZone getTimezone()
     {
         return combobox.getSelectedItem() == null ? null :
-            TimeZone.getTimeZone((String) combobox.getSelectedItem());
+            DateTimeZone.forID((String) combobox.getSelectedItem());
     }
 
 }

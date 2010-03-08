@@ -10,29 +10,30 @@ import de.micromata.opengis.kml.v_2_2_0.LineString
 import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
-import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.util.ImageReader
 import javax.swing.SwingWorker
 import java.util.TimeZone
 import java.text.DateFormat
 import java.util.zip.CRC32
 import java.text.DecimalFormat
-class Day extends AbstractTableModel implements Externalizable
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+class Day extends AbstractTableModel
 {
-    public static final long serialVersionUID = 1;
+    public static final long serialVersionUID = 1
     
     public static final int WAYPOINT_THRESHOLD = 1000 * 80
 
-    List<Waypoint> waypoints = [];
-    List<Image> images = [];
+    List<Image> images = []
     
-    Date date;
-    Directory directory;
+    LocalDate date
+    Directory directory
     
     public String toString()
-    {        
-        def format = new RelativeDateFormat(directory?.zone)
-        (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
+    {
+        DateTimeFormatter format = ISODateTimeFormat.date()
+        (date==null? "unknown" : format.format(date))+" ("+images.size()+")"
     }
 
     public int getRowCount()
@@ -55,20 +56,6 @@ class Day extends AbstractTableModel implements Externalizable
         true
     }
     
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        out.writeObject(waypoints)
-        out.writeObject(images)
-        out.writeObject(date)
-    }
-    
-    public void readExternal(ObjectInput oi) throws IOException, ClassNotFoundException
-    {
-        waypoints = oi.readObject()
-        images = oi.readObject()
-        date = oi.readObject()
-    }
-
     public void geotag(int offset = 0)
     {
         waypoints.sort()

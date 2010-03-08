@@ -4,17 +4,12 @@ import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Waypoint;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,7 +128,7 @@ public class ImageWriter extends ImageDataIO
     private void writeTimezone()
     {
         Entry entry = new Entry(Exif.ASCII);
-        entry.setValue(0, image.getZone().getID());
+        entry.setValue(0, image.getTime().getZone().getID());
         nikkiIFD.addEntry(ENTRY_TIMEZONE, entry);
     }
 

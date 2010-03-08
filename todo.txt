@@ -73,4 +73,5 @@ http://www.tutego.de/blog/javainsel/2009/09/thema-der-woche-programmieren-mit-ei
 http://commons.apache.org/sanselan/
 http://javanmea.sourceforge.net/
 http://griffon.codehaus.org/
-http://java.sun.com/javase/6/docs/api/javax/swing/SwingWorker.html
+http://download.geonames.org/export/dump/
+http://jsi.sourceforge.net/

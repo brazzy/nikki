@@ -8,7 +8,6 @@ import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
-import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.util.ImageReader
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
@@ -39,7 +38,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
 
-        tmpDir.scan(null)
+        tmpDir.scan(null, ZONE)
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())

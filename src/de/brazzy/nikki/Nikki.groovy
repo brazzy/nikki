@@ -21,7 +21,6 @@ import java.util.zip.ZipOutputStream
 import de.brazzy.nikki.util.ExportWorker
 import java.text.SimpleDateFormat
 import javax.swing.JOptionPane
-import de.brazzy.nikki.util.RelativeDateFormat
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import de.brazzy.nikki.util.Dialogs
@@ -78,16 +77,8 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            def zone = dialogs.askTimeZone(view.dirList.selectedValue.zone)
-            if(zone)
-            {
-                view.dirList.selectedValue.zone = zone
-            }
-            else
-            {
-                return
-            }
-            ScanWorker worker = new ScanWorker(view.dirList.selectedValue)
+            def zone = dialogs.askTimeZone(null)
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, zone)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
             dialogs.registerWorker(worker)
@@ -126,8 +117,7 @@ public class Nikki{
         view.exportButton.actionPerformed={
             view.imageTable.editorComponent?.getValue()
             def day = view.dayList.selectedValue
-            def format = new RelativeDateFormat(day.directory.zone);
-            def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + format.format(day.date) +".kmz");
+            def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + day.date +".kmz");
 
             if(selectedFile){
                 model.exportDir = selectedFile.getParentFile()

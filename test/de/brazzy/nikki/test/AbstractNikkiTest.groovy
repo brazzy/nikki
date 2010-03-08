@@ -8,10 +8,17 @@ import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
-import de.brazzy.nikki.util.RelativeDateFormat
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import java.util.prefs.Preferences
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.LocalDate
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalTime
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.Instant
 
 /**
  *
@@ -19,18 +26,19 @@ import java.util.prefs.Preferences
  */
 class AbstractNikkiTest extends GroovyTestCase
 {
-    protected static final TimeZone ZONE = TimeZone.getTimeZone("Australia/North")
-    protected static final RelativeDateFormat FORMAT = new RelativeDateFormat(ZONE)
+    protected static final DateTimeZone ZONE = DateTimeZone.forID("Australia/North")
+    protected static final DateTimeFormatter FORMAT = ISODateTimeFormat.date().withZone(ZONE)
+    protected static final DateTimeFormatter FORMAT_TIME = ISODateTimeFormat.dateTimeNoMillis().withZone(ZONE)
     protected static final String DATE1 = "2009-11-11";
     protected static final String DATE2 = "2009-11-12";
     protected static final String IMAGE1 = "IMG${DATE1}.JPG";
     protected static final String IMAGE2 = "IMG${DATE2}.JPG";
     protected static final String WAYPOINTS1 = "20091111.nmea";
     protected static final String WAYPOINTS2 = "20091112.nmea";
-    protected static final Date DAY1 = FORMAT.stripTime(FORMAT.parse(DATE1));
-    protected static final Date DAY2 = FORMAT.stripTime(FORMAT.parse(DATE2));
-    protected static final Date TIME1 = new Date(DAY1.time+(60*60*5*1000))
-    protected static final Date TIME2 = new Date(DAY2.time+(60*60*5*1000))
+    protected static final LocalDate DAY1 = new LocalDate(FORMAT.parseMillis(DATE1));
+    protected static final LocalDate DAY2 = new LocalDate(FORMAT.parseMillis(DATE2));
+    protected static final LocalDateTime TIME1 = DAY1.toLocalDateTime(new LocalTime(5, 0, 0))
+    protected static final LocalDateTime TIME2 = DAY2.toLocalDateTime(new LocalTime(5, 0, 0))
     protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
 
     protected Directory tmpDir;
@@ -42,7 +50,6 @@ class AbstractNikkiTest extends GroovyTestCase
         tmpFile.mkdir()
         tmpFile.deleteOnExit()
         tmpDir = new Directory(path: tmpFile)
-        tmpDir.zone = ZONE
     }
 
     public void tearDown()
@@ -79,13 +86,13 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected Waypoint constructWaypoint(Day day, int index)
     {
-        Waypoint wp = new Waypoint(day: day, timestamp: new Date(day.date.time + (60*60*1000*index)),
+        Waypoint wp = new Waypoint(day: day, timestamp: new Instant(day.date.toDateTime(new LocalTime(index, 0, 0))),
             latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
             longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
         return wp
     }
 
-    protected Image constructImage(Date date, String fileName)
+    protected Image constructImage(LocalDate date, String fileName)
     {
         Day day = tmpDir.find{ it.date.equals(date)}
         if(!day)
@@ -96,7 +103,7 @@ class AbstractNikkiTest extends GroovyTestCase
         Waypoint wp = constructWaypoint(day, 5)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: wp.timestamp, waypoint: wp, modified: true, zone:ZONE)
+            export: true, time: wp.timestamp.toDateTime(ZONE), waypoint: wp, modified: true)
         day.images.add(image)
         return image
     }

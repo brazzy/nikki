@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import java.text.SimpleDateFormat
 import java.text.DateFormat
+import org.joda.time.format.DateTimeFormatter
 
 /**
  * @author Brazil
@@ -191,7 +192,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         def wp = model[0].images[IMAGE1].waypoint
         assertNotNull(wp)
-        assertEquals(fmt.parse("GMT 2009-11-10 15:30:00"), wp.timestamp)
+        assertEquals(fmt.parse("GMT 2009-11-10 15:30:00").time, wp.timestamp.millis)
     }
 
     public void testExport()
@@ -242,8 +243,6 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testImageView()
     {
-        DateFormat fmt = DateFormat.getDateTimeInstance();
-        fmt.setTimeZone(ZONE)
         Image image1 = constructImage(DAY1, IMAGE1)
         Image image2 = constructImage(DAY1, IMAGE2)
         Image image3 = constructImage(DAY1, IMAGE2)
@@ -261,7 +260,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals("testTitle", editor.title.text)
         assertEquals("testDescription", editor.textArea.text)
         assertEquals(IMAGE1, editor.filename.text)
-        assertEquals(fmt.format(image1.time), editor.time.text)
+        assertEquals(FORMAT_TIME.print(image1.time), editor.time.text)
         assertEquals("0", editor.timeDiff.text)
         assertEquals(image1.waypoint.latitude.toString(), editor.latitude.text)
         assertEquals(image1.waypoint.longitude.toString(), editor.longitude.text)
@@ -295,21 +294,19 @@ class GuiTest extends AbstractNikkiTest {
         image3.waypoint = null
         view.imageTable.editCellAt(2,0)
         editor = view.imageTable.editorComponent
-        assertEquals(fmt.format(image3.time), editor.time.text)
+        assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("", editor.timeDiff.text)
 
         image4.waypoint.timestamp = new Date(image4.waypoint.timestamp.time+2000)
         view.imageTable.editCellAt(3,0)
         editor = view.imageTable.editorComponent
-        assertEquals(fmt.format(image3.time), editor.time.text)
+        assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("-2", editor.timeDiff.text)
     }
 
     public void testAutoCommit()
     {
         copyFile(IMAGE1)
-        DateFormat fmt = DateFormat.getDateTimeInstance();
-        fmt.setTimeZone(ZONE)
         Image image = constructImage(DAY1, IMAGE1)
         model.add(tmpDir)
         tmpDir.images.put(IMAGE1, image)
@@ -337,7 +334,7 @@ class GuiTest extends AbstractNikkiTest {
         String[] zones = TimeZone.getAvailableIDs();
         Arrays.sort(zones);
 
-        ScanOptions op = new ScanOptions(TimeZone.getTimeZone("GMT"))
+        ScanOptions op = new ScanOptions(DateTimeZone.forID("GMT"))
         assertEquals("GMT", op.getTimezone().getID())
         op.combobox.selectedIndex = 1;
         assertEquals(zones[1], op.getTimezone().getID())

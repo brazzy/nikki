@@ -7,11 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
 import javax.swing.border.EtchedBorder;
@@ -31,6 +27,10 @@ import java.io.UnsupportedEncodingException;
 import mediautil.gen.Rational;
 import mediautil.image.jpeg.Entry;
 import mediautil.image.jpeg.Exif;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class ImageReader extends ImageDataIO
 {
@@ -49,17 +49,17 @@ public class ImageReader extends ImageDataIO
         }
     }
 
-    private TimeZone scanZone;
+    private DateTimeZone scanZone;
     private Rotation rotation;
     private int lastWidth;
     private int lastHeight;
     private BufferedImage mainImage;
     
-    public ImageReader(File file, TimeZone zone)
+    public ImageReader(File file, DateTimeZone zone)
     {
         super(file, LLJTran.READ_INFO);
         this.file = file;
-        this.scanZone = zone == null ? TimeZone.getDefault() : zone;
+        this.scanZone = zone == null ? DateTimeZone.getDefault() : zone;
     }
 
     public Image createImage()
@@ -74,7 +74,6 @@ public class ImageReader extends ImageDataIO
             image.setTitle(getTitle());
             image.setDescription(getDescription());
             image.setExport(isExport());
-            image.setZone(getTimeZone());
             image.setTime(getTime());
             image.setModified(false);
             llj.freeMemory();
@@ -146,18 +145,19 @@ public class ImageReader extends ImageDataIO
         }
     }
 
-    public Date getTime() throws ParseException
+    public DateTime getTime() throws ParseException
     {
-        Date time = null;
+        DateTime time = null;
         if(metadata != null)
         {
             String date = metadata.getDataTimeOriginalString();
             if(date != null)
             {
-                DateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-                format.setTimeZone(getTimeZone());
+                DateTimeFormatter format = DateTimeFormat
+                        .forStyle("yyyy:MM:dd HH:mm:ss")
+                        .withZone(getTimeZone());
 
-                time = format.parse(date.substring(0, 19));
+                time = format.parseDateTime(date.substring(0, 19));
             }            
         }
         return time;
@@ -224,7 +224,7 @@ public class ImageReader extends ImageDataIO
         Waypoint result = new Waypoint();
         result.setLatitude(lat);
         result.setLongitude(lon);
-        result.setTimestamp(getTime());
+        result.setTimestamp(getTime().toInstant());
 
         e = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
         lat.setDirection(Cardinal.parse((String) e.getValue(0)));
@@ -239,7 +239,7 @@ public class ImageReader extends ImageDataIO
         return result;
     }
 
-    public TimeZone getTimeZone()
+    public DateTimeZone getTimeZone()
     {
         if(nikkiIFD == null)
         {
@@ -248,7 +248,7 @@ public class ImageReader extends ImageDataIO
         String zoneID = (String)nikkiIFD.getEntry(ENTRY_TIMEZONE, 0).getValue(0);
         if(zoneID != null)
         {
-            return TimeZone.getTimeZone(zoneID);
+            return DateTimeZone.forID(zoneID);
         }
         else
         {

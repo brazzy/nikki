@@ -7,6 +7,7 @@ import de.micromata.opengis.kml.v_2_2_0.Coordinate
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory
 import java.text.NumberFormat
 import de.brazzy.nikki.util.ImageWriter
+import org.joda.time.DateTime
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
     public static final String OFFSET_FINDER_COLOR = "801977FF";
@@ -17,8 +18,7 @@ class Image implements Serializable{
     String fileName
     String title
     String description
-    Date time
-    TimeZone zone
+    DateTime time
     Day day
     Waypoint waypoint
     byte[] thumbnail
