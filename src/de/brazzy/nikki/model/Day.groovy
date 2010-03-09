@@ -26,6 +26,7 @@ class Day extends AbstractTableModel
     public static final int WAYPOINT_THRESHOLD = 1000 * 80
 
     List<Image> images = []
+    List<Waypoint> waypoints = []
     
     LocalDate date
     Directory directory
@@ -33,7 +34,7 @@ class Day extends AbstractTableModel
     public String toString()
     {
         DateTimeFormatter format = ISODateTimeFormat.date()
-        (date==null? "unknown" : format.format(date))+" ("+images.size()+")"
+        (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
     public int getRowCount()

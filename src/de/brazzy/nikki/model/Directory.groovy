@@ -36,7 +36,7 @@ class Directory extends ListDataModel<Day>{
     
     public String toString()
     {
-        path.name+" ("+images.size()+", "+waypointFiles.size()+")"
+        (path?.name ?: "<unknown directory>") +" ("+images.size()+", "+waypointFiles.size()+")"
     }
     
     public void scan(SwingWorker worker, DateTimeZone zone)

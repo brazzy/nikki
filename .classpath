@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="lib/JavaAPIforKml.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="lib/joda-time-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-1.6.jar" sourcepath="E:/projects_checkout/nikki/lib/joda-time-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/mediautil-1.0_patched.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

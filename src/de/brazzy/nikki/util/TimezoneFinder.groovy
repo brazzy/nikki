@@ -9,18 +9,22 @@ import com.infomatiq.jsi.rtree.RTree;
 
 class TimezoneFinder {
     RTree tree;
-    DateTimeZone[] zones;
+    List<DateTimeZone> zones;
     
-    public TimezoneFinder(InputStream zoneData)
+    public TimezoneFinder()
     {
         this.zones = []
         this.tree = new RTree()
         tree.init(new Properties())
-        
+    }
+    
+    public TimezoneFinder(InputStream zoneData)
+    {
+        this()
         ObjectInputStream data = new ObjectInputStream(zoneData)
         for(def zone=data.readUTF();zone != "";zone=data.readUTF())
         {
-            zones.add(zone)
+            zones.add(DateTimeZone.forID(zone))
         }
         
         while(true)
@@ -32,7 +36,7 @@ class TimezoneFinder {
             }
             def lng=data.readFloat()
             def zone=data.readShort()
-            tree.add(new Rectangle(lat, lng, (float)lat+0.00001, (float)lng+0.00001), zone)
+            tree.add(new Rectangle(lat, lng, lat, lng), zone)
         }
     }
     

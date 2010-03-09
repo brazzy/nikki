@@ -26,6 +26,8 @@ class PrepTimezoneData
      *   - longitude as (written by ObjectOutputStream.writeFloat())
      *   - timezone as index into the above list of timezone IDs
      *     (written by ObjectOutputStream.writeShort())
+     * - An end-of-file marker consisting of Float.NaN
+     *   (written by ObjectOutputStream.writeFloat())
      */
     public static void main(args)
     {

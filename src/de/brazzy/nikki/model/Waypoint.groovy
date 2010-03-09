@@ -20,7 +20,7 @@ class Waypoint implements Serializable, Comparable{
     
     public static Waypoint parse(WaypointFile wpFile, String line, TimezoneFinder finder)
     {
-        final PARSE_FORMAT = DateTimeFormat.forStyle('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
+        final PARSE_FORMAT = DateTimeFormat.forPattern('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
         
         def result = new Waypoint()
         result.file = wpFile
@@ -28,16 +28,16 @@ class Waypoint implements Serializable, Comparable{
         result.timestamp = PARSE_FORMAT.parseDateTime(data[9]+data[1]).toInstant()
         result.latitude = GeoCoordinate.parse(data[3], data[4])
         result.longitude = GeoCoordinate.parse(data[5], data[6])
-        result.zone = finder.find(result.latitude, result.longitude)
+        result.zone = finder.find((float)result.latitude.value, (float)result.longitude.value)
 
         def date = result.timestamp.toDateTime(result.zone).toLocalDate()
-        Day d = wpFile.directory.data.find{
+        Day d = wpFile?.directory?.data?.find{
             it.date == date
         }
         if(!d)
         {
-            d = new Day(directory: wpFile.directory, date: date)
-            wpFile.directory.add(d)
+            d = new Day(directory: wpFile?.directory, date: date)
+            wpFile?.directory?.add(d)
         }
         result.day = d
         d.waypoints.add(result)            
