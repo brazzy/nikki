@@ -11,6 +11,10 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  * @author Brazil
@@ -34,22 +38,21 @@ class DayTest extends AbstractNikkiTest{
 
     public void testGeotag()
     {
-        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
-        def dat = "GMT 2009-01-01 12:"
+        def dat = new LocalDate(2009, 1, 1)
 
         def day = new Day()
-        def wp12 = new Waypoint(timestamp: fmt.parse(dat+"12:00"))
-        def wp14 = new Waypoint(timestamp: fmt.parse(dat+"14:00"))
-        def wp16 = new Waypoint(timestamp: fmt.parse(dat+"16:00"))
+        def wp12 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(12, 0)))
+        def wp14 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(14, 0)))
+        def wp16 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(16, 0)))
 
-        def im08 = new Image(time: fmt.parse(dat+"08:00"), day:day)
-        def im11 = new Image(time: fmt.parse(dat+"11:00"), day:day)
-        def im13l = new Image(time: fmt.parse(dat+"12:45"), day:day)
-        def im15h = new Image(time: fmt.parse(dat+"15:10"), day:day)
-        def im17 = new Image(time: fmt.parse(dat+"17:00"), day:day)
-        def im12 = new Image(time: fmt.parse(dat+"12:00"), day:day)
-        def im14 = new Image(time: fmt.parse(dat+"14:00"), day:day)
-        def im16 = new Image(time: fmt.parse(dat+"16:00"), day:day)
+        def im08 = new Image(time: dat.toDateTime(new LocalTime(8, 0)), day:day)
+        def im11 = new Image(time: dat.toDateTime(new LocalTime(11, 0)), day:day)
+        def im13l = new Image(time: dat.toDateTime(new LocalTime(12, 45)), day:day)
+        def im15h = new Image(time: dat.toDateTime(new LocalTime(15, 10)), day:day)
+        def im17 = new Image(time: dat.toDateTime(new LocalTime(17, 0)), day:day)
+        def im12 = new Image(time: dat.toDateTime(new LocalTime(12, 0)), day:day)
+        def im14 = new Image(time: dat.toDateTime(new LocalTime(14, 0)), day:day)
+        def im16 = new Image(time: dat.toDateTime(new LocalTime(16, 0)), day:day)
 
         day.images = [im08, im13l, im11, im14, im16, im12, im17, im15h]
         day.waypoints = [wp14, wp16, wp12]

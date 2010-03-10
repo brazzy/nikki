@@ -154,7 +154,7 @@ public class ImageReader extends ImageDataIO
             if(date != null)
             {
                 DateTimeFormatter format = DateTimeFormat
-                        .forStyle("yyyy:MM:dd HH:mm:ss")
+                        .forPattern("yyyy:MM:dd HH:mm:ss")
                         .withZone(getTimeZone());
 
                 time = format.parseDateTime(date.substring(0, 19));
@@ -224,7 +224,7 @@ public class ImageReader extends ImageDataIO
         Waypoint result = new Waypoint();
         result.setLatitude(lat);
         result.setLongitude(lon);
-        result.setTimestamp(getTime().toInstant());
+        result.setTimestamp(getTime());
 
         e = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
         lat.setDirection(Cardinal.parse((String) e.getValue(0)));

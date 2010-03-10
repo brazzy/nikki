@@ -9,6 +9,8 @@ import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.TimezoneFinder;
+
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 
@@ -38,7 +40,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
 
-        tmpDir.scan(null, ZONE)
+        tmpDir.scan(null, ZONE, new TimezoneFinder())
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
@@ -56,24 +58,10 @@ public class DirectoryTest extends AbstractNikkiTest {
         Image image = day.images[0]
         assertEquals(IMAGE1, image.fileName)
         assertEquals("Überschrift", image.title)
-        assertEquals("Australia/North", image.zone.ID)
+        assertEquals(TZ_DARWIN, image.time.zone)
         assertNotNull(image.thumbnail)
         assertSame(day, image.day)
-        assertEquals(DAY1, FORMAT.stripTime(image.time))
-    }
-
-    public void testSaveDirectory()
-    {
-        Image image = constructImage(DAY1, IMAGE1)
-        tmpDir.images[IMAGE1] = image
-        WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
-        tmpDir.waypointFiles[WAYPOINTS1] = file
-
-        assertEquals(0, tmpDir.path.list().length)
-        assertFalse(tmpDir.hasPersistent())
-        tmpDir.save()
-        assertTrue(tmpDir.hasPersistent())
-        assertEquals(1, tmpDir.path.list().length)
+        assertEquals(DAY1, image.time.toLocalDate())
     }
 
     public void testRescan()
@@ -89,13 +77,11 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir = new Directory(path: tmpDir.path)
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
-        assertEquals(TimeZone.getDefault(), tmpDir.zone)
 
-        tmpDir.scan(null)
+        tmpDir.scan(null, null, new TimezoneFinder())
         assertEquals(2, tmpDir.size())
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
-        assertEquals(ZONE, tmpDir.zone)
 
         Day day1 = tmpDir[0]
         Day day2 = tmpDir[1]

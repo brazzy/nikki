@@ -26,20 +26,23 @@ import org.joda.time.Instant
  */
 class AbstractNikkiTest extends GroovyTestCase
 {
-    protected static final DateTimeZone ZONE = DateTimeZone.forID("Australia/North")
-    protected static final DateTimeFormatter FORMAT = ISODateTimeFormat.date().withZone(ZONE)
-    protected static final DateTimeFormatter FORMAT_TIME = ISODateTimeFormat.dateTimeNoMillis().withZone(ZONE)
     protected static final String DATE1 = "2009-11-11";
     protected static final String DATE2 = "2009-11-12";
     protected static final String IMAGE1 = "IMG${DATE1}.JPG";
     protected static final String IMAGE2 = "IMG${DATE2}.JPG";
     protected static final String WAYPOINTS1 = "20091111.nmea";
     protected static final String WAYPOINTS2 = "20091112.nmea";
-    protected static final LocalDate DAY1 = new LocalDate(FORMAT.parseMillis(DATE1));
-    protected static final LocalDate DAY2 = new LocalDate(FORMAT.parseMillis(DATE2));
+    protected static final LocalDate DAY1 = new LocalDate(2009, 11, 11);
+    protected static final LocalDate DAY2 = new LocalDate(2009, 11, 12);
     protected static final LocalDateTime TIME1 = DAY1.toLocalDateTime(new LocalTime(5, 0, 0))
     protected static final LocalDateTime TIME2 = DAY2.toLocalDateTime(new LocalTime(5, 0, 0))
     protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
+    public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
+    public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")
+    public static final DateTimeZone TZ_BRISBANE = DateTimeZone.forID("Australia/Brisbane")
+    protected static final DateTimeZone ZONE = TZ_DARWIN
+    protected static final DateTimeFormatter FORMAT = ISODateTimeFormat.date().withZone(ZONE)
+    protected static final DateTimeFormatter FORMAT_TIME = ISODateTimeFormat.dateTimeNoMillis().withZone(ZONE)
 
     protected Directory tmpDir;
 
@@ -69,7 +72,7 @@ class AbstractNikkiTest extends GroovyTestCase
         f.deleteOnExit()
     }
 
-    protected WaypointFile constructWaypointFile(Date date, String fileName)
+    protected WaypointFile constructWaypointFile(LocalDate date, String fileName)
     {
         Day day = tmpDir.find{ it.date.equals(date)}
         if(!day)
@@ -86,7 +89,7 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected Waypoint constructWaypoint(Day day, int index)
     {
-        Waypoint wp = new Waypoint(day: day, timestamp: new Instant(day.date.toDateTime(new LocalTime(index, 0, 0))),
+        Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0)),
             latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
             longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
         return wp

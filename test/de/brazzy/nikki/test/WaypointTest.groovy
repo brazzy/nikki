@@ -5,40 +5,17 @@ import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.WaypointFile
-import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.TimezoneFinder
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone;
+import org.joda.time.DateTimeZone
 
 /**
  * @author Brazil
  */
 public class WaypointTest extends GroovyTestCase{
-
-    private static class MockTimezoneFinder extends TimezoneFinder
-    {
-        def queue = []
-        
-        public addCall(float lat, float lng, DateTimeZone result)
-        {
-            queue.add([lat, lng, result])
-        }
-        
-        public DateTimeZone find(float latitude, float longitude)
-        {
-            def entry = queue.remove(0)
-            assert Math.abs(entry[0] - latitude) < 0.1, "error: $latitude"
-            assert Math.abs(entry[1] - longitude) < 0.1, "error: $longitude"
-            return entry[2]
-        }
-        
-        public void finished()
-        {
-            assert queue.size() == 0
-        }
-    }
 
     public void testCoordValue()
     {
@@ -75,9 +52,9 @@ public class WaypointTest extends GroovyTestCase{
         Waypoint wp = Waypoint.parse(null, line, finder);
         finder.finished()
 
-        assertEquals(DateTimeZone.UTC, wp.zone)
+        assertEquals(DateTimeZone.UTC, wp.timestamp.zone)
         
-        def dt = new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC).toInstant()
+        def dt = new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC)
         assertEquals(dt, wp.timestamp)
 
         def coord = wp.latitude
@@ -94,7 +71,7 @@ public class WaypointTest extends GroovyTestCase{
     public void testParseWaypointFile()
     {
         final MockTimezoneFinder finder = new MockTimezoneFinder()
-        finder.addCall(-24f, 133.2f, DateTimeZone.UTC)
+        finder.addCall(-24f, 133.2f, AbstractNikkiTest.TZ_BERLIN)
         finder.addCall(-23.7f, 133.8f, null)
         
         Directory dir = new Directory()
@@ -107,20 +84,43 @@ public class WaypointTest extends GroovyTestCase{
         assertEquals(2, f.waypoints.size())
 
         Waypoint wp1 = f.waypoints[0]
-        assertEquals(DateTimeZone.UTC, wp1.zone)
+        assertEquals(AbstractNikkiTest.TZ_BERLIN, wp1.timestamp.zone)
         assertSame(f, wp1.file)
-        assertEquals(new DateTime(2009, 11, 11, 5, 9, 4, 0, DateTimeZone.UTC).toInstant(), wp1.timestamp)
+        assertEquals(new DateTime(2009, 11, 11, 5, 9, 4, 0, AbstractNikkiTest.TZ_BERLIN), wp1.timestamp)
         assertTrue(133 < wp1.longitude.value)
         assertTrue(wp1.longitude.value < 134)
         assertTrue(-24 < wp1.latitude.value)
         assertTrue(wp1.latitude.value < -23)
 
         Waypoint wp2 = f.waypoints[1]
-        assertNull(wp2.zone)
+        assertEquals(DateTimeZone.UTC, wp2.timestamp.zone)
         assertSame(f, wp2.file)
-        assertEquals(new DateTime(2009, 11, 11, 6 , 0, 33, 0, DateTimeZone.UTC).toInstant(), wp2.timestamp)
+        assertEquals(new DateTime(2009, 11, 11, 6 , 0, 33, 0, DateTimeZone.UTC), wp2.timestamp)
         assertTrue(wp1.longitude.value < wp2.longitude.value)
         assertTrue(wp2.latitude.value > wp1.latitude.value)
     }
-
 }
+
+private class MockTimezoneFinder extends TimezoneFinder
+{
+    def queue = []
+    
+    public addCall(float lat, float lng, DateTimeZone result)
+    {
+        queue.add([lat, lng, result])
+    }
+    
+    public DateTimeZone find(float latitude, float longitude)
+    {
+        def entry = queue.remove(0)
+        assert Math.abs(entry[0] - latitude) < 0.1, "error: $latitude"
+        assert Math.abs(entry[1] - longitude) < 0.1, "error: $longitude"
+        return entry[2]
+    }
+    
+    public void finished()
+    {
+        assert queue.size() == 0
+    }
+}
+

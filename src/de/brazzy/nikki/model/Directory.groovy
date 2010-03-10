@@ -11,6 +11,8 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.TimezoneFinder;
+
 import java.beans.XMLDecoder
 import java.beans.XMLEncoder
 import java.util.Date
@@ -39,7 +41,7 @@ class Directory extends ListDataModel<Day>{
         (path?.name ?: "<unknown directory>") +" ("+images.size()+", "+waypointFiles.size()+")"
     }
     
-    public void scan(SwingWorker worker, DateTimeZone zone)
+    public void scan(SwingWorker worker, DateTimeZone zone, TimezoneFinder tzFinder)
     {
         worker?.progress = 0;
 
@@ -76,7 +78,7 @@ class Directory extends ListDataModel<Day>{
         nmeaFiles.each{
             if(!this.waypointFiles[it.name])
             {
-                WaypointFile wf = WaypointFile.parse(this, it)
+                WaypointFile wf = WaypointFile.parse(this, it, tzFinder)
                 this.waypointFiles[it.name] = wf            
             }
         }
@@ -91,7 +93,7 @@ class Directory extends ListDataModel<Day>{
         worker?.progress = 0
     }  
 
-    public void saveNew(SwingWorker worker)
+    public void save(SwingWorker worker)
     {
         worker?.progress = 0;
         def count = 0;

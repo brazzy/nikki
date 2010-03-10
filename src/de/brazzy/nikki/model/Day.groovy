@@ -19,6 +19,7 @@ import java.text.DecimalFormat
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import org.joda.time.format.ISODateTimeFormat;
 class Day extends AbstractTableModel
 {
     public static final long serialVersionUID = 1
@@ -34,7 +35,7 @@ class Day extends AbstractTableModel
     public String toString()
     {
         DateTimeFormatter format = ISODateTimeFormat.date()
-        (date==null? "unknown" : format.format(date))+" ("+images.size()+", "+waypoints.size()+")"
+        (date==null? "unknown" : format.print(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
     public int getRowCount()

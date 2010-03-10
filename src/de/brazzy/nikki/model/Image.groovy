@@ -87,7 +87,7 @@ class Image implements Serializable{
         NumberFormat nf = NumberFormat.getIntegerInstance();
         day.waypoints.each{ Waypoint point ->
             doc.createAndAddPlacemark()
-            .withName(nf.format((point.timestamp.time-time.time)/1000))
+            .withName(nf.format((point.timestamp.millis-time.millis)/1000))
             .withVisibility(true)
             .createAndSetPoint()
                 .withCoordinates([new Coordinate(point.longitude.value, point.latitude.value)])
@@ -97,10 +97,10 @@ class Image implements Serializable{
         out.close()
     }
 
-    private void geotag(long milliOffset)
+    public void geotag(long milliOffset)
     {
-        def imagetime = new Date(time.time + milliOffset)
-        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp:imagetime))
+        long imagetime = time.millis + milliOffset
+        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp: new DateTime(imagetime)))
         if(index>=0) // direct hit
         {
             waypoint = day.waypoints[index]
@@ -117,8 +117,8 @@ class Image implements Serializable{
         {
             def before = day.waypoints[-(index+2)]
             def after = day.waypoints[-(index+1)]
-            if(imagetime.time - before.timestamp.time >
-               after.timestamp.time - imagetime.time)
+            if(imagetime - before.timestamp.millis >
+               after.timestamp.millis - imagetime)
             {
                 waypoint = after
             }

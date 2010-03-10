@@ -21,7 +21,7 @@ public class SaveWorker extends SwingWorker<Void, Void>
     protected Void doInBackground() throws Exception
     {
         try{
-            dir.saveNew(this);
+            dir.save(this);
             return null;
         }
         catch(Exception ex)

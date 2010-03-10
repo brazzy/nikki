@@ -1,5 +1,6 @@
 package de.brazzy.nikki.test
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.model.Rotation
 import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.Day
@@ -9,6 +10,8 @@ import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 import org.apache.commons.io.IOUtils;
 import java.util.Arrays
+
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone
 
 /**
@@ -22,30 +25,31 @@ class ImageTest extends AbstractNikkiTest{
     {
         super.setUp()
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
-            DateTimeZone.forID("GMT"))
+            DateTimeZone.UTC)
     }
 
     public void testTimezone()
     {
-        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
-        assertEquals("Australia/North", reader.timeZone.ID)
-        assertEquals(fmt.parse("GMT 2009-11-11 09:40:27"), reader.time)
+        assertEquals(TZ_DARWIN, reader.timeZone)
+        assertEquals(new DateTime(2009, 11, 11, 19, 10, 27, 0, DateTimeZone.forID("Australia/Darwin")), 
+                     reader.time)
         def image = reader.createImage()
-        assertEquals("Australia/North", image.zone.ID)
+        assertEquals(TZ_DARWIN, image.time.zone)
 
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
-            TimeZone.getTimeZone("CET"))
-        assertEquals("CET", reader.timeZone.ID)
-        assertEquals(fmt.parse("GMT 2009-11-12 09:10:10"), reader.time)
+                TZ_BERLIN)
+        assertEquals(TZ_BERLIN, reader.timeZone)
+        assertEquals(new DateTime(2009, 11, 12, 10, 10, 10, 0, TZ_BERLIN), 
+                     reader.time)
         image = reader.createImage()
-        assertEquals("CET", image.zone.ID)
+        assertEquals(TZ_BERLIN, image.time.zone)
 
-        def deflt = TimeZone.getDefault()
+        def deflt = DateTimeZone.default
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
             null)
-        assertEquals(deflt.ID, reader.timeZone.ID)
+        assertEquals(deflt, reader.timeZone)
         image = reader.createImage()
-        assertEquals(deflt.ID, image.zone.ID)
+        assertEquals(deflt, image.time.zone)
     }
 
     public void testThumbnail()
@@ -58,7 +62,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(160, thumb.height)
 
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
-            TimeZone.getTimeZone("GMT"))
+            TZ_BERLIN)
         assertEquals(Rotation.NONE, reader.rotation)
         thumb = reader.createImage().thumbnail
         assertNotNull(thumb)
@@ -71,7 +75,7 @@ class ImageTest extends AbstractNikkiTest{
     public void testReadExif()
     {
         assertTrue(reader.export)
-        assertEquals("Australia/North", reader.timeZone.ID)
+        assertEquals("Australia/Darwin", reader.timeZone.ID)
         assertEquals("Überschrift", reader.title)
         assertEquals("Kommentar\näöüß", reader.description)
         assertNotNull(reader.waypoint)
@@ -81,10 +85,11 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testOffsetFinder()
     {
+        TimezoneFinder tzFinder = new TimezoneFinder();
         Image im = reader.createImage()
         im.title="testTitle"
-        Waypoint wp1 = Waypoint.parse(new Directory(), null, '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D')
-        Waypoint wp2 = Waypoint.parse(new Directory(), null, '$GPRMC,071245.000,A,4810.1900,N,01134.9770,E,000.00,0.0,270709,,,E*5D')
+        Waypoint wp1 = Waypoint.parse(null, '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D', tzFinder)
+        Waypoint wp2 = Waypoint.parse(null, '$GPRMC,071245.000,A,4810.1900,N,01134.9770,E,000.00,0.0,270709,,,E*5D', tzFinder)
         im.time = wp1.timestamp
         Day d = new Day(waypoints: [ wp1, wp2])
         im.day = d
@@ -162,8 +167,7 @@ class ImageTest extends AbstractNikkiTest{
         checkPropertyModified(image, 'description', 'changed')
         def origName = image.fileName
         checkPropertyModified(image, 'fileName', 'changed')
-        checkPropertyModified(image, 'time', new Date())
-        checkPropertyModified(image, 'zone', TimeZone.getTimeZone("GMT"))
+        checkPropertyModified(image, 'time', new DateTime())
         checkPropertyModified(image, 'day', new Day())
         checkPropertyModified(image, 'thumbnail', null)
         checkPropertyModified(image, 'export', false)

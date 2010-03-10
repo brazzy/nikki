@@ -25,6 +25,7 @@ import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.util.SaveWorker
+import de.brazzy.nikki.util.TimezoneFinder;
 
 /**
  * @author Michael Borgwardt
@@ -35,8 +36,10 @@ public class Nikki{
     def view
     def model
     def dialogs
+    def finder
 
     public void build(Class prefsClass, Dialogs dialogs){
+        finder = new TimezoneFinder(TimezoneFinder.class.getResourceAsStream("timezones.dat"))
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         view = NikkiFrame.create(dialogs)
         this.dialogs = dialogs
@@ -78,7 +81,7 @@ public class Nikki{
         
         view.scanButton.actionPerformed={
             def zone = dialogs.askTimeZone(null)
-            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, zone)
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, zone, finder)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
             dialogs.registerWorker(worker)

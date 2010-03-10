@@ -6,7 +6,6 @@ import javax.swing.JSplitPane
 import javax.swing.BoxLayout
 import javax.swing.ImageIcon
 import javax.swing.border.EmptyBorder
-import groovy.model.DefaultTableModel
 import javax.swing.table.DefaultTableModel
 import javax.swing.JFrame
 
