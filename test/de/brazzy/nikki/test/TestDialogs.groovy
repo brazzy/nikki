@@ -2,6 +2,7 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.ReadablePeriod;
 
 /**
@@ -32,7 +33,7 @@ class TestDialogs extends Dialogs{
     }
 
     @Override
-    public TimeZone askTimeZone(TimeZone defaultZone)
+    public DateTimeZone askTimeZone(DateTimeZone defaultZone)
     {
         return queue.remove(0)
     }

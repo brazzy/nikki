@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 import java.text.SimpleDateFormat
 import java.text.DateFormat
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormatter
 
@@ -145,6 +147,7 @@ class GuiTest extends AbstractNikkiTest {
         dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
+        assertEquals(ZONE, tmpDir.images[IMAGE1].time.zone)
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
 
@@ -161,11 +164,12 @@ class GuiTest extends AbstractNikkiTest {
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
 
-        dialogs.add(ZONE)
+        dialogs.add(TZ_BERLIN)
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertEquals(2, tmpDir.size())
-        assertEquals(ZONE, tmpDir.zone)
+        assertEquals(ZONE, tmpDir.images[IMAGE1].time.zone)
+        assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
         assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
@@ -173,7 +177,6 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testGeotag()
     {
-        def fmt = new SimpleDateFormat("z yyyy-MM-dd HH:mm:ss");
         Image image = constructImage(DAY1, IMAGE1)
         WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
@@ -195,7 +198,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         def wp = model[0].images[IMAGE1].waypoint
         assertNotNull(wp)
-        assertEquals(fmt.parse("GMT 2009-11-10 15:30:00").time, wp.timestamp.millis)
+        assertEquals(new DateTime(2009, 11, 11, 1, 0, 0, 0, TZ_BERLIN), wp.timestamp)
     }
 
     public void testExport()
@@ -300,7 +303,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("", editor.timeDiff.text)
 
-        image4.waypoint.timestamp = new Date(image4.waypoint.timestamp.time+2000)
+        image4.waypoint.timestamp = new DateTime(image4.waypoint.timestamp.millis+2000)
         view.imageTable.editCellAt(3,0)
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
@@ -334,11 +337,11 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testScanOptions()
     {
-        String[] zones = TimeZone.getAvailableIDs();
+        String[] zones = DateTimeZone.getAvailableIDs().toArray()
         Arrays.sort(zones);
 
-        ScanOptions op = new ScanOptions(DateTimeZone.forID("GMT"))
-        assertEquals("GMT", op.getTimezone().getID())
+        ScanOptions op = new ScanOptions(DateTimeZone.UTC)
+        assertEquals("UTC", op.getTimezone().getID())
         op.combobox.selectedIndex = 1;
         assertEquals(zones[1], op.getTimezone().getID())
 

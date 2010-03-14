@@ -118,12 +118,12 @@ class Day extends AbstractTableModel
         LineString ls;        
         long previous = 0;
         waypoints.each{ waypoint ->
-            if(waypoint.timestamp.time - previous > WAYPOINT_THRESHOLD)
+            if(waypoint.timestamp.millis - previous > WAYPOINT_THRESHOLD)
             {
                 ls = createLine(doc)
             }
             ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
-            previous = waypoint.timestamp.time
+            previous = waypoint.timestamp.millis
         }
         
         out.method = ZipOutputStream.DEFLATED
