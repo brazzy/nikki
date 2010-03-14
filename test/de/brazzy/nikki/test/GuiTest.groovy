@@ -14,6 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import java.text.SimpleDateFormat
 import java.text.DateFormat
+
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormatter
 
 /**
@@ -187,7 +189,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         assertNull(model[0].images[IMAGE1].waypoint)
 
-        dialogs.add(Integer.valueOf(-5 * 60 * 60))
+        dialogs.add(Seconds.seconds(-5 * 60 * 60))
         view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
         def wp = model[0].images[IMAGE1].waypoint

@@ -72,9 +72,15 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir.images[IMAGE1] = image
         WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
         tmpDir.waypointFiles[WAYPOINTS1] = file
-        tmpDir.save()
+        Day day1 = tmpDir.data[0] 
+        day1.waypoints = [file.waypoints[0],file.waypoints[1]]
+        
+        assertEquals(1, tmpDir.size())
+        assertEquals(1, tmpDir.images.size())
+        assertEquals(1, tmpDir.waypointFiles.size())
+        assertEquals(1, day1.images.size())
+        assertEquals(2, day1.waypoints.size())
 
-        tmpDir = new Directory(path: tmpDir.path)
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
 
@@ -83,12 +89,9 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
 
-        Day day1 = tmpDir[0]
-        Day day2 = tmpDir[1]
-
-        assertEquals(2, day1.waypoints.size())
         assertEquals(DAY1, day1.date)
         assertSame(day1.directory, tmpDir)
+        assertEquals(2, day1.waypoints.size())
         assertEquals(file.waypoints[0].latitude.value, day1.waypoints[0].latitude.value)
         assertEquals(file.waypoints[0].timestamp, day1.waypoints[0].timestamp)
 
@@ -108,6 +111,8 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertEquals(-5d, wp.latitude.value)
         assertEquals(25d, wp.longitude.value)
 
+        Day day2 = tmpDir[1]
+
         assertEquals(1, day2.images.size())
         Image image2 = day2.images[0]
         assertEquals(IMAGE2, image2.fileName)
@@ -117,9 +122,9 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertFalse(image2.export)
         assertNotNull(image2.thumbnail)
         assertSame(day2, image2.day)
-        assertEquals(DAY2, FORMAT.stripTime(image2.time))
+        assertEquals(DAY2, image2.time.toLocalDate())
         assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
-        assertEquals(DAY2, FORMAT.stripTime(day2.waypoints[1].timestamp))
+        assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
     }
 
 }

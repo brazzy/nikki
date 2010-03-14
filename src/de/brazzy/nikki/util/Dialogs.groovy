@@ -7,6 +7,9 @@ import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import javax.swing.SwingWorker
 
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
+
 class Dialogs
 {
     def parentComponent
@@ -30,11 +33,11 @@ class Dialogs
             null;
     }
 
-    public Integer askOffset()
+    public ReadablePeriod askOffset()
     {
         def opt = new GeotagOptions()
         int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, "Geotagging options", JOptionPane.OK_CANCEL_OPTION)
-        return pressed == JOptionPane.OK_OPTION ? opt.offset : null
+        return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : Seconds.seconds(0)
     }
 
     public TimeZone askTimeZone(TimeZone defaultZone)

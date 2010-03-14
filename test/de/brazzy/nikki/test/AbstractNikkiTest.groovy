@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 import java.util.prefs.Preferences
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormatter
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
@@ -34,8 +35,8 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final String WAYPOINTS2 = "20091112.nmea";
     protected static final LocalDate DAY1 = new LocalDate(2009, 11, 11);
     protected static final LocalDate DAY2 = new LocalDate(2009, 11, 12);
-    protected static final LocalDateTime TIME1 = DAY1.toLocalDateTime(new LocalTime(5, 0, 0))
-    protected static final LocalDateTime TIME2 = DAY2.toLocalDateTime(new LocalTime(5, 0, 0))
+    protected static final DateTime TIME1 = DAY1.toDateTime(new LocalTime(5, 0, 0), ZONE)
+    protected static final DateTime TIME2 = DAY2.toDateTime(new LocalTime(5, 0, 0), ZONE)
     protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
     public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
     public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")

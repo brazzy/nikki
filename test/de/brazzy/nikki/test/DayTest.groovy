@@ -15,6 +15,8 @@ import org.joda.time.DateMidnight;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 
 /**
  * @author Brazil
@@ -69,7 +71,7 @@ class DayTest extends AbstractNikkiTest{
         assertSame(wp16, im17.waypoint)
 
         day.images.each{ it.waypoint = null }
-        day.geotag(90)
+        day.geotag(Minutes.minutes(90))
 
         assertSame(wp14, im12.waypoint)
         assertSame(wp16, im14.waypoint)

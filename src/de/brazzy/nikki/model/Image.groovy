@@ -8,6 +8,10 @@ import de.micromata.opengis.kml.v_2_2_0.KmlFactory
 import java.text.NumberFormat
 import de.brazzy.nikki.util.ImageWriter
 import org.joda.time.DateTime
+import org.joda.time.Interval;
+import org.joda.time.Period;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
     public static final String OFFSET_FINDER_COLOR = "801977FF";
@@ -97,10 +101,10 @@ class Image implements Serializable{
         out.close()
     }
 
-    public void geotag(long milliOffset)
+    public void geotag(ReadablePeriod offset)
     {
-        long imagetime = time.millis + milliOffset
-        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp: new DateTime(imagetime)))
+        def imagetime = this.time.plus(offset)
+        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp: imagetime))
         if(index>=0) // direct hit
         {
             waypoint = day.waypoints[index]
@@ -117,8 +121,10 @@ class Image implements Serializable{
         {
             def before = day.waypoints[-(index+2)]
             def after = day.waypoints[-(index+1)]
-            if(imagetime - before.timestamp.millis >
-               after.timestamp.millis - imagetime)
+            def distBefore = Seconds.secondsBetween(before.timestamp, imagetime)
+            def distAfter = Seconds.secondsBetween(imagetime, after.timestamp)
+                                      
+            if(distBefore.isGreaterThan(distAfter))
             {
                 waypoint = after
             }

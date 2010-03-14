@@ -17,6 +17,8 @@ import java.text.DateFormat
 import java.util.zip.CRC32
 import java.text.DecimalFormat
 import org.joda.time.LocalDate
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat;
@@ -58,10 +60,10 @@ class Day extends AbstractTableModel
         true
     }
     
-    public void geotag(int offset = 0)
+    public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         waypoints.sort()
-        images*.geotag(offset*1000)
+        images*.geotag(offset)
     }
     
     public void export(ZipOutputStream out, SwingWorker worker)

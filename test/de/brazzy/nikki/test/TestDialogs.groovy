@@ -2,6 +2,8 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
 
+import org.joda.time.ReadablePeriod;
+
 /**
  *
  * @author Brazil
@@ -24,7 +26,7 @@ class TestDialogs extends Dialogs{
     }
 
     @Override
-    public Integer askOffset()
+    public ReadablePeriod askOffset()
     {
         return queue.remove(0)
     }
