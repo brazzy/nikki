@@ -52,7 +52,14 @@ class PrepTimezoneData
         }
         def out = new ObjectOutputStream(new FileOutputStream(args[1]))
         zones.each{
-            out.writeUTF(it)
+            if(it == "Asia/Kathmandu")
+            {
+                out.writeUTF("Asia/Katmandu")                
+            }
+            else
+            {
+                out.writeUTF(it)
+            }
         }
         out.writeUTF("")
         entries.each{
@@ -87,7 +94,7 @@ class PrepTimezoneData
             }
             def lng=data.readFloat()
             def zone=data.readShort()
-            tree.add(new Rectangle(lat, lng, (float)lat+0.00001, (float)lng+0.00001), zone)
+            tree.add(new Rectangle((float)lat, (float)lng, (float)(lat+0.00001), (float)(lng+0.00001)), zone)
         }
         
         def result;

@@ -7,6 +7,7 @@ import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
+import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
@@ -33,7 +34,7 @@ class GuiTest extends AbstractNikkiTest {
         super.setUp()
         dialogs = new TestDialogs()
         nikki = new Nikki()
-        nikki.build(GuiTest.class, dialogs)
+        nikki.build(GuiTest.class, dialogs, new TimezoneFinder())
         model = nikki.model
         view = nikki.view
     }
