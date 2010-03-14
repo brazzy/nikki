@@ -1,4 +1,5 @@
-- Daten in Bilder schreiben, statt Nikki.db
+- Bilder fehlen beim Export
+- Fehler beim Geotagging?
 - Zeit in KML anzeigen?
 - UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
@@ -23,6 +24,9 @@
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
 
+v Zeitzonen von Waypoints automatisch ermitteln
+v Joda Time verwenden
+v Daten in Bilder schreiben, statt Nikki.db
 v Sanselan komplett durch MediaUtils ersetzen?
 v autom. Datenübernahme vor Save/Export
 v Testabdeckung verbessern
