@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="src" path="util"/>
+	<classpathentry kind="src" output="build_aux" path="test"/>
+	<classpathentry kind="src" output="build_aux" path="util"/>
 	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/asm-tree-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/cobertura.jar"/>
