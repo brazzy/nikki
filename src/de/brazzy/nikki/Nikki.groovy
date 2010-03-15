@@ -21,6 +21,9 @@ import java.util.zip.ZipOutputStream
 import de.brazzy.nikki.util.ExportWorker
 import java.text.SimpleDateFormat
 import javax.swing.JOptionPane
+
+import org.joda.time.DateTimeZone;
+
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import de.brazzy.nikki.util.Dialogs
@@ -80,7 +83,7 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            def zone = dialogs.askTimeZone(null)
+            def zone = dialogs.askTimeZone(DateTimeZone.getDefault())
             if(zone != null)
             {
                 ScanWorker worker = new ScanWorker(view.dirList.selectedValue, zone, finder)

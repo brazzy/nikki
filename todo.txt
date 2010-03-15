@@ -1,6 +1,6 @@
 - Bilder fehlen beim Export
 - Fehler beim Geotagging?
-- Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden
+- Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden, letzte verwendete Zeitzone vorbelegen
 - Zeit in KML anzeigen?
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
