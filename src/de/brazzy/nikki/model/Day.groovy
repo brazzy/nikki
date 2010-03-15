@@ -16,6 +16,10 @@ import java.util.TimeZone
 import java.text.DateFormat
 import java.util.zip.CRC32
 import java.text.DecimalFormat
+
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Seconds;
@@ -26,7 +30,7 @@ class Day extends AbstractTableModel
 {
     public static final long serialVersionUID = 1
     
-    public static final int WAYPOINT_THRESHOLD = 1000 * 80
+    public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
 
     List<Image> images = []
     List<Waypoint> waypoints = []
@@ -116,14 +120,15 @@ class Day extends AbstractTableModel
         }
         
         LineString ls;        
-        long previous = 0;
+        DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
         waypoints.each{ waypoint ->
-            if(waypoint.timestamp.millis - previous > WAYPOINT_THRESHOLD)
+            def gap = new Duration(previous, waypoint.timestamp)
+            if(gap.isLongerThan(WAYPOINT_THRESHOLD))
             {
                 ls = createLine(doc)
             }
             ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
-            previous = waypoint.timestamp.millis
+            previous = waypoint.timestamp
         }
         
         out.method = ZipOutputStream.DEFLATED
