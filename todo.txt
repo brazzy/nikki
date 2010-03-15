@@ -1,14 +1,14 @@
 - Bilder fehlen beim Export
 - Fehler beim Geotagging?
+- Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden
 - Zeit in KML anzeigen?
-- UI-Updates nach scan/geotag
 - GPS-Daten/Zeit bearbeitbar?
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 - Fehler bei Export ohne Geotag
 - Rückfrage bei Schliessen mit ungespeicherten Änderungen
 - (API-)Dokumentation/Lizenz
 - I18n
-- JAR-Skript
+- Thumbnails in Bilder schreiben
 - Logging und Fehlerpopups
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
@@ -24,6 +24,8 @@
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
 
+v UI-Updates nach scan/geotag
+v JAR-Skript
 v Zeitzonen von Waypoints automatisch ermitteln
 v Joda Time verwenden
 v Daten in Bilder schreiben, statt Nikki.db

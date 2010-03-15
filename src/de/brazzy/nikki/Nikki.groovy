@@ -75,6 +75,8 @@ public class Nikki{
             if("progress".equals(evt.propertyName)) {
                 view.progressBar.value = evt.newValue.intValue();
             }
+            view.dirList.repaint()
+            view.dayList.repaint()
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
@@ -116,6 +118,7 @@ public class Nikki{
             if(offset != null)
             {
                 view.dayList.selectedValue.geotag(offset)
+                view.imageTable.repaint()
             }
         }
         view.exportButton.actionPerformed={
