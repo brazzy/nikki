@@ -6,7 +6,6 @@ import de.brazzy.nikki.model.Directory
 import java.text.SimpleDateFormat
 import de.brazzy.nikki.model.Image
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry

@@ -14,6 +14,7 @@ public class ScanOptions extends JPanel
 
     public ScanOptions(DateTimeZone selected)
     {
+        @SuppressWarnings("unchecked")
         String[] zones = (String[]) DateTimeZone.getAvailableIDs().toArray(new String[0]);
         Arrays.sort(zones);
         combobox.setModel(new DefaultComboBoxModel(zones));

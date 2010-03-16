@@ -5,7 +5,6 @@ import java.io.ObjectInput
 import java.lang.ClassNotFoundException
 import java.io.IOException
 import java.io.ObjectOutput
-import java.io.ObjectInput
 
 public class ListDataModel<T> extends AbstractListModel
 {

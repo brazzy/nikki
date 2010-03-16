@@ -9,7 +9,6 @@ import gnu.trove.TIntObjectHashMap;
 
 import com.infomatiq.jsi.IntProcedure;
 import com.infomatiq.jsi.Point;
-import com.infomatiq.jsi.Rectangle;
 import com.infomatiq.jsi.rtree.RTree;
 
 import de.brazzy.nikki.model.GeoCoordinate;

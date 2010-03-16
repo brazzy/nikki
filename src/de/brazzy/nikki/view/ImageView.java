@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -24,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
