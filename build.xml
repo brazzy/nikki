@@ -77,17 +77,17 @@
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <groovyc destdir="build/classes">
+        <groovyc destdir="build/classes" encoding="UTF-8">
             <src path="src"/>
             <classpath refid="nikki.classpath"/>
         	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
-        <groovyc destdir="build/classes_aux">
+        <groovyc destdir="build/classes_aux" encoding="UTF-8">
             <src path="test"/>
             <classpath refid="nikki.classpath"/>
         	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
-        <groovyc destdir="build/classes_aux">
+        <groovyc destdir="build/classes_aux" encoding="UTF-8">
             <src path="util"/>
             <classpath refid="nikki.classpath"/>
         	<javac source="${source}" target="${target}" debug="on" />
