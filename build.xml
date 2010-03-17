@@ -121,7 +121,7 @@
         </junitreport>
     </target>
     <target name="javadoc">
-        <mkdir dir="${junit.output.dir}"/>
+        <mkdir dir="${javadoc.output.dir}"/>
     	<javadoc destdir="${javadoc.output.dir}"
     	         classpathref="nikki.classpath"
     	         sourcepath="src" 
