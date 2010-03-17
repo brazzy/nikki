@@ -30,6 +30,7 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testTimezone()
     {
+        assertNotNull(reader.nikkiIFD)
         assertEquals(TZ_DARWIN, reader.timeZone)
         assertEquals(new DateTime(2009, 11, 11, 19, 10, 27, 0, DateTimeZone.forID("Australia/Darwin")), 
                      reader.time)
@@ -54,6 +55,7 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testThumbnail()
     {
+        assertNotNull(reader.metadata)
         assertEquals(Rotation.LEFT, reader.rotation)
         def thumb = reader.createImage().thumbnail
         assertNotNull(thumb)
@@ -74,6 +76,8 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testReadExif()
     {
+        assertNotNull(reader.nikkiIFD)
+        assertNotNull(reader.gpsIFD)
         assertTrue(reader.export)
         assertEquals("Australia/Darwin", reader.timeZone.ID)
         assertEquals("Überschrift", reader.title)
