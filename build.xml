@@ -5,6 +5,10 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="nikki">
+	<taskdef name="groovyc"
+	         classname="org.codehaus.groovy.ant.Groovyc"
+	         classpath="C:/Programme/Java/eclipse_3.5/plugins/org.codehaus.groovy_1.7.0.xx-20100115-0900-e35-RELEASE/lib/groovy-all-1.7.0.jar"/>
+
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="junit.output.dir" value="junit"/>
@@ -69,18 +73,18 @@
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/" source="${source}" target="${target}">
+        <groovyc destdir="build/">
             <src path="src"/>
             <classpath refid="nikki.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build_aux" source="${source}" target="${target}">
+        </groovyc>
+        <groovyc destdir="build_aux">
             <src path="test"/>
             <classpath refid="nikki.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build_aux" source="${source}" target="${target}">
+        </groovyc>
+        <groovyc destdir="build_aux">
             <src path="util"/>
             <classpath refid="nikki.classpath"/>
-        </javac>
+        </groovyc>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
