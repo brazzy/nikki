@@ -8,6 +8,9 @@
 	<taskdef name="groovyc"
 	         classname="org.codehaus.groovy.ant.Groovyc"
 	         classpath="C:/Programme/Java/eclipse_3.5/plugins/org.codehaus.groovy_1.7.0.xx-20100115-0900-e35-RELEASE/lib/groovy-all-1.7.0.jar"/>
+	<taskdef name="groovydoc"
+	         classname="org.codehaus.groovy.ant.Groovydoc"
+	         classpath="C:/Programme/Java/eclipse_3.5/plugins/org.codehaus.groovy_1.7.0.xx-20100115-0900-e35-RELEASE/lib/groovy-all-1.7.0.jar"/>
 
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
@@ -122,10 +125,8 @@
     </target>
     <target name="javadoc">
         <mkdir dir="${javadoc.output.dir}"/>
-    	<javadoc destdir="${javadoc.output.dir}"
-    	         classpathref="nikki.classpath"
-    	         sourcepath="src" 
-    	         verbose="true"/>
+    	<groovydoc destdir="${javadoc.output.dir}"
+    	           sourcepath="src"/>
     </target>
     <target name="create_run_jar">
         <jar destfile="C:/tmp/Nikki.jar" filesetmanifest="mergewithoutmain">
