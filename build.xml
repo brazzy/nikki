@@ -76,14 +76,17 @@
         <groovyc destdir="build/">
             <src path="src"/>
             <classpath refid="nikki.classpath"/>
+        	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
         <groovyc destdir="build_aux">
             <src path="test"/>
             <classpath refid="nikki.classpath"/>
+        	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
         <groovyc destdir="build_aux">
             <src path="util"/>
             <classpath refid="nikki.classpath"/>
+        	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
