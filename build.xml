@@ -12,7 +12,7 @@
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="junit.output.dir" value="junit"/>
-    <property name="javadoc.output.dir" value="junit"/>
+    <property name="javadoc.output.dir" value="javadoc"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
