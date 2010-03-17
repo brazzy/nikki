@@ -1,7 +1,117 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project nikki">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="nikki">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+    </path>
+    <path id="Groovy Libraries.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.codehaus.groovy_1.7.0.xx-20100115-0900-e35-RELEASE/lib/groovy-all-1.7.0.jar"/>
+    </path>
+    <path id="nikki.classpath">
+        <pathelement location="build/"/>
+        <pathelement location="build_aux"/>
+        <pathelement location="lib/asm-3.0.jar"/>
+        <pathelement location="lib/asm-tree-3.0.jar"/>
+        <pathelement location="lib/cobertura.jar"/>
+        <pathelement location="lib/commons-io-1.4.jar"/>
+        <pathelement location="lib/imagescaling_0_8_1.jar"/>
+        <pathelement location="lib/jakarta-oro-2.0.8.jar"/>
+        <pathelement location="lib/JavaAPIforKml.jar"/>
+        <pathelement location="lib/jaxb-api.jar"/>
+        <pathelement location="lib/jaxb-impl.jar"/>
+        <pathelement location="lib/joda-time-1.6.jar"/>
+        <pathelement location="lib/log4j-1.2.9.jar"/>
+        <pathelement location="lib/mediautil-1.0_patched.jar"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+        <path refid="Groovy Libraries.libraryclasspath"/>
+        <pathelement location="lib/jsi-1.0b2p1.jar"/>
+        <pathelement location="lib/trove-0.1.8.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="build/"/>
+        <mkdir dir="build_aux"/>
+        <copy includeemptydirs="false" todir="build/">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="build_aux">
+            <fileset dir="test">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="build_aux">
+            <fileset dir="util">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="build/"/>
+        <delete dir="build_aux"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build/" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="nikki.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build_aux" source="${source}" target="${target}">
+            <src path="test"/>
+            <classpath refid="nikki.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build_aux" source="${source}" target="${target}">
+            <src path="util"/>
+            <classpath refid="nikki.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="Suite" depends="build">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="de.brazzy.nikki.test.Suite" todir="${junit.output.dir}"/>
+            <classpath refid="nikki.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
     <target name="create_run_jar">
         <jar destfile="C:/tmp/Nikki.jar" filesetmanifest="mergewithoutmain">
             <manifest>
@@ -26,4 +136,5 @@
             <zipfileset excludes="META-INF/*.SF" src="E:/projects_checkout/nikki/lib/trove-0.1.8.jar"/>
         </jar>
     </target>
+
 </project>
