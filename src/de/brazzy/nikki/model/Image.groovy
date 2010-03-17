@@ -71,7 +71,7 @@ class Image implements Serializable{
         if(!waypoint)
         {
             day.waypoints.sort()
-            geotag(0)
+            geotag()
         }
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
@@ -101,7 +101,7 @@ class Image implements Serializable{
         out.close()
     }
 
-    public void geotag(ReadablePeriod offset)
+    public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         def imagetime = this.time.plus(offset)
         def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp: imagetime))
