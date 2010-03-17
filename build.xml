@@ -107,9 +107,10 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="Suite" depends="build">
+    <target name="Suite" depends="clean,build">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
+        	<sysproperty key="file.encoding" value="US-ASCII"/>
             <formatter type="xml"/>
             <test name="de.brazzy.nikki.test.Suite" todir="${junit.output.dir}"/>
             <classpath refid="nikki.classpath"/>
