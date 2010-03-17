@@ -55,7 +55,7 @@ public class ImageReader extends ImageDataIO
     private int lastHeight;
     private BufferedImage mainImage;
     
-    public ImageReader(File file, DateTimeZone zone)
+    public ImageReader(File file, DateTimeZone zone) throws LLJTranException
     {
         super(file, LLJTran.READ_INFO);
         this.file = file;

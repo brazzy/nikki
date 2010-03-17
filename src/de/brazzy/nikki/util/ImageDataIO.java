@@ -4,6 +4,7 @@ import java.io.File;
 import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
+import mediautil.image.jpeg.LLJTranException;
 
 /**
  *
@@ -22,36 +23,28 @@ public class ImageDataIO {
     protected Exif metadata;
     protected IFD nikkiIFD;
     protected IFD gpsIFD;
-    protected Exception exception;
 
-    public ImageDataIO(File file, int readUpto)
+    public ImageDataIO(File file, int readUpto) throws LLJTranException
     {
         this.file = file;
-        try
+        this.llj = new LLJTran(file);
+        llj.read(readUpto, true);
+        this.metadata = (Exif) llj.getImageInfo();
+        if(metadata != null && metadata.getIFDs() != null &&
+           metadata.getIFDs().length > 0 && metadata.getIFDs()[0] != null)
         {
-            this.llj = new LLJTran(file);
-            llj.read(readUpto, true);
-            this.metadata = (Exif) llj.getImageInfo();
-            if(metadata != null && metadata.getIFDs() != null &&
-               metadata.getIFDs().length > 0 && metadata.getIFDs()[0] != null)
-            {
-                IFD mainIFD = metadata.getIFDs()[0];
-                this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
+            IFD mainIFD = metadata.getIFDs()[0];
+            this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
 
-                IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
-                if(exifIFD != null && exifIFD.getIFDs() != null)
+            IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
+            if(exifIFD != null && exifIFD.getIFDs() != null)
+            {
+                this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
+                if(this.nikkiIFD != null && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD.getEntry(ENTRY_NIKKI, 0).getValue(0)))
                 {
-                    this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
-                    if(this.nikkiIFD != null && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD.getEntry(ENTRY_NIKKI, 0).getValue(0)))
-                    {
-                        throw new IllegalArgumentException("Foreign Appnote IFD present");
-                    }
+                    throw new IllegalArgumentException("Foreign Appnote IFD present");
                 }
             }
-        }
-        catch(Exception e)
-        {
-            this.exception = e;
         }
     }
 

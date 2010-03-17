@@ -29,13 +29,9 @@ public class ImageWriter extends ImageDataIO
 {
     private Image image;
 
-    public ImageWriter(Image img, File directory)
+    public ImageWriter(Image img, File directory) throws LLJTranException
     {
         super(new File(directory.getPath(), img.getFileName()), LLJTran.READ_ALL);
-        if(this.exception != null)
-        {
-            throw new RuntimeException(this.exception);
-        }
 
         this.image = img;
 
