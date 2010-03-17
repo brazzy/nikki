@@ -12,6 +12,7 @@
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="junit.output.dir" value="junit"/>
+    <property name="javadoc.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -118,6 +119,13 @@
             </fileset>
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
+    </target>
+    <target name="javadoc">
+        <mkdir dir="${junit.output.dir}"/>
+    	<javadoc destdir="${javadoc.output.dir}"
+    	         classpathref="nikki.classpath"
+    	         sourcepath="src" 
+    	         verbose="true"/>
     </target>
     <target name="create_run_jar">
         <jar destfile="C:/tmp/Nikki.jar" filesetmanifest="mergewithoutmain">
