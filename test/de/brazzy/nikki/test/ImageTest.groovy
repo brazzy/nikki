@@ -24,7 +24,7 @@ class ImageTest extends AbstractNikkiTest{
     public void setUp()
     {
         super.setUp()
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").getFile()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").toURI()),
             DateTimeZone.UTC)
     }
 
@@ -37,7 +37,7 @@ class ImageTest extends AbstractNikkiTest{
         def image = reader.createImage()
         assertEquals(TZ_DARWIN, image.time.zone)
 
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
                 TZ_BERLIN)
         assertEquals(TZ_BERLIN, reader.timeZone)
         assertEquals(new DateTime(2009, 11, 12, 10, 10, 10, 0, TZ_BERLIN), 
@@ -46,7 +46,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(TZ_BERLIN, image.time.zone)
 
         def deflt = DateTimeZone.default
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
             null)
         assertEquals(deflt, reader.timeZone)
         image = reader.createImage()
@@ -63,7 +63,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(120, thumb.width)
         assertEquals(160, thumb.height)
 
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").getFile()),
+        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
             TZ_BERLIN)
         assertEquals(Rotation.NONE, reader.rotation)
         thumb = reader.createImage().thumbnail
