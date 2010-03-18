@@ -116,8 +116,16 @@
         <cobertura-instrument todir="${cobertura.instrument.dir}">
             <fileset dir="${build.dir}">
                 <include name="**/*.class"/>
+	            <exclude name="**/Dialogs.class"/>
+	            <exclude name="**/Launcher.class"/>
             </fileset>
         </cobertura-instrument>
+        <copy includeemptydirs="false" todir="${cobertura.instrument.dir}">
+            <fileset dir="${build.dir}">
+	            <include name="**/Dialogs.class"/>
+	            <include name="**/Launcher.class"/>
+            </fileset>
+        </copy>
         <copy includeemptydirs="false" todir="${cobertura.instrument.dir}">
             <fileset dir="test">
                 <exclude name="**/*.launch"/>
