@@ -278,7 +278,6 @@ public class ImageReader extends ImageDataIO
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(scaledImage, "jpg", out);
-        byte[] result = out.toByteArray();
         return adjustForRotation(out.toByteArray());
     }
     

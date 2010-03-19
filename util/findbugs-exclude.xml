@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+     <Match>
+       <Bug pattern="DM_NUMBER_CTOR" />
+	   <Method name="~this\$dist\$invoke\$.*"/>
+     </Match>
+
+     <Match>
+       <Bug pattern="DM_NUMBER_CTOR" />
+	   <Method name="&lt;clinit&gt;"/>
+     </Match>
+     
+     <Match>
+       <Class name="~.*\$.*_closure.*" />
+       <Bug pattern="SE_NO_SERIALVERSIONID,SE_BAD_FIELD" />
+     </Match>
+</FindBugsFilter>

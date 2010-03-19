@@ -203,7 +203,8 @@
 	    <findbugs home="${findbugs.home}"
 	              output="xml"
 	              outputFile="build/findbugs.xml" 
-	    	      effort="min">
+	    	      effort="min"
+	    	      excludeFilter="util/findbugs-exclude.xml" debug="true">
 	      <auxClasspath refid="nikki.classpath.libraries" />
 	      <sourcePath path="src" />
 	      <class location="${build.dir}" />
