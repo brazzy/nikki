@@ -123,9 +123,12 @@ public class ImageWriter extends ImageDataIO
 
     private void writeTimezone()
     {
-        Entry entry = new Entry(Exif.ASCII);
-        entry.setValue(0, image.getTime().getZone().getID());
-        nikkiIFD.addEntry(ENTRY_TIMEZONE, entry);
+        if(image.getTime() != null)
+        {
+            Entry entry = new Entry(Exif.ASCII);
+            entry.setValue(0, image.getTime().getZone().getID());            
+            nikkiIFD.addEntry(ENTRY_TIMEZONE, entry);
+        }
     }
 
     private void writeExport()

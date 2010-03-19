@@ -67,8 +67,9 @@ class Directory extends ListDataModel<Day>{
                     days.put(date, day)
                     this.add(day)
                 } 
-                
+                def modified = image.modified
                 image.day = day
+                image.modified = modified
             }
             
             worker?.progress = new Integer((int)(++count / imageFiles.length * 100))

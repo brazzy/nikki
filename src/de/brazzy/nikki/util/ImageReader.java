@@ -54,6 +54,7 @@ public class ImageReader extends ImageDataIO
     private int lastWidth;
     private int lastHeight;
     private BufferedImage mainImage;
+    private Boolean thumbnailNew;
     
     public ImageReader(File file, DateTimeZone zone) throws LLJTranException
     {
@@ -75,7 +76,7 @@ public class ImageReader extends ImageDataIO
             image.setDescription(getDescription());
             image.setExport(isExport());
             image.setTime(getTime());
-            image.setModified(false);
+            image.setModified(thumbnailNew.booleanValue());
             llj.freeMemory();
         }
         catch (Throwable e)
@@ -123,9 +124,11 @@ public class ImageReader extends ImageDataIO
             byte[] thumb = exifData.getThumbnailBytes();
             if(thumb != null && thumb.length > 0)
             {
+                thumbnailNew = Boolean.FALSE;
                 return adjustForRotation(thumb);
             }
         }
+        thumbnailNew = Boolean.TRUE;
         return scale(THUMBNAIL_SIZE, false);
     }
 
@@ -211,6 +214,11 @@ public class ImageReader extends ImageDataIO
         Integer export = (Integer)nikkiIFD.getEntry(ENTRY_EXPORT, 0).getValue(0);
         return export != null && export != 0;
     }
+    
+    public Boolean isThumbnailNew()
+    {
+        return thumbnailNew;
+    }
 
     public Waypoint getWaypoint() throws ParseException
     {
@@ -245,9 +253,11 @@ public class ImageReader extends ImageDataIO
         {
             return this.scanZone;
         }
-        String zoneID = (String)nikkiIFD.getEntry(ENTRY_TIMEZONE, 0).getValue(0);
-        if(zoneID != null)
+        
+        Entry entry = nikkiIFD.getEntry(ENTRY_TIMEZONE, 0);
+        if(entry != null && entry.getValue(0) != null)
         {
+            String zoneID = (String)entry.getValue(0);
             return DateTimeZone.forID(zoneID);
         }
         else

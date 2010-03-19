@@ -62,6 +62,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertNotNull(image.thumbnail)
         assertSame(day, image.day)
         assertEquals(DAY1, image.time.toLocalDate())
+        assertFalse(image.modified)
     }
 
     public void testRescan()

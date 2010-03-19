@@ -150,8 +150,9 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(ZONE, tmpDir.images[IMAGE1].time.zone)
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
-
+        
         assertEquals(2, tmpDir.path.list().length)
+        tmpDir.images[IMAGE1].title = "changedTitle"
         view.saveButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(imgFile.lastModified() > timestamp)
@@ -253,6 +254,7 @@ class GuiTest extends AbstractNikkiTest {
         Image image2 = constructImage(DAY1, IMAGE2)
         Image image3 = constructImage(DAY1, IMAGE2)
         Image image4 = constructImage(DAY1, IMAGE2)
+        image1.modified = false
         model.add(tmpDir)
         tmpDir.images.put(IMAGE1, image1)
         tmpDir.images.put(IMAGE2, image2)
@@ -281,7 +283,9 @@ class GuiTest extends AbstractNikkiTest {
         image2.time = null
         image2.waypoint = null
 
+        assertFalse(image1.modified)
         view.imageTable.editCellAt(1,0)
+        assertTrue(image1.modified)
 
         assertEquals("changedTitle", image1.title)
         assertEquals("changedDescription", image1.description)

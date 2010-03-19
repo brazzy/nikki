@@ -57,7 +57,9 @@ class ImageTest extends AbstractNikkiTest{
     {
         assertNotNull(reader.exifData)
         assertEquals(Rotation.LEFT, reader.rotation)
+        assertNull(reader.thumbnailNew)
         def thumb = reader.createImage().thumbnail
+        assertSame(Boolean.FALSE, reader.thumbnailNew)
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(120, thumb.width)
@@ -66,7 +68,9 @@ class ImageTest extends AbstractNikkiTest{
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
             TZ_BERLIN)
         assertEquals(Rotation.NONE, reader.rotation)
+        assertNull(reader.thumbnailNew)
         thumb = reader.createImage().thumbnail
+        assertSame(Boolean.TRUE, reader.thumbnailNew)
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
@@ -74,8 +78,10 @@ class ImageTest extends AbstractNikkiTest{
 
         reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
                 TZ_BERLIN)
+        assertNull(reader.thumbnailNew)
         assertEquals(Rotation.NONE, reader.rotation)
         thumb = reader.createImage().thumbnail
+        assertSame(Boolean.TRUE, reader.thumbnailNew)
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
@@ -160,14 +166,20 @@ class ImageTest extends AbstractNikkiTest{
         def thumb = reader.thumbnail
         assertTrue(Arrays.equals(thumb, th))
         
-        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+        copyFile("no_exif.jpg")
+        reader = new ImageReader(new File(tmpDir.path, "no_exif.jpg"),
                 TZ_BERLIN)
         image = reader.createImage()
+        assertTrue(reader.thumbnailNew)
+        assertTrue(image.modified)
         th = image.thumbnail
         image.save(tmpDir.path)
-        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+        reader = new ImageReader(new File(tmpDir.path, "no_exif.jpg"),
                 TZ_BERLIN)
-        thumb = reader.thumbnail
+        image = reader.createImage()
+        thumb = image.thumbnail
+        assertFalse(reader.thumbnailNew)
+        assertFalse(image.modified)
         assertTrue(Arrays.equals(thumb, th))
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
@@ -188,6 +200,7 @@ class ImageTest extends AbstractNikkiTest{
     {
         copyFile(IMAGE1)
         Image image = reader.createImage()
+        assertFalse(image.modified)
         checkPropertyModified(image, 'title', 'changed')
         checkPropertyModified(image, 'description', 'changed')
         def origName = image.fileName
