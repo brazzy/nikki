@@ -89,12 +89,7 @@
     </target>
     
 	<target name="clean">
-        <delete dir="${build.dir}"/>
-        <delete dir="${aux.dir}"/>
-        <delete dir="${junit.output.dir}"/>
-        <delete dir="${javadoc.output.dir}"/>
-        <delete dir="${cobertura.output.dir}"/>
-        <delete dir="${cobertura.instrument.dir}"/>
+        <delete dir="build"/>
     </target>
     
 	<target depends="init" name="build">
@@ -148,7 +143,7 @@
         </copy>
     </target>
 
-    <target name="junit" depends="clean,coverage-instrument">
+    <target name="junit" depends="coverage-instrument">
     	<echo message="Test classpath: ${toString:nikki.classpath.test}"/>
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -215,6 +210,6 @@
 	    </findbugs>
 	</target>
 
-    <target name="integration" depends="junit,coverage-report,javadoc,findbugs,create_run_jar" />
+    <target name="integration" depends="clean,junit,coverage-report,javadoc,findbugs,create_run_jar" />
 
 </project>
