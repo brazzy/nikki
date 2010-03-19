@@ -94,9 +94,9 @@ public class ImageReader extends ImageDataIO
         {
             return rotation;
         }
-        if(metadata != null)
+        if(exifData != null)
         {
-            int orientation = metadata.getOrientation();
+            int orientation = exifData.getOrientation();
             if(orientation > 0)
             { // see http://sylvana.net/jpegcrop/exif_orientation.html
                 if(orientation==8)
@@ -118,9 +118,9 @@ public class ImageReader extends ImageDataIO
 
     public byte[] getThumbnail() throws Exception
     {
-        if(metadata != null)
+        if(exifData != null)
         {
-            byte[] thumb = metadata.getThumbnailBytes();
+            byte[] thumb = exifData.getThumbnailBytes();
             if(thumb != null && thumb.length > 0)
             {
                 return adjustForRotation(thumb);
@@ -148,9 +148,9 @@ public class ImageReader extends ImageDataIO
     public DateTime getTime() throws ParseException
     {
         DateTime time = null;
-        if(metadata != null)
+        if(exifData != null)
         {
-            String date = metadata.getDataTimeOriginalString();
+            String date = exifData.getDataTimeOriginalString();
             if(date != null)
             {
                 DateTimeFormatter format = DateTimeFormat

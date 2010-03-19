@@ -55,7 +55,7 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testThumbnail()
     {
-        assertNotNull(reader.metadata)
+        assertNotNull(reader.exifData)
         assertEquals(Rotation.LEFT, reader.rotation)
         def thumb = reader.createImage().thumbnail
         assertNotNull(thumb)
@@ -72,6 +72,14 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(180, thumb.width)
         assertEquals(135, thumb.height)
 
+        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+                TZ_BERLIN)
+        assertEquals(Rotation.NONE, reader.rotation)
+        thumb = reader.createImage().thumbnail
+        assertNotNull(thumb)
+        thumb = ImageIO.read(new ByteArrayInputStream(thumb))
+        assertEquals(180, thumb.width)
+        assertEquals(180, thumb.height)
     }
 
     public void testReadExif()
@@ -151,6 +159,19 @@ class ImageTest extends AbstractNikkiTest{
         assertFalse(reader.export)
         def thumb = reader.thumbnail
         assertTrue(Arrays.equals(thumb, th))
+        
+        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+                TZ_BERLIN)
+        image = reader.createImage()
+        th = image.thumbnail
+        image.save(tmpDir.path)
+        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+                TZ_BERLIN)
+        thumb = reader.thumbnail
+        assertTrue(Arrays.equals(thumb, th))
+        thumb = ImageIO.read(new ByteArrayInputStream(thumb))
+        assertEquals(180, thumb.width)
+        assertEquals(180, thumb.height)
     }
 
     private void checkPropertyModified(def image, def propName, def newValue)

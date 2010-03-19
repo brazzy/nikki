@@ -1,6 +1,7 @@
 package de.brazzy.nikki.util;
 
 import java.io.File;
+
 import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
@@ -20,7 +21,7 @@ public class ImageDataIO {
 
     protected File file;
     protected LLJTran llj;
-    protected Exif metadata;
+    protected Exif exifData;
     protected IFD nikkiIFD;
     protected IFD gpsIFD;
 
@@ -29,11 +30,14 @@ public class ImageDataIO {
         this.file = file;
         this.llj = new LLJTran(file);
         llj.read(readUpto, true);
-        this.metadata = (Exif) llj.getImageInfo();
-        if(metadata != null && metadata.getIFDs() != null &&
-           metadata.getIFDs().length > 0 && metadata.getIFDs()[0] != null)
+        if(llj.getImageInfo() instanceof Exif)
         {
-            IFD mainIFD = metadata.getIFDs()[0];
+            this.exifData = (Exif) llj.getImageInfo();            
+        }
+        if(exifData != null && exifData.getIFDs() != null &&
+           exifData.getIFDs().length > 0 && exifData.getIFDs()[0] != null)
+        {
+            IFD mainIFD = exifData.getIFDs()[0];
             this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
 
             IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);

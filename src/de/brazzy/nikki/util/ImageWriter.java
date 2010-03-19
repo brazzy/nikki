@@ -35,12 +35,12 @@ public class ImageWriter extends ImageDataIO
 
         this.image = img;
 
-        if(metadata == null)
+        if(exifData == null)
         {
             llj.addAppx(LLJTran.dummyExifHeader, 0,
                         LLJTran.dummyExifHeader.length, true);
-            metadata = (Exif)llj.getImageInfo();
-            IFD mainIFD = metadata.getIFDs()[0];
+            exifData = (Exif)llj.getImageInfo();
+            IFD mainIFD = exifData.getIFDs()[0];
             IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
             nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
             gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
@@ -49,12 +49,12 @@ public class ImageWriter extends ImageDataIO
         {
             nikkiIFD = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
             nikkiIFD.addEntry(ENTRY_NIKKI, new Entry(Exif.ASCII, ENTRY_NIKKI_CONTENT));
-            metadata.getIFDs()[0].getIFD(Exif.EXIFOFFSET).addIFD(nikkiIFD);
+            exifData.getIFDs()[0].getIFD(Exif.EXIFOFFSET).addIFD(nikkiIFD);
         }
         if(img.getWaypoint() != null && gpsIFD == null)
         {
             gpsIFD = new IFD(Exif.GPSINFO, Exif.LONG);
-            metadata.getIFDs()[0].addIFD(gpsIFD);
+            exifData.getIFDs()[0].addIFD(gpsIFD);
         }
     }
 
@@ -160,7 +160,7 @@ public class ImageWriter extends ImageDataIO
     private void writeThumbnail() throws IOException
     { // TODO: überschreiben eines existierenden Thumbnails?
         //llj.removeThumbnail();
-        if(metadata.getThumbnailBytes() == null &&  image.getThumbnail() != null &&
+        if(exifData.getThumbnailBytes() == null &&  image.getThumbnail() != null &&
            !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
                              ImageResources.EXT_JPG))
         {

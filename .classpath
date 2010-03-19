@@ -14,7 +14,7 @@
 	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-1.6.jar" sourcepath="E:/projects_checkout/nikki/lib/joda-time-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.9.jar"/>
-	<classpathentry kind="lib" path="lib/mediautil-1.0_patched.jar"/>
+	<classpathentry kind="lib" path="lib/mediautil-1.0_patched.jar" sourcepath="/mediautil/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
