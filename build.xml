@@ -6,9 +6,14 @@
 	<taskdef name="groovydoc"
 	         classname="org.codehaus.groovy.ant.Groovydoc"
 	         classpath="lib/groovy-all-1.7.0.jar"/>
-    <taskdef classpath="lib/cobertura.jar;lib/log4j-1.2.9.jar;lib/asm-3.0.jar;lib/asm-tree-3.0.jar;lib/jakarta-oro-2.0.8.jar" resource="tasks.properties"/>
+    <taskdef classpath="lib/cobertura.jar;lib/log4j-1.2.9.jar;lib/asm-3.0.jar;lib/asm-tree-3.0.jar;lib/jakarta-oro-2.0.8.jar" 
+    	     resource="tasks.properties"/>
+	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+	         classpath="lib/findbugs-ant.jar"/>
+
 
     <property environment="env"/>
+	<property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="build.dir" value="build/classes"/>
     <property name="aux.dir" value="build/classes_aux"/>
@@ -198,5 +203,18 @@
             <zipfileset excludes="META-INF/*.SF" src="lib/trove-0.1.8.jar"/>
         </jar>
     </target>
+
+    <target name="findbugs" depends="build">
+	    <findbugs home="${findbugs.home}"
+	              output="xml"
+	              outputFile="build/findbugs.xml" 
+	    	      effort="min">
+	      <auxClasspath refid="nikki.classpath.libraries" />
+	      <sourcePath path="src" />
+	      <class location="${build.dir}" />
+	    </findbugs>
+	</target>
+
+    <target name="integration" depends="junit,coverage-report,javadoc,findbugs,create_run_jar" />
 
 </project>
