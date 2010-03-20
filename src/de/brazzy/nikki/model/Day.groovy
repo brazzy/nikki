@@ -11,6 +11,8 @@ import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.WaypointComparator;
+
 import javax.swing.SwingWorker
 import java.util.TimeZone
 import java.text.DateFormat
@@ -66,7 +68,7 @@ class Day extends AbstractTableModel
     
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
-        waypoints.sort()
+        waypoints.sort(new WaypointComparator())
         images*.geotag(offset)
     }
     

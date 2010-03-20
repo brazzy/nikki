@@ -10,7 +10,7 @@ import org.joda.time.format.DateTimeFormat
 
 import de.brazzy.nikki.util.TimezoneFinder;
 
-class Waypoint implements Serializable, Comparable{
+class Waypoint implements Serializable{
     public static final long serialVersionUID = 1;
     
     WaypointFile file
@@ -45,11 +45,6 @@ class Waypoint implements Serializable, Comparable{
         d.waypoints.add(result)            
 
         return result;
-    }
-    
-    public int compareTo(Object o)
-    {
-        return this.timestamp.compareTo(o.timestamp)
     }
     
     public String toString()

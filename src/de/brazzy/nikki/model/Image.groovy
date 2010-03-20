@@ -1,6 +1,7 @@
 package de.brazzy.nikki.model;
 
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.WaypointComparator;
 import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.Document
 import de.micromata.opengis.kml.v_2_2_0.Coordinate
@@ -70,7 +71,7 @@ class Image implements Serializable{
     {
         if(!waypoint)
         {
-            day.waypoints.sort()
+            day.waypoints.sort(new WaypointComparator())
             geotag()
         }
         Kml kml = KmlFactory.createKml()
@@ -104,7 +105,9 @@ class Image implements Serializable{
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         def imagetime = this.time.plus(offset)
-        def index = Collections.binarySearch(day.waypoints, new Waypoint(timestamp: imagetime))
+        def index = Collections.binarySearch(day.waypoints, 
+                new Waypoint(timestamp: imagetime), 
+                new WaypointComparator())
         if(index>=0) // direct hit
         {
             waypoint = day.waypoints[index]
