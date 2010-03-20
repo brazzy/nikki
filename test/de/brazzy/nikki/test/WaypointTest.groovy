@@ -17,6 +17,8 @@ import org.joda.time.DateTimeZone
  */
 public class WaypointTest extends GroovyTestCase{
 
+    private static final DateTimeZone TZ_2 = DateTimeZone.forID("Etc/GMT-2")
+    
     public void testCoordValue()
     {
             GeoCoordinate a;
@@ -42,19 +44,26 @@ public class WaypointTest extends GroovyTestCase{
         assertTrue(coord.value.toString(), -12 < coord.value )
         assertTrue(coord.value.toString(), coord.value < -11)
     }
+
+    public void testTimezoneShift()
+    {
+        assertEquals(1000*60*60*2, TZ_2.getStandardOffset(0))
+        assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC),
+                new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2))  
+    }
     
     public void testParseWaypoint()
     {
         final MockTimezoneFinder finder = new MockTimezoneFinder()
-        finder.addCall(48.2f, 11.5f, DateTimeZone.UTC)
+        finder.addCall(48.2f, 11.5f, TZ_2)
         
         final String line = '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D'
         Waypoint wp = Waypoint.parse(null, line, finder);
         finder.finished()
 
-        assertEquals(DateTimeZone.UTC, wp.timestamp.zone)
+        assertEquals(TZ_2, wp.timestamp.zone)
         
-        def dt = new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC)
+        def dt = new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2)
         assertEquals(dt, wp.timestamp)
 
         def coord = wp.latitude
@@ -71,7 +80,7 @@ public class WaypointTest extends GroovyTestCase{
     public void testParseWaypointFile()
     {
         final MockTimezoneFinder finder = new MockTimezoneFinder()
-        finder.addCall(-24f, 133.2f, AbstractNikkiTest.TZ_BERLIN)
+        finder.addCall(-24f, 133.2f, TZ_2)
         finder.addCall(-23.7f, 133.8f, null)
         
         Directory dir = new Directory()
@@ -84,9 +93,9 @@ public class WaypointTest extends GroovyTestCase{
         assertEquals(2, f.waypoints.size())
 
         Waypoint wp1 = f.waypoints[0]
-        assertEquals(AbstractNikkiTest.TZ_BERLIN, wp1.timestamp.zone)
+        assertEquals(TZ_2, wp1.timestamp.zone)
         assertSame(f, wp1.file)
-        assertEquals(new DateTime(2009, 11, 11, 5, 9, 4, 0, AbstractNikkiTest.TZ_BERLIN), wp1.timestamp)
+        assertEquals(new DateTime(2009, 11, 11, 5+2, 9, 4, 0, TZ_2), wp1.timestamp)
         assertTrue(133 < wp1.longitude.value)
         assertTrue(wp1.longitude.value < 134)
         assertTrue(-24 < wp1.latitude.value)
