@@ -21,10 +21,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.util.Dialogs;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+
+import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.util.Dialogs;
 
 
 public class ImageView extends JPanel
@@ -66,10 +67,11 @@ public class ImageView extends JPanel
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                OutputStream tmpOut = null;
                 try
                 {
                     File tmpFile = File.createTempFile("nikki", ".kml");
-                    OutputStream tmpOut = new FileOutputStream(tmpFile);
+                    tmpOut = new FileOutputStream(tmpFile);
                     value.offsetFinder(tmpOut);
                     dialogs.open(tmpFile);
                 }
@@ -77,6 +79,17 @@ public class ImageView extends JPanel
                 {
                     JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+                        tmpOut.close();
+                    }
+                    catch (Exception e1)
+                    {
+                        e1.printStackTrace();
+                    }
                 }
             }            
         });
