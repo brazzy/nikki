@@ -29,8 +29,7 @@ public class ScanWorker extends SwingWorker<Void, Void>
     protected Void doInBackground() throws Exception
     {
         thread = Thread.currentThread();
-        ScanResult status = dir.scan(this, null, finder);
-        if(status==ScanResult.TIMEZONE_MISSING)
+        if(dir.scan(this, null, finder)==ScanResult.TIMEZONE_MISSING)
         {            
             try
             {
@@ -42,7 +41,7 @@ public class ScanWorker extends SwingWorker<Void, Void>
                         zoneLock.wait();
                     }                
                 }
-                status = dir.scan(this, zone, finder);
+                dir.scan(this, zone, finder);
             }
             catch (InterruptedException e)
             {
