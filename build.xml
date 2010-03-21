@@ -173,6 +173,8 @@
         <mkdir dir="${javadoc.output.dir}"/>
     	<groovydoc destdir="${javadoc.output.dir}" sourcepath="src">
     		<link packages="java.,javax." href="http://java.sun.com/javase/6/docs/api/"/>
+    		<link packages="org.joda.time." href="http://joda-time.sourceforge.net/api-release/"/>
+    		<link packages="com.infomatiq.jsi." href="http://jsi.sourceforge.net/javadoc/1.0b1/"/>
 		</groovydoc>
     </target>
 	
