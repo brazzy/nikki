@@ -16,8 +16,10 @@ import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
 
 /**
+ * Used for trying out EXIF access code and producing image files with
+ * specific data for unit tests
  *
- * @author Brazil
+ * @author Michael Borgwardt
  */
 public class PrepImage {
 

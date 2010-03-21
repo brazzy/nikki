@@ -31,15 +31,28 @@ import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder;
 
 /**
+ * Controller that builds the view and the model, connects them
+ * and wires up the GUI logic (listeners, etc)
+ * 
  * @author Michael Borgwardt
  */
 public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
 
+    /** View instance */
     def view
+
+    /** Model instance */
     def model
+    
+    /** Encapsulates user interaction for testing */
     def dialogs
 
+    /**
+     * Builds the model and the view and connects everything
+     * 
+     * @param prefsClass used as key in the Preferences API
+     */
     public void build(Class prefsClass, Dialogs dialogs, TimezoneFinder finder){
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         view = NikkiFrame.create(dialogs)
@@ -136,8 +149,10 @@ public class Nikki{
         }
     }
 
+    /**
+     * Shows the GUI
+     */
     public void start(){
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         view.frame.pack()
         view.frame.show()
     }

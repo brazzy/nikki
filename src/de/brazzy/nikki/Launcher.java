@@ -6,7 +6,7 @@ import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.view.NikkiFrame;
 
 /**
- * For starting the app and creating a runnable JAR in eclipse
+ * Main class for starting the app.
  * 
  * @author Michael Borgwardt
  */

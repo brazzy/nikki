@@ -1,20 +1,38 @@
 package de.brazzy.nikki.model
 
 /**
+ * Represents one dimension (latitude or longitude) of a GPS coordinate
+ * 
  * @author Michael Borgwardt
- *
  */
 public class GeoCoordinate implements Serializable{
     public static final long serialVersionUID = 1;
-    
+
+    /**
+     * Cardinal direction of this dimension (determines sign)
+     */
     Cardinal direction;
+    
+    /**
+     * Unsigned magnitude of this dimension
+     */
     double magnitude;
     
+    /**
+     * @return Signed magnitude of this dimension
+     */
     public double getValue()
     {
         return magnitude * direction.sign
     }
     
+    /**
+     * Parses from NMEA data
+     * 
+     * @param mag magnitude String
+     * @param dir direction String
+     * @return parsed result
+     */
     public static GeoCoordinate parse(String mag, String dir)
     {
         if(dir.length()!=1)

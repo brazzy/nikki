@@ -28,16 +28,33 @@ import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat;
+
+/**
+ * Represents one day during a journey, as experienced subjectively by
+ * a traveler (while possible passing through several time zones).
+ * 
+ * @author Michael Borgwardt
+ */
 class Day extends AbstractTableModel
 {
     public static final long serialVersionUID = 1
-    
+
+    /** 
+     * Waypoints further apart than this will result in beginning a new path
+     * (thus creating a gap) in the exported KML file
+     */
     public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
 
+    /** Images taken on this day */
     List<Image> images = []
+                          
+    /** Waypoints recorded on this day */
     List<Waypoint> waypoints = []
-    
+
+    /** Date represented by this day */
     LocalDate date
+    
+    /** Contains the files (images and GPS logs) used by this Day instance */
     Directory directory
     
     public String toString()
@@ -46,32 +63,55 @@ class Day extends AbstractTableModel
         (date==null? "unknown" : format.print(date))+" ("+images.size()+", "+waypoints.size()+")"
     }
 
+    /**
+     * From AbstractTableModel
+     */
     public int getRowCount()
     {
         images.size()
     }
     
+    /**
+     * From AbstractTableModel
+     */
     public int getColumnCount()
     {
         1
     }
     
+    /**
+     * From AbstractTableModel
+     */
     public Object getValueAt(int row, int column)
     {
         images[row]
     }
     
+    /**
+     * From AbstractTableModel
+     */
     public boolean isCellEditable(int rowIndex, int columnIndex) 
     {
         true
     }
-    
+
+    /**
+     * Assigns coordinates to each image on this day, based on the
+     * waypoint with the most similar timestamp
+     */
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         waypoints.sort(new WaypointComparator())
         images*.geotag(offset)
     }
-    
+
+    /**
+     * Exports this day's data (Annotated images and GPS tracks)
+     * to a KMZ file
+     * 
+     * @param out stream to write the data to
+     * @param worker for updating progress
+     */
     public void export(ZipOutputStream out, SwingWorker worker)
     {
         worker?.progress = 0;
@@ -141,7 +181,14 @@ class Day extends AbstractTableModel
         worker?.progress = 0
     }
     
-    private store(byte[] imgData, String name, ZipOutputStream out)
+    /**
+     * Stores one image
+     * 
+     * @param imgData image data
+     * @param name file name
+     * @param out stream to write to
+     */
+    private void store(byte[] imgData, String name, ZipOutputStream out)
     {
         def entry = new ZipEntry(name)
         entry.size = imgData.length
@@ -153,6 +200,10 @@ class Day extends AbstractTableModel
         out.closeEntry()
     }
 
+    /**
+     * @return creates a new line representing the start of a new GPS track 
+     *         or segment
+     */
     private LineString createLine(Document doc)
     {
         return doc.createAndAddPlacemark()

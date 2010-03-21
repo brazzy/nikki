@@ -5,6 +5,11 @@ import java.util.Comparator;
 
 import de.brazzy.nikki.model.Waypoint;
 
+/**
+ * Compares waypoints based on their timestamps, used for geotagging.
+ * 
+ * @author Michael Borgwardt
+ */
 public class WaypointComparator implements Comparator<Waypoint>, Serializable
 {
     public static final long serialVersionUID = 1L;

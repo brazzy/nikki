@@ -21,10 +21,15 @@ import javax.swing.SwingWorker
 import java.util.TimeZone
 import org.joda.time.DateTimeZone
 
+/**
+ * Represents on filesystem directory containing images and GPS tracks
+ * from one journey
+ * 
+ * @author Michael Borgwardt
+ */
 class Directory extends ListDataModel<Day>{
     public static final long serialVersionUID = 1;
     
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss")
     private static final def FILTER_JPG = { dir, name ->
         name.toUpperCase().endsWith(".JPG")
     } as FilenameFilter
@@ -32,16 +37,38 @@ class Directory extends ListDataModel<Day>{
         name.toUpperCase().endsWith(".NMEA")
     } as FilenameFilter
 
-    
+
+    /**
+     * All the images in this directory, keyed on the file name
+     */
     Map<String, Image> images = [:];
+    
+    /**
+     * All the GPS tracks in this directory, keyed on the file name
+     */
     Map<String, WaypointFile> waypointFiles = [:];    
+    
+    /**
+     * This directory's filesystem path
+     */
     File path;
     
     public String toString()
     {
         (path?.name ?: "<unknown directory>") +" ("+images.size()+", "+waypointFiles.size()+")"
     }
-    
+
+    /**
+     * Scans the filesystem for image and GPS files and processes the data in them
+     * 
+     * @param worker for updating progress
+     * @param zone time zone to which the camera time was set when the images were taken. 
+     *             Can be null, which assumes that all images already have time zone
+     *             set in their EXIF data
+     * @param tzFinder finds time zones for waypoints
+     * @return ScanResult.TIMEZONE_MISSING if zone was null and images were found that
+     *         have no time zone in their EXIF data
+     */
     public ScanResult scan(SwingWorker worker, DateTimeZone zone, TimezoneFinder tzFinder)
     {
         worker?.progress = 0;
@@ -102,6 +129,11 @@ class Directory extends ListDataModel<Day>{
         return ScanResult.COMPLETE
     }  
 
+    /**
+     * Saves all changed image data to the EXIF headers
+     * 
+     * @param worker to update progress
+     */
     public void save(SwingWorker worker)
     {
         worker?.progress = 0;
