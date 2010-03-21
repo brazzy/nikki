@@ -136,18 +136,11 @@ class GuiTest extends AbstractNikkiTest {
         def imgFile = new File(tmpDir.path, IMAGE1)
         def timestamp = imgFile.lastModified()
 
-        dialogs.add(null)
-        view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
-        assertTrue(dialogs.isQueueEmpty())
-        assertEquals(0, tmpDir.size())
-
-        dialogs.add(ZONE)
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
-        assertEquals(ZONE, tmpDir.images[IMAGE1].time.zone)
+        assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
         
@@ -162,17 +155,25 @@ class GuiTest extends AbstractNikkiTest {
         tmpDir = new Directory(path: tmpDir.path);
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        FileUtils.copyFile(imgFile, new File(tmpDir.path, "other.JPG"))
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
 
+        dialogs.add(null)
+        view.scanButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        assertTrue(dialogs.isQueueEmpty())
+        assertEquals(1, tmpDir.images.size())
+        assertEquals(1, tmpDir.size())
+        
         dialogs.add(TZ_BERLIN)
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertEquals(2, tmpDir.size())
-        assertEquals(ZONE, tmpDir.images[IMAGE1].time.zone)
+        assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
-        assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
-        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
+        assertEquals(tmpDir.path.name + " (3, 2)", model[0].toString())
+        assertEquals(DATE1+" (2, 2)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 

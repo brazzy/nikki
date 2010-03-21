@@ -11,6 +11,7 @@ import java.awt.geom.AffineTransform
 import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.TimezoneFinder;
 
 import java.beans.XMLDecoder
@@ -41,19 +42,25 @@ class Directory extends ListDataModel<Day>{
         (path?.name ?: "<unknown directory>") +" ("+images.size()+", "+waypointFiles.size()+")"
     }
     
-    public void scan(SwingWorker worker, DateTimeZone zone, TimezoneFinder tzFinder)
+    public ScanResult scan(SwingWorker worker, DateTimeZone zone, TimezoneFinder tzFinder)
     {
         worker?.progress = 0;
 
         int count = 0;
         def imageFiles = path.listFiles(FILTER_JPG)
-        def days = [:]
+        Map days = this.data.groupBy{it.date}
+        days.entrySet().each{it.value = it.value[0]}
         
-        imageFiles.each{
-            if(!this.images[it.name])
+        for(file in imageFiles){
+            if(!this.images[file.name])
             {
-                Image image = new ImageReader(it, zone).createImage()
-                this.images[it.name] = image
+                ImageReader reader = new ImageReader(file, zone)
+                if(reader.timeZone==null)
+                {
+                    return ScanResult.TIMEZONE_MISSING
+                }
+                Image image = reader.createImage()
+                this.images[file.name] = image
 
                 def date = image.time?.toLocalDate()
                 def day = days[date]
@@ -76,11 +83,11 @@ class Directory extends ListDataModel<Day>{
         }
 
         def nmeaFiles = path.listFiles(FILTER_NMEA);
-        nmeaFiles.each{
-            if(!this.waypointFiles[it.name])
+        for(file in nmeaFiles){
+            if(!this.waypointFiles[file.name])
             {
-                WaypointFile wf = WaypointFile.parse(this, it, tzFinder)
-                this.waypointFiles[it.name] = wf            
+                WaypointFile wf = WaypointFile.parse(this, file, tzFinder)
+                this.waypointFiles[file.name] = wf            
             }
         }
 
@@ -92,25 +99,26 @@ class Directory extends ListDataModel<Day>{
         
         fireContentsChanged(this, 0, this.data.size()-1)
         worker?.progress = 0
+        return ScanResult.COMPLETE
     }  
 
     public void save(SwingWorker worker)
     {
         worker?.progress = 0;
         def count = 0;
-        images.values().each{
-            if(new File(this.path, it.fileName).exists())
+        for(image in images.values()){
+            if(new File(this.path, image.fileName).exists())
             {
                 try
                 {
-                    it.save(this.path)
+                    image.save(this.path)
                 }
                 catch(Exception ex)
                 {
                     ex.printStackTrace()
                 }
             }
-            worker?.progress = new Integer((int)(++count / images.size() * 100));
+            worker?.progress = new Integer((int)(++count/images.size() * 100));
         }
 
         worker?.progress = 0;

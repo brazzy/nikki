@@ -83,14 +83,10 @@ public class Nikki{
         } as PropertyChangeListener
         
         view.scanButton.actionPerformed={
-            def zone = dialogs.askTimeZone(DateTimeZone.getDefault())
-            if(zone != null)
-            {
-                ScanWorker worker = new ScanWorker(view.dirList.selectedValue, zone, finder)
-                worker.addPropertyChangeListener(progressListener)
-                worker.execute()
-                dialogs.registerWorker(worker)                
-            }
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, finder)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
+            dialogs.registerWorker(worker)                
         }
         view.saveButton.actionPerformed={
             view.imageTable.editorComponent?.getValue()

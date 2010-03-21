@@ -208,6 +208,10 @@ public class ImageView extends JPanel
         value.setProperty("description", textArea.getText());
         value.setProperty("title", title.getText());
         value.setProperty("export", export.isSelected());
+//        value.setDescription(textArea.getText());
+//        value.setTitle(title.getText());
+//        value.setExport(export.isSelected());
+
         return value;
     }    
 

@@ -1,12 +1,11 @@
-- Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden, letzte verwendete Zeitzone vorbelegen
+- Falsche neu angelegte Exif-Daten/Zeitstempel 
 - Zeit in KML anzeigen?
-- GPS-Daten/Zeit bearbeitbar?
+- Möglichkeit, GPS-Daten/Zeit manuell zuzuweisen
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 - Fehler bei Export ohne Geotag
 - Rückfrage bei Schliessen mit ungespeicherten Änderungen
 - (API-)Dokumentation/Lizenz
 - I18n
-- Thumbnails in Bilder schreiben
 - Logging und Fehlerpopups
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
@@ -22,6 +21,8 @@
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
 
+v Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden, letzte verwendete Zeitzone vorbelegen
+v Thumbnails in Bilder schreiben
 v Fehler beim Geotagging?
 v UI-Updates nach scan/geotag
 v JAR-Skript

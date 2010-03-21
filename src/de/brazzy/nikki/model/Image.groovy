@@ -108,17 +108,19 @@ class Image implements Serializable{
         def index = Collections.binarySearch(day.waypoints, 
                 new Waypoint(timestamp: imagetime), 
                 new WaypointComparator())
+        def result
+            
         if(index>=0) // direct hit
         {
-            waypoint = day.waypoints[index]
+            result = day.waypoints[index]
         }
         else if(-index==day.waypoints.size()+1) // after all WPs
         {
-            waypoint = day.waypoints[day.waypoints.size()-1]
+            result = day.waypoints[day.waypoints.size()-1]
         }
         else if(index == -1) // before all WPs
         {
-            waypoint = day.waypoints[0]
+            result = day.waypoints[0]
         }
         else
         {
@@ -129,12 +131,18 @@ class Image implements Serializable{
                                       
             if(distBefore.isGreaterThan(distAfter))
             {
-                waypoint = after
+                result = after
             }
             else
             {
-                waypoint = before
+                result = before
             }
+        }
+        
+        if(result.timestamp!=waypoint?.timestamp)
+        {
+            waypoint = result
+            modified = true
         }
     }
 }

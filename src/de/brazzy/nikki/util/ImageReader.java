@@ -60,7 +60,7 @@ public class ImageReader extends ImageDataIO
     {
         super(file, LLJTran.READ_INFO);
         this.file = file;
-        this.scanZone = zone == null ? DateTimeZone.getDefault() : zone;
+        this.scanZone = zone;
     }
 
     public Image createImage()
@@ -156,9 +156,14 @@ public class ImageReader extends ImageDataIO
             String date = exifData.getDataTimeOriginalString();
             if(date != null)
             {
+                DateTimeZone zone = getTimeZone();
+                if(zone==null)
+                {
+                    return null;
+                }
                 DateTimeFormatter format = DateTimeFormat
                         .forPattern("yyyy:MM:dd HH:mm:ss")
-                        .withZone(getTimeZone());
+                        .withZone(zone);
 
                 time = format.parseDateTime(date.substring(0, 19));
             }            

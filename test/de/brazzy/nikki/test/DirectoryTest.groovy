@@ -9,6 +9,7 @@ import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.TimezoneFinder;
 
 import org.apache.commons.io.FileUtils
@@ -40,7 +41,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
 
-        tmpDir.scan(null, ZONE, new TimezoneFinder())
+        assertEquals(ScanResult.COMPLETE, tmpDir.scan(null, null, new TimezoneFinder()))
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
@@ -85,7 +86,12 @@ public class DirectoryTest extends AbstractNikkiTest {
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
 
-        tmpDir.scan(null, null, new TimezoneFinder())
+        assertEquals(ScanResult.TIMEZONE_MISSING, tmpDir.scan(null, null, new TimezoneFinder()))
+        assertEquals(1, tmpDir.size())
+        assertEquals(1, tmpDir.images.size())
+        assertEquals(1, tmpDir.waypointFiles.size())
+
+        assertEquals(ScanResult.COMPLETE, tmpDir.scan(null, ZONE, new TimezoneFinder()))
         assertEquals(2, tmpDir.size())
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
@@ -124,6 +130,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertNotNull(image2.thumbnail)
         assertSame(day2, image2.day)
         assertEquals(DAY2, image2.time.toLocalDate())
+        assertEquals(ZONE, image2.time.zone)
         assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
         assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
     }

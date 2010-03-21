@@ -13,6 +13,7 @@ import java.util.Arrays
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate;
 
 /**
  * @author Brazil
@@ -45,12 +46,11 @@ class ImageTest extends AbstractNikkiTest{
         image = reader.createImage()
         assertEquals(TZ_BERLIN, image.time.zone)
 
-        def deflt = DateTimeZone.default
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
             null)
-        assertEquals(deflt, reader.timeZone)
+        assertNull(reader.timeZone)
         image = reader.createImage()
-        assertEquals(deflt, image.time.zone)
+        assertNull(image.time)
     }
 
     public void testThumbnail()
@@ -211,6 +211,11 @@ class ImageTest extends AbstractNikkiTest{
         checkPropertyModified(image, 'export', false)
         checkPropertyModified(image, 'waypoint', null)
         image.fileName = origName
+        
+        image.day = new Day(date:new LocalDate(2009,1,1))
+        image.day.waypoints = [constructWaypoint(image.day, 1)]
+        image.modified=false
+        image.geotag()        
         assertTrue(image.modified)
         image.save(tmpDir.path)
         assertFalse(image.modified)
