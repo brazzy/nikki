@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.prefs.Preferences
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormatter
@@ -123,6 +125,11 @@ class AbstractNikkiTest extends GroovyTestCase
         for(o in elements)
         {
             assertTrue(c.contains(o))
+            if(c instanceof List)
+            {
+                List l = (List)c;
+                assertTrue(l.lastIndexOf(o)>=0);
+            }
         }
         for(o in elements)
         {
