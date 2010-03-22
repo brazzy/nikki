@@ -47,19 +47,18 @@ public class Nikki{
     
     /** Encapsulates user interaction for testing */
     def dialogs
+    
+    def timezoneFinder
 
-    /**
-     * Builds the model and the view and connects everything
-     * 
-     * @param prefsClass used as key in the Preferences API
-     */
-    public void build(Class prefsClass, Dialogs dialogs, TimezoneFinder finder){
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        view = NikkiFrame.create(dialogs)
-        this.dialogs = dialogs
-        model = new NikkiModel(prefsClass)
-        view.dirList.model = model        
-        def selListener = { it ->
+    private progressListener = { evt ->
+            if("progress".equals(evt.propertyName)) {
+                view.progressBar.value = evt.newValue.intValue();
+            }
+            view.dirList.repaint()
+            view.dayList.repaint()
+        } as PropertyChangeListener
+    
+    private selectDirectoryAction = { it ->
             def sel = view.dirList.selectedValue
             if(sel)
             {
@@ -73,43 +72,8 @@ public class Nikki{
             view.scanButton.enabled = (sel != null)
             view.saveButton.enabled = (sel != null)
         } as ListSelectionListener
-        view.dirList.addListSelectionListener(selListener)
-        
-        view.addButton.actionPerformed={
-            def selectedFile = dialogs.askDirectory(model.selectionDir);
-            if(selectedFile){
-                model.selectionDir = selectedFile.getParentFile()
-                model.add(new Directory(path:selectedFile))
-            }
-        }
-        view.deleteButton.actionPerformed={
-            def dir = view.dirList.selectedValue
-            model.remove(dir)
-        }
 
-        def progressListener = { evt ->
-            if("progress".equals(evt.propertyName)) {
-                view.progressBar.value = evt.newValue.intValue();
-            }
-            view.dirList.repaint()
-            view.dayList.repaint()
-        } as PropertyChangeListener
-        
-        view.scanButton.actionPerformed={
-            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, finder)
-            worker.addPropertyChangeListener(progressListener)
-            worker.execute()
-            dialogs.registerWorker(worker)                
-        }
-        view.saveButton.actionPerformed={
-            view.imageTable.editorComponent?.getValue()
-            SaveWorker worker = new SaveWorker(view.dirList.selectedValue)
-            worker.addPropertyChangeListener(progressListener)
-            worker.execute()
-            dialogs.registerWorker(worker)
-        }
-        
-        selListener = { it ->
+    private selectDayAction = { it ->
             def sel = view.dayList.selectedValue
             if(sel)
             {
@@ -122,10 +86,37 @@ public class Nikki{
             }
             view.exportButton.enabled = (sel != null)
             view.tagButton.enabled = (sel != null)
-        } as ListSelectionListener
-        view.dayList.addListSelectionListener(selListener)
-
-        view.tagButton.actionPerformed={
+        } as ListSelectionListener 
+        
+    private addAction = {
+            def selectedFile = dialogs.askDirectory(model.selectionDir);
+            if(selectedFile){
+                model.selectionDir = selectedFile.getParentFile()
+                model.add(new Directory(path:selectedFile))
+            }
+        }
+    
+    private deleteAction = {
+            def dir = view.dirList.selectedValue
+            model.remove(dir)
+        }
+    
+    private scanAction = {
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, timezoneFinder)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
+            dialogs.registerWorker(worker)                
+        }
+    
+    private saveAction = {
+            view.imageTable.editorComponent?.getValue()
+            SaveWorker worker = new SaveWorker(view.dirList.selectedValue)
+            worker.addPropertyChangeListener(progressListener)
+            worker.execute()
+            dialogs.registerWorker(worker)
+        }
+    
+    private geotagAction = {
             def offset = dialogs.askOffset();
             if(offset != null)
             {
@@ -133,7 +124,8 @@ public class Nikki{
                 view.imageTable.repaint()
             }
         }
-        view.exportButton.actionPerformed={
+    
+    private exportAction = {
             view.imageTable.editorComponent?.getValue()
             def day = view.dayList.selectedValue
             def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + day.date +".kmz");
@@ -147,6 +139,28 @@ public class Nikki{
                 dialogs.registerWorker(worker)
             }
         }
+    
+    /**
+     * Builds the model and the view and connects everything
+     * 
+     * @param prefsClass used as key in the Preferences API
+     */
+    public void build(Class prefsClass, Dialogs dialogs, TimezoneFinder finder){
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        this.view = NikkiFrame.create(dialogs)
+        this.dialogs = dialogs
+        this.model = new NikkiModel(prefsClass)
+        this.timezoneFinder = finder
+        view.dirList.model = model        
+        
+        view.dirList.addListSelectionListener(selectDirectoryAction)        
+        view.addButton.actionPerformed = addAction            
+        view.deleteButton.actionPerformed = deleteAction
+        view.scanButton.actionPerformed = scanAction
+        view.saveButton.actionPerformed = saveAction
+        view.dayList.addListSelectionListener(selectDayAction)
+        view.tagButton.actionPerformed = geotagAction        
+        view.exportButton.actionPerformed = exportAction
     }
 
     /**
