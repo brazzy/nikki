@@ -135,5 +135,21 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
     }
 
+    public void testHashSet()
+    {
+        def set = new HashSet()
+        def dir1 = new Directory(path:new File("C:\\tmp"))
+        def dir2 = tmpDir
+        set.add(dir1)
+        set.add(dir2)
+        set.add(null)
+        assertTrue(set.contains(dir1))
+        assertTrue(set.contains(dir2))
+        assertTrue(set.contains(null))
+        assertTrue(set.remove(null))
+        assertTrue(set.remove(dir2))
+        assertTrue(set.remove(dir1))
+    }
+
 }
 

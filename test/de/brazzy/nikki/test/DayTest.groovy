@@ -127,5 +127,21 @@ class DayTest extends AbstractNikkiTest{
         input.close()
     }
 
+    public void testHashSet()
+    {
+        def set = new HashSet()
+        def day1 = new Day(directory: tmpDir, date: DAY1)
+        def day2 = new Day(directory: tmpDir, date: DAY2)
+        set.add(day1)
+        set.add(day2)
+        set.add(null)
+        assertTrue(set.contains(day1))
+        assertTrue(set.contains(day2))
+        assertTrue(set.contains(null))
+        assertTrue(set.remove(null))
+        assertTrue(set.remove(day2))
+        assertTrue(set.remove(day1))
+    }
+    
 }
 
