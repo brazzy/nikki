@@ -177,7 +177,19 @@
     		<link packages="com.infomatiq.jsi." href="http://jsi.sourceforge.net/javadoc/1.0b1/"/>
 		</groovydoc>
     </target>
-	
+
+    <target name="jdepend">
+    	<jdepend outputfile="build/jdepend.xml" format="xml">
+    	    <exclude name="java.*"/>
+    	    <exclude name="javax.*"/>
+    	    <exclude name="com.joda.time.*"/>
+    	    <exclude name="com.infomatiq.jsi.*"/>
+    	    <classespath>
+    	        <pathelement location="${build.dir}"/>
+    	    </classespath>
+    	</jdepend>
+    </target>
+
     <target name="create_run_jar">
         <jar destfile="build/Nikki.jar" filesetmanifest="mergewithoutmain">
             <manifest>
