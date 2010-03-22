@@ -10,6 +10,8 @@ import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+
+import java.util.Collection;
 import java.util.prefs.Preferences
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormatter
@@ -111,6 +113,22 @@ class AbstractNikkiTest extends GroovyTestCase
         return image
     }
 
-	
+	protected checkCollection(Collection c, List elements)
+	{
+	    assertTrue(c.isEmpty())
+        for(o in elements)
+        {
+            c.add(o)
+        }
+        for(o in elements)
+        {
+            assertTrue(c.contains(o))
+        }
+        for(o in elements)
+        {
+            assertTrue(c.remove(o))
+        }
+        assertTrue(c.isEmpty())
+	}
 }
 

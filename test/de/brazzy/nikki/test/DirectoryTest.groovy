@@ -1,5 +1,7 @@
 package de.brazzy.nikki.test
 
+import java.util.HashSet;
+
 import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Day
@@ -137,18 +139,12 @@ public class DirectoryTest extends AbstractNikkiTest {
 
     public void testHashSet()
     {
-        def set = new HashSet()
         def dir1 = new Directory(path:new File("C:\\tmp"))
         def dir2 = tmpDir
-        set.add(dir1)
-        set.add(dir2)
-        set.add(null)
-        assertTrue(set.contains(dir1))
-        assertTrue(set.contains(dir2))
-        assertTrue(set.contains(null))
-        assertTrue(set.remove(null))
-        assertTrue(set.remove(dir2))
-        assertTrue(set.remove(dir1))
+        def dir3 = new Directory()
+
+        checkCollection(new HashSet(), [dir1, dir2, dir3])
+        checkCollection(new ArrayList(), [dir1, dir2, dir3])
     }
 
 }
