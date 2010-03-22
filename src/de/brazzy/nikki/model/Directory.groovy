@@ -156,4 +156,28 @@ class Directory extends ListDataModel<Day>{
         worker?.progress = 0;
     }
 
+    @Override
+    public int hashCode()
+    {
+        return (path == null) ? 0 : path.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this.is(obj))
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Directory other = (Directory) obj;
+        if (path == null)
+        {
+            if (other.path != null)
+                return false;
+        }
+        else if (!path.equals(other.path))
+            return false;
+        return true;
+    }
 }

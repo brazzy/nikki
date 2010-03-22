@@ -60,7 +60,8 @@ class Day extends AbstractTableModel
     public String toString()
     {
         DateTimeFormatter format = ISODateTimeFormat.date()
-        (date==null? "unknown" : format.print(date))+" ("+images.size()+", "+waypoints.size()+")"
+        return (date==null? "unknown" : format.print(date)) +
+               " ("+images.size()+", "+waypoints.size()+")"
     }
 
     /**
@@ -177,4 +178,39 @@ class Day extends AbstractTableModel
             .withExtrude(Boolean.TRUE)
             .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
     }
-}
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((directory == null) ? 0 : directory.hashCode());
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this.is(obj))
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Day other = (Day) obj;
+        if (date == null)
+        {
+            if (other.date != null)
+                return false;
+        }
+        else if (!date.equals(other.date))
+            return false;
+        if (directory == null)
+        {
+            if (other.directory != null)
+                return false;
+        }
+        else if (!directory.equals(other.directory))
+            return false;
+        return true;
+    }}
