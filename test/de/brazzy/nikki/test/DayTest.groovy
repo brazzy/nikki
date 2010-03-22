@@ -132,9 +132,10 @@ class DayTest extends AbstractNikkiTest{
         def day1 = new Day(directory: tmpDir, date: DAY1)
         def day2 = new Day(directory: tmpDir)
         def day3 = new Day(date: DAY2)
+        def day4 = new Day()
         
-        checkCollection(new HashSet(), [day1, day2, day3])
-        checkCollection(new ArrayList(), [day1, day2, day3])
+        checkCollection(new HashSet(), [day1, day2, day3, day4])
+        checkCollection(new ArrayList(), [day1, day2, day3, day4])
     }
     
 }
