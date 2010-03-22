@@ -6,7 +6,14 @@ import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.Document
 import de.micromata.opengis.kml.v_2_2_0.Coordinate
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+
+import java.text.DecimalFormat;
 import java.text.NumberFormat
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import de.brazzy.nikki.util.ImageWriter
 import org.joda.time.DateTime
 import org.joda.time.Interval;
@@ -144,5 +151,47 @@ class Image implements Serializable{
             waypoint = result
             modified = true
         }
+    }
+    
+    void exportTo(ZipOutputStream out, Document doc, int imgIndex)
+    {
+        if(export)
+        {
+            def imgIndexFmt = new DecimalFormat("000 ");
+            Placemark pm = doc.createAndAddPlacemark()
+                .withName(imgIndexFmt.format(imgIndex++) + (title ?: ""))
+                .withDescription(longDescription)
+                .withVisibility(true)
+            pm.createAndSetPoint()
+                .withCoordinates([new Coordinate(waypoint.longitude.value, waypoint.latitude.value)])
+            pm.createAndAddStyle()
+               .createAndSetIconStyle()
+               .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
+               .createAndSetIcon()
+               .withHref("thumbs/"+fileName)
+
+            ImageReader reader = new ImageReader(new File(day.directory.path, fileName), null)
+            store(reader.scale(592, false), "images/"+fileName, out)
+            store(reader.scale(96, true), "thumbs/"+fileName, out)
+        }
+    }
+    
+    /**
+     * Stores one image
+     * 
+     * @param imgData image data
+     * @param name file name
+     * @param out stream to write to
+     */
+    private static void store(byte[] imgData, String name, ZipOutputStream out)
+    {
+        def entry = new ZipEntry(name)
+        entry.size = imgData.length
+        def crc = new CRC32()
+        crc.update(imgData)
+        entry.crc = crc.value
+        out.putNextEntry(entry)
+        out.write(imgData)
+        out.closeEntry()
     }
 }

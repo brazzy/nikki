@@ -123,55 +123,18 @@ class Day extends AbstractTableModel
             .withColor("801977FF")
         
         int count = 0;
-        out.method = ZipOutputStream.STORED
-        def entry = new ZipEntry("images/");
-        entry.size = 0;
-        entry.crc = 0;
-        out.putNextEntry(entry)
-        out.closeEntry()
+        out.method = ZipOutputStream.STORED        
+        createDirEntry(out, "images/");
+        createDirEntry(out, "thumbs/");
         
-        entry = new ZipEntry("thumbs/");
-        entry.size = 0;
-        entry.crc = 0;
-        out.putNextEntry(entry)
-        out.closeEntry()
-        
-        def imgIndexFmt = new DecimalFormat("000 ");
         def imgIndex = 0;
         images.sort{ it.time }
-        images.each{ Image image ->
-            if(image.export)
-            {
-                Placemark pm = doc.createAndAddPlacemark()
-                    .withName(imgIndexFmt.format(imgIndex++) + (image.title ?: ""))
-                    .withDescription(image.longDescription)
-                    .withVisibility(true)
-                 pm.createAndSetPoint()
-                    .withCoordinates([new Coordinate(image.waypoint.longitude.value, image.waypoint.latitude.value)])
-                 pm.createAndAddStyle()
-                   .createAndSetIconStyle()
-                   .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
-                   .createAndSetIcon()
-                   .withHref("thumbs/"+image.fileName)
-    
-                ImageReader reader = new ImageReader(new File(directory.path, image.fileName), null)
-                store(reader.scale(592, false), "images/"+image.fileName, out)
-                store(reader.scale(96, true), "thumbs/"+image.fileName, out)
-            }
+        for(Image image : images) {
+            image.exportTo(out, doc, imgIndex)
             worker?.progress = new Integer((int)(++count / images.size * 100))
         }
-        
-        LineString ls;        
-        DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
-        waypoints.each{ waypoint ->
-            def gap = new Duration(previous, waypoint.timestamp)
-            if(gap.isLongerThan(WAYPOINT_THRESHOLD))
-            {
-                ls = createLine(doc)
-            }
-            ls.addToCoordinates(waypoint.longitude.value, waypoint.latitude.value)
-            previous = waypoint.timestamp
-        }
+
+        exportWaypoints(doc)
         
         out.method = ZipOutputStream.DEFLATED
         out.putNextEntry(new ZipEntry("diary.kml"))
@@ -181,30 +144,31 @@ class Day extends AbstractTableModel
         worker?.progress = 0
     }
     
-    /**
-     * Stores one image
-     * 
-     * @param imgData image data
-     * @param name file name
-     * @param out stream to write to
-     */
-    private void store(byte[] imgData, String name, ZipOutputStream out)
+    private static void createDirEntry(ZipOutputStream out, String dirName)
     {
-        def entry = new ZipEntry(name)
-        entry.size = imgData.length
-        def crc = new CRC32()
-        crc.update(imgData)
-        entry.crc = crc.value
+        def entry = new ZipEntry(dirName);
+        entry.size = 0;
+        entry.crc = 0;
         out.putNextEntry(entry)
-        out.write(imgData)
         out.closeEntry()
     }
-
-    /**
-     * @return creates a new line representing the start of a new GPS track 
-     *         or segment
-     */
-    private LineString createLine(Document doc)
+    
+    private void exportWaypoints(Document doc)
+    {
+        LineString ls;        
+        DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
+        for(Waypoint wp : waypoints) {
+            def gap = new Duration(previous, wp.timestamp)
+            if(gap.isLongerThan(WAYPOINT_THRESHOLD))
+            {
+                ls = startLineSegment(doc)
+            }
+            ls.addToCoordinates(wp.longitude.value, wp.latitude.value)
+            previous = wp.timestamp
+        }
+    }
+    
+    private LineString startLineSegment(Document doc)
     {
         return doc.createAndAddPlacemark()
             .withStyleUrl("#track")
