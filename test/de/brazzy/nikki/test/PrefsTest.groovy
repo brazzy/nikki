@@ -10,46 +10,70 @@ import de.brazzy.nikki.model.Directory
 class PrefsTest extends AbstractNikkiTest{
 
     NikkiModel model
+    def dirA
+    def dirB
+    def dirC
 
     public void setUp()
     {
         model = new NikkiModel(PrefsTest.class)
+        dirA = new Directory(path: new File("C:\\testA"))
+        dirB = new Directory(path: new File("C:\\testB"))
+        dirC = new Directory(path: new File("C:\\testC"))
     }
 
     public void testAddDirectory()
     {
         assertEquals(0, model.size())
-        model.add(new Directory(path: new File("C:\\test1")))
-        assertEquals("C:\\test1", model[0].path.path)
+        try
+        {
+            model.add(null)            
+            fail("add succeeded with null argument")
+        }
+        catch(IllegalArgumentException ex)
+        {
+            assertTrue(ex.getMessage().contains("must not"))
+        }
+        
+        model.add(dirA)
+        assertEquals(dirA, model[0])
         setUp()
         assertEquals(1, model.size())
-        model.add(new Directory(path: new File("C:\\test2")))
-        model.add(new Directory(path: new File("C:\\test3")))
+        model.add(dirB)
+        model.add(dirC)
         setUp()
         assertEquals(3, model.size())
-        assertEquals("C:\\test1", model[0].path.path)
-        assertEquals("C:\\test2", model[1].path.path)
-        assertEquals("C:\\test3", model[2].path.path)
+        assertEquals(dirA, model[0])
+        assertEquals(dirB, model[1])
+        assertEquals(dirC, model[2])
     }
 
     public void testDeleteDirectory()
     {
-        model.add(new Directory(path: new File("C:\\testA")))
-        model.add(new Directory(path: new File("C:\\testB")))
-        model.add(new Directory(path: new File("C:\\testC")))
-        setUp()
-        assertEquals(3, model.size())
-        model.remove(model[1])
+        model.add(dirA)
+        model.add(dirB)
         setUp()
         assertEquals(2, model.size())
-        assertEquals("C:\\testA", model[0].path.path)
-        assertEquals("C:\\testC", model[1].path.path)
-        model.remove(model[0])
+        assertFalse(model.remove(dirC))
+        setUp()
+        assertEquals(2, model.size())
+        assertTrue(model.remove(dirA))
+        setUp()
         assertEquals(1, model.size())
-        model.remove(model[0])
+        assertEquals(dirB, model[0])
+        assertTrue(model.remove(dirB))
         assertEquals(0, model.size())
         setUp()
         assertEquals(0, model.size())
+    }
+    
+    public void testContains()
+    {
+        assertFalse(model.contains(dirA))
+        model.add(dirA)
+        assertTrue(model.contains(dirA))
+        model.remove(dirA)
+        assertFalse(model.contains(dirA))        
     }
 
     public void testSelectionDir()

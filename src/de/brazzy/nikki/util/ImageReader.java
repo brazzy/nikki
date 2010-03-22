@@ -51,8 +51,6 @@ public class ImageReader extends ImageDataIO
 
     private DateTimeZone scanZone;
     private Rotation rotation;
-    private int lastWidth;
-    private int lastHeight;
     private BufferedImage mainImage;
     private Boolean thumbnailNew;
     
@@ -278,17 +276,16 @@ public class ImageReader extends ImageDataIO
             mainImage = ImageIO.read(file);
         }
         
-        this.lastWidth = toWidth;
-        this.lastHeight = heightForWidth(mainImage, toWidth);
+        int toHeight = heightForWidth(mainImage, toWidth);
 
-        ResampleOp op = new ResampleOp(toWidth, this.lastHeight);        
+        ResampleOp op = new ResampleOp(toWidth, toHeight);        
         BufferedImage scaledImage = op.filter(mainImage, null);
         if(paintBorder)
         {
             Graphics2D g = scaledImage.createGraphics();
             g.setPaintMode();
             new EtchedBorder(EtchedBorder.RAISED, Color.LIGHT_GRAY, Color.DARK_GRAY)
-            .paintBorder(null, g, 0, 0, this.lastWidth, this.lastHeight);
+            .paintBorder(null, g, 0, 0, toWidth, toHeight);
         }
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -301,14 +298,5 @@ public class ImageReader extends ImageDataIO
         return (int) (img.getHeight(null) / (double)img.getWidth(null) * width);
     }
 
-    public int getLastWidth()
-    {
-        return lastWidth;
-    }
-
-    public int getLastHeight()
-    {
-        return lastHeight;
-    }
 
 }

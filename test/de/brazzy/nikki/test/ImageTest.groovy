@@ -57,9 +57,9 @@ class ImageTest extends AbstractNikkiTest{
     {
         assertNotNull(reader.exifData)
         assertEquals(Rotation.LEFT, reader.rotation)
-        assertNull(reader.thumbnailNew)
+        assertNull(reader.isThumbnailNew())
         def thumb = reader.createImage().thumbnail
-        assertSame(Boolean.FALSE, reader.thumbnailNew)
+        assertSame(Boolean.FALSE, reader.isThumbnailNew())
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(120, thumb.width)
@@ -70,7 +70,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(Rotation.NONE, reader.rotation)
         assertNull(reader.thumbnailNew)
         thumb = reader.createImage().thumbnail
-        assertSame(Boolean.TRUE, reader.thumbnailNew)
+        assertSame(Boolean.TRUE, reader.isThumbnailNew())
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
@@ -81,7 +81,7 @@ class ImageTest extends AbstractNikkiTest{
         assertNull(reader.thumbnailNew)
         assertEquals(Rotation.NONE, reader.rotation)
         thumb = reader.createImage().thumbnail
-        assertSame(Boolean.TRUE, reader.thumbnailNew)
+        assertSame(Boolean.TRUE, reader.isThumbnailNew())
         assertNotNull(thumb)
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
