@@ -142,9 +142,11 @@ public class DirectoryTest extends AbstractNikkiTest {
         def dir1 = new Directory(path:new File("C:\\tmp"))
         def dir2 = tmpDir
         def dir3 = new Directory()
+        def dir1a = new Directory(path:new File("C:\\tmp"))
+        def dir2a = new Directory(path:tmpDir.path)
+        def dir3a = new Directory()
 
-        checkCollection(new HashSet(), [dir1, dir2, dir3])
-        checkCollection(new ArrayList(), [dir1, dir2, dir3])
+        checkEqualsHashCode([dir1, dir2, dir3], [dir1a, dir2a, dir3a])
     }
 
 }

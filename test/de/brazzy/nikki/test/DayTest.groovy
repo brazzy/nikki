@@ -127,15 +127,18 @@ class DayTest extends AbstractNikkiTest{
         input.close()
     }
 
-    public void testHashSet()
+    public void testEquals()
     {
         def day1 = new Day(directory: tmpDir, date: DAY1)
+        def day1a = new Day(directory: tmpDir, date: DAY1)
         def day2 = new Day(directory: tmpDir)
+        def day2a = new Day(directory: tmpDir)
         def day3 = new Day(date: DAY2)
+        def day3a = new Day(date: DAY2)
         def day4 = new Day()
-        
-        checkCollection(new HashSet(), [day1, day2, day3, day4])
-        checkCollection(new ArrayList(), [day1, day2, day3, day4])
+        def day4a = new Day()
+
+        checkEqualsHashCode([day1, day2, day3, day4], [day1a, day2a, day3a, day4a])
     }
     
 }

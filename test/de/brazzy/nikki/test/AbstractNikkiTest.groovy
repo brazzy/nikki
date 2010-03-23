@@ -115,27 +115,29 @@ class AbstractNikkiTest extends GroovyTestCase
         return image
     }
 
-	protected checkCollection(Collection c, List elements)
-	{
-	    assertTrue(c.isEmpty())
-        for(o in elements)
+    public void checkEqualsHashCode(List a, List b)
+    {
+        for(int i=0; i<a.size(); i++)
         {
-            c.add(o)
-        }
-        for(o in elements)
-        {
-            assertTrue(c.contains(o))
-            if(c instanceof List)
+            for(int j=0; j<b.size(); j++)
             {
-                List l = (List)c;
-                assertTrue(l.lastIndexOf(o)>=0);
+                if(i==j)
+                {
+                    assert a[i].hashCode() == b[i].hashCode()
+                    assert a[i].hashCode() == a[i].hashCode()
+                    assert b[i].hashCode() == b[i].hashCode()
+                    assert a[i] == a[i]
+                    assert a[i] == b[i]
+                    assert !a[i].is(b[i])
+                }
+                else
+                {
+                    assert !a[i].is(b[i])
+                    assert a[i] != a[j]                    
+                    assert a[i] != b[j] 
+                }                                 
             }
         }
-        for(o in elements)
-        {
-            assertTrue(c.remove(o))
-        }
-        assertTrue(c.isEmpty())
-	}
+    }
 }
 
