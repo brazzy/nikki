@@ -19,16 +19,16 @@ public class ListDataModel<T extends Comparable> extends AbstractListModel
             throw new IllegalArgumentException("must not be null!");
         }
         int index = Collections.binarySearch(dataList, d)
-        def lastIndex = dataList.size();
+        def size = dataList.size();
         
-        if(index > 0)
+        if(index >= 0)
         {
             throw new IllegalArgumentException("Already present!");            
         }
-        else if(-index-1 == lastIndex)
+        else if(-index-1 == size)
         {
             dataList.add(d)
-            fireIntervalAdded(this, lastIndex, lastIndex)
+            fireIntervalAdded(this, size, size)
         }
         else
         {

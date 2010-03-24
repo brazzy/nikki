@@ -89,7 +89,7 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
 
-        tmpDir.images.put(IMAGE1, constructImage(DAY1, IMAGE1))
+        addImage(DAY1, IMAGE1)
         assertTrue(view.addButton.enabled)
         assertTrue(view.deleteButton.enabled)
         assertTrue(view.scanButton.enabled)
@@ -179,12 +179,9 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testGeotag()
     {
-        Image image = constructImage(DAY1, IMAGE1)
-        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
-        tmpDir.waypointFiles.put("dummy", wpf)
-        tmpDir.images.put(IMAGE1, image)
-        tmpDir.add(image.day)
         image.waypoint = null
         assertNull(model[0].images[IMAGE1].waypoint)
         view.dirList.selectedIndex = 0
@@ -206,12 +203,9 @@ class GuiTest extends AbstractNikkiTest {
     public void testExport()
     {
         copyFile(IMAGE1)
-        Image image = constructImage(DAY1, IMAGE1)
-        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
-        tmpDir.waypointFiles.put("dummy", wpf)
-        tmpDir.images.put(IMAGE1, image)
-        tmpDir.add(image.day)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
 
@@ -232,12 +226,9 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testOffsetFinder()
     {
-        Image image = constructImage(DAY1, IMAGE1)
-        WaypointFile wpf = constructWaypointFile(DAY1, "dummy")
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
-        tmpDir.waypointFiles.put("dummy", wpf)
-        tmpDir.images.put(IMAGE1, image)
-        tmpDir.add(image.day)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
 
@@ -251,15 +242,12 @@ class GuiTest extends AbstractNikkiTest {
 
     public void testImageView()
     {
-        Image image1 = constructImage(DAY1, IMAGE1)
-        Image image2 = constructImage(DAY1, IMAGE2)
-        Image image3 = constructImage(DAY1, IMAGE2)
-        Image image4 = constructImage(DAY1, IMAGE2)
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY1, IMAGE2)
+        Image image3 = addImage(DAY1, IMAGE2)
+        Image image4 = addImage(DAY1, IMAGE2)
         image1.modified = false
         model.add(tmpDir)
-        tmpDir.images.put(IMAGE1, image1)
-        tmpDir.images.put(IMAGE2, image2)
-        tmpDir.add(image1.day)
 
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
@@ -318,10 +306,8 @@ class GuiTest extends AbstractNikkiTest {
     public void testAutoCommit()
     {
         copyFile(IMAGE1)
-        Image image = constructImage(DAY1, IMAGE1)
+        Image image = addImage(DAY1, IMAGE1)
         model.add(tmpDir)
-        tmpDir.images.put(IMAGE1, image)
-        tmpDir.add(image.day)
 
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0

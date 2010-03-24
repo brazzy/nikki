@@ -76,7 +76,7 @@ class AbstractNikkiTest extends GroovyTestCase
         f.deleteOnExit()
     }
 
-    protected WaypointFile constructWaypointFile(LocalDate date, String fileName)
+    protected WaypointFile addWaypointFile(LocalDate date, String fileName)
     {
         Day day = tmpDir.find{ it.date.equals(date)}
         if(!day)
@@ -88,10 +88,11 @@ class AbstractNikkiTest extends GroovyTestCase
         file.waypoints.add(constructWaypoint(day, 1))
         file.waypoints.add(constructWaypoint(day, 2))
         day.waypoints.addAll(file.waypoints)
+        tmpDir.waypointFiles.put(fileName, file)
         return file
     }
 
-    protected Waypoint constructWaypoint(Day day, int index)
+    protected static Waypoint constructWaypoint(Day day, int index)
     {
         Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0)),
             latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
@@ -99,7 +100,7 @@ class AbstractNikkiTest extends GroovyTestCase
         return wp
     }
 
-    protected Image constructImage(LocalDate date, String fileName)
+    protected Image addImage(LocalDate date, String fileName)
     {
         Day day = tmpDir.find{ it.date.equals(date)}
         if(!day)
@@ -112,6 +113,7 @@ class AbstractNikkiTest extends GroovyTestCase
             description:"testDescription", day: day, thumbnail: THUMB,
             export: true, time: wp.timestamp.toDateTime(ZONE), waypoint: wp, modified: true)
         day.images.add(image)
+        tmpDir.images.put(fileName, image)
         return image
     }
 
@@ -132,9 +134,9 @@ class AbstractNikkiTest extends GroovyTestCase
                 }
                 else
                 {
-                    assert !a[i].is(b[i])
-                    assert a[i] != a[j]                    
-                    assert a[i] != b[j] 
+                    assert !a[i].is(b[i]), "$i, $j"
+                    assert a[i] != a[j]  , "$i, $j"                  
+                    assert a[i] != b[j]  , "$i, $j"
                 }                                 
             }
         }

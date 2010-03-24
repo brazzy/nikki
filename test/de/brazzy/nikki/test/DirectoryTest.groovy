@@ -20,6 +20,7 @@ import de.brazzy.nikki.util.TimezoneFinder;
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
+import org.junit.Test;
 
 /**
  * TODO: rescan mit entfernten images und waypointFiles
@@ -76,10 +77,8 @@ public class DirectoryTest extends AbstractNikkiTest {
     {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
-        Image image = constructImage(DAY1, IMAGE1)
-        tmpDir.images[IMAGE1] = image
-        WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
-        tmpDir.waypointFiles[WAYPOINTS1] = file
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile file = addWaypointFile(DAY1, WAYPOINTS1)
         Day day1 = tmpDir[0] 
         day1.waypoints = [file.waypoints[0],file.waypoints[1]]
         
@@ -145,12 +144,10 @@ public class DirectoryTest extends AbstractNikkiTest {
     {
         def dir1 = new Directory(path:new File("C:\\tmp"))
         def dir2 = tmpDir
-        def dir3 = new Directory()
         def dir1a = new Directory(path:new File("C:\\tmp"))
         def dir2a = new Directory(path:tmpDir.path)
-        def dir3a = new Directory()
 
-        checkEqualsHashCode([dir1, dir2, dir3], [dir1a, dir2a, dir3a])
+        checkEqualsHashCode([dir1, dir2], [dir1a, dir2a])
     }
 
     
@@ -228,7 +225,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         
         mock.verify(mockListener)
     }
-
+    
     public void testRemove()
     {
         

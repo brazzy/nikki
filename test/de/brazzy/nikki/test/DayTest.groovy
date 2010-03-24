@@ -16,6 +16,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import org.joda.time.Seconds;
+import org.junit.Test;
 
 /**
  * @author Brazil
@@ -85,11 +86,10 @@ class DayTest extends AbstractNikkiTest{
     public void testExport()
     {
         copyFile(IMAGE1)
-        Day day = new Day(directory: tmpDir, date: DAY1)
-        Image image = constructImage(DAY1, IMAGE1)
-        day.images.add(image)
+        Image image = addImage(DAY1, IMAGE1)
         File file = new File(tmpDir.path, "export"+DATE1+".kmz")
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file))
+        Day day = tmpDir[0]
         day.export(out, null)
         ZipInputStream input = new ZipInputStream(new FileInputStream(file))
         ZipEntry entry;
@@ -126,20 +126,17 @@ class DayTest extends AbstractNikkiTest{
         assertNull(input.getNextEntry())
         input.close()
     }
-
+    
     public void testEqualsHashCode()
     {
         def day1 = new Day(directory: tmpDir, date: DAY1)
         def day1a = new Day(directory: tmpDir, date: DAY1)
         def day2 = new Day(directory: tmpDir)
         def day2a = new Day(directory: tmpDir)
-        def day3 = new Day(date: DAY2)
-        def day3a = new Day(date: DAY2)
-        def day4 = new Day()
-        def day4a = new Day()
+        def day3 = new Day(directory: tmpDir, date: DAY2)
+        def day3a = new Day(directory: tmpDir, date: DAY2)
 
-        checkEqualsHashCode([day1, day2, day3, day4], [day1a, day2a, day3a, day4a])
+        checkEqualsHashCode([day1, day2, day3], [day1a, day2a, day3a])
     }
-    
 }
 

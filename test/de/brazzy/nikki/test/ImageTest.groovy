@@ -138,8 +138,7 @@ class ImageTest extends AbstractNikkiTest{
         File file = new File(tmpDir.path, IMAGE2)
         assertTrue(file.setLastModified(baseTime))
 
-        Image image = constructImage(DAY2, IMAGE2)
-        tmpDir.images[IMAGE2] = image
+        Image image = addImage(DAY2, IMAGE2)
 
         assertTrue(file.lastModified() == baseTime)
         image.save(tmpDir.path)
