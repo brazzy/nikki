@@ -54,7 +54,11 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /** Date represented by this day */
     LocalDate date
     
-    /** Contains the files (images and GPS logs) used by this Day instance */
+    /** 
+     *  Contains the files (images and GPS logs) used by this Day instance.
+     *  Must not be null (TODO: enforce. Currently not possible, as Groovy
+     *  ignores "private")
+     */
     Directory directory
     
     public String toString()
@@ -185,34 +189,27 @@ class Day extends AbstractTableModel implements Comparable<Day>
         final int prime = 31;
         int result = 1;
         result = prime * result + ((date == null) ? 0 : date.hashCode());
-        result = prime * result + ((directory == null) ? 0 : directory.hashCode());
+        result = prime * result + directory.hashCode();
         return result;
     }
     @Override
     public boolean equals(Object obj)
     {
         if (this.is(obj))
-            return true;
+            return true
         if (obj == null)
-            return false;
+            return false
         if (getClass() != obj.getClass())
-            return false;
-        Day other = (Day) obj;
+            return false
+        Day other = (Day) obj
         if (date == null)
         {
             if (other.date != null)
-                return false;
+                return false
         }
         else if (!date.equals(other.date))
-            return false;
-        if (directory == null)
-        {
-            if (other.directory != null)
-                return false;
-        }
-        else if (!directory.equals(other.directory))
-            return false;
-        return true;
+            return false
+        return directory.equals(other.directory)
     }
     
     @Override
