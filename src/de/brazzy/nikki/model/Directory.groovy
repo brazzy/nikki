@@ -51,13 +51,15 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     Map<String, WaypointFile> waypointFiles = [:];    
     
     /**
-     * This directory's filesystem path
+     * This directory's filesystem path.
+     *  Must not be null (TODO: enforce. Currently not possible, as Groovy
+     *  ignores "private")
      */
-    File path;
+    File path
     
     public String toString()
     {
-        (path?.name ?: "<unknown directory>") +" ("+images.size()+", "+waypointFiles.size()+")"
+        path.name+" ("+images.size()+", "+waypointFiles.size()+")"
     }
 
     /**
@@ -155,7 +157,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     @Override
     public int hashCode()
     {
-        return (path == null) ? 0 : path.hashCode();
+        return path.hashCode()
     }
     @Override
     public boolean equals(Object obj)
@@ -166,24 +168,13 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Directory other = (Directory) obj;
-        if (path == null)
-        {
-            if (other.path != null)
-                return false;
-        }
-        else if (!path.equals(other.path))
-            return false;
-        return true;
+        Directory other = (Directory) obj
+        return path.equals(other.path)
     }
     @Override
     public int compareTo(Directory other)
     {
-        if(path==null)
-        {
-            return other.path==null ? 0 : -1
-        }
-        return other.path==null ? 1 : path.name.compareTo(other.path.name)
+        return path.name.compareTo(other.path.name)
     }
     
     public Day getDay(LocalDate date)
