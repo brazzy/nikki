@@ -55,6 +55,7 @@ class TimezoneFinder {
      */
     public TimezoneFinder(InputStream zoneData)
     {
+        this()
         ObjectInputStream data = new ObjectInputStream(zoneData)
         for(def zone=data.readUTF();zone != "";zone=data.readUTF())
         {
