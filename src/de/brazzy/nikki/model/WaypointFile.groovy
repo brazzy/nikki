@@ -17,8 +17,7 @@ class WaypointFile implements Serializable{
         file.eachLine{ line ->
             if(line.startsWith('$GPRMC'))
             {
-                def wp = Waypoint.parse(result, line, finder)
-                result.waypoints.add(wp)
+                result.waypoints.add(Waypoint.parse(result, line, finder))
             }
         }
         return result;

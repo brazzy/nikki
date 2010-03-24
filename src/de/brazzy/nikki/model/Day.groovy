@@ -35,7 +35,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * 
  * @author Michael Borgwardt
  */
-class Day extends AbstractTableModel
+class Day extends AbstractTableModel implements Comparable<Day>
 {
     public static final long serialVersionUID = 1
 
@@ -213,4 +213,15 @@ class Day extends AbstractTableModel
         else if (!directory.equals(other.directory))
             return false;
         return true;
-    }}
+    }
+    
+    @Override
+    public int compareTo(Day other)
+    {
+        if(date==null)
+        {
+            return other.date==null ? 0 : -1                
+        }
+        return other.date == null ? 1 : date.compareTo(other.date)
+    }    
+}

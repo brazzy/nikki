@@ -34,9 +34,7 @@ class Waypoint implements Serializable{
         result.timestamp = zone!=null ? timestamp.withZone(zone) : timestamp
 
         def date = result.timestamp.toLocalDate()
-        Day d = wpFile?.directory?.data?.find{
-            it.date == date
-        }
+        Day d = wpFile?.directory?.getDay(date)
         if(!d)
         {
             d = new Day(directory: wpFile?.directory, date: date)

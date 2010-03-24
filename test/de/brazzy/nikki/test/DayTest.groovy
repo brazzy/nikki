@@ -127,7 +127,7 @@ class DayTest extends AbstractNikkiTest{
         input.close()
     }
 
-    public void testEquals()
+    public void testEqualsHashCode()
     {
         def day1 = new Day(directory: tmpDir, date: DAY1)
         def day1a = new Day(directory: tmpDir, date: DAY1)

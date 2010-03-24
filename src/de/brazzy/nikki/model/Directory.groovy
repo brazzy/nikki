@@ -20,6 +20,7 @@ import java.util.Date
 import javax.swing.SwingWorker
 import java.util.TimeZone
 import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate;
 
 /**
  * Represents on filesystem directory containing images and GPS tracks
@@ -27,7 +28,8 @@ import org.joda.time.DateTimeZone
  * 
  * @author Michael Borgwardt
  */
-class Directory extends ListDataModel<Day>{
+class Directory extends ListDataModel<Day> implements Comparable<Directory>
+{
     public static final long serialVersionUID = 1;
     
     private static final def FILTER_JPG = { dir, name ->
@@ -75,7 +77,7 @@ class Directory extends ListDataModel<Day>{
 
         int count = 0;
         def imageFiles = path.listFiles(FILTER_JPG)
-        Map days = this.data.groupBy{it.date}
+        Map days = this.dataList.groupBy{it.date}
         days.entrySet().each{it.value = it.value[0]}
         
         for(file in imageFiles){
@@ -116,15 +118,9 @@ class Directory extends ListDataModel<Day>{
                 WaypointFile wf = WaypointFile.parse(this, file, tzFinder)
                 this.waypointFiles[file.name] = wf            
             }
-        }
-
-        this.data.sort{
-            it.date==null ?
-            new Date(1800,1,1) :
-            it.date
-        }        
+        }       
         
-        fireContentsChanged(this, 0, this.data.size()-1)
+        fireContentsChanged(this, 0, this.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
     }  
@@ -179,5 +175,27 @@ class Directory extends ListDataModel<Day>{
         else if (!path.equals(other.path))
             return false;
         return true;
+    }
+    @Override
+    public int compareTo(Directory other)
+    {
+        if(path==null)
+        {
+            return other.path==null ? 0 : -1
+        }
+        return other.path==null ? 1 : path.name.compareTo(other.path.name)
+    }
+    
+    public Day getDay(LocalDate date)
+    {
+        int index = Collections.binarySearch(dataList, new Day(date:date))
+        if(index >= 0)
+        {
+            return getAt(index)
+        }
+        else
+        {
+            return null
+        }
     }
 }

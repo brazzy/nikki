@@ -1,6 +1,10 @@
 package de.brazzy.nikki.test
 
+import groovy.mock.interceptor.MockFor;
+
 import java.util.HashSet;
+
+import javax.swing.event.ListDataListener;
 
 import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.Directory
@@ -76,7 +80,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir.images[IMAGE1] = image
         WaypointFile file = constructWaypointFile(DAY1, WAYPOINTS1)
         tmpDir.waypointFiles[WAYPOINTS1] = file
-        Day day1 = tmpDir.data[0] 
+        Day day1 = tmpDir[0] 
         day1.waypoints = [file.waypoints[0],file.waypoints[1]]
         
         assertEquals(1, tmpDir.size())
@@ -137,7 +141,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
     }
 
-    public void testHashSet()
+    public void testEqualsHashCode()
     {
         def dir1 = new Directory(path:new File("C:\\tmp"))
         def dir2 = tmpDir
@@ -147,6 +151,116 @@ public class DirectoryTest extends AbstractNikkiTest {
         def dir3a = new Directory()
 
         checkEqualsHashCode([dir1, dir2, dir3], [dir1a, dir2a, dir3a])
+    }
+
+    
+    public void testGetDay()
+    {
+        Day day1 = new Day(date:DAY1)
+        Day day2 = new Day(date:DAY2)
+        Day dayX = new Day()
+        tmpDir.add(day1)
+        tmpDir.add(day2)
+        tmpDir.add(dayX)
+        assertSame(day1, tmpDir.getDay(DAY1))
+        assertSame(day2, tmpDir.getDay(DAY2))
+        assertSame(dayX, tmpDir.getDay(null))
+    }
+    
+    public void testAdd()
+    {        
+        def mock = new MockFor(ListDataListener)
+        mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
+        mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
+        mock.demand.intervalAdded { assert it.index0 == 1 && it.index1==1 }
+        
+        def mockListener = mock.proxyDelegateInstance()
+        tmpDir.addListDataListener(mockListener)
+        
+        Day day1 = new Day(date:DAY1)
+        Day day2 = new Day(date:DAY2)
+        Day dayX = new Day()
+        assert 0 == tmpDir.size
+
+        tmpDir.add(day2)
+        assert 1 == tmpDir.size
+        assertFalse(tmpDir.contains(day1))
+        assertTrue(tmpDir.contains(day2))
+        assertFalse(tmpDir.contains(dayX))
+        assertSame(day2, tmpDir[0])
+
+        tmpDir.add(dayX)
+        assert 2 == tmpDir.size
+        assertFalse(tmpDir.contains(day1))
+        assertTrue(tmpDir.contains(day2))
+        assertTrue(tmpDir.contains(dayX))
+        assertSame(day2, tmpDir[1])
+        assertSame(dayX, tmpDir[0])
+        
+        tmpDir.add(day1)
+        assert 3 == tmpDir.size
+        assertTrue(tmpDir.contains(day1))
+        assertTrue(tmpDir.contains(day2))
+        assertTrue(tmpDir.contains(dayX))
+        assertSame(day1, tmpDir[1])
+        assertSame(day2, tmpDir[2])
+        assertSame(dayX, tmpDir[0])
+        
+        try
+        {
+            tmpDir.add(null)
+            fail("added null")
+        }
+        catch(IllegalArgumentException e)
+        {
+            assert e.message.contains("must not be null")
+        }
+        
+        try
+        {
+            tmpDir.add(day1)
+            fail("added already present day")
+        }
+        catch(IllegalArgumentException e)
+        {
+            assert e.message.contains("Already")
+        }
+        
+        mock.verify(mockListener)
+    }
+
+    public void testRemove()
+    {
+        
+        Day day1 = new Day(date:DAY1)
+        Day day2 = new Day(date:DAY2)
+        Day dayX = new Day()
+        tmpDir.add(dayX)
+        tmpDir.add(day1)
+        tmpDir.add(day2)
+        
+        def mock = new MockFor(ListDataListener)
+        mock.demand.intervalRemoved { assert it.index0 == 0 && it.index1==0 }
+        mock.demand.intervalRemoved { assert it.index0 == 1 && it.index1==1 }
+        def mockListener = mock.proxyDelegateInstance()
+        tmpDir.addListDataListener(mockListener)
+        
+        tmpDir.remove(dayX)
+        assert 2 == tmpDir.size
+        assertSame(day2, tmpDir[1])
+        assertSame(day1, tmpDir[0])
+        assertTrue(tmpDir.contains(day1))
+        assertTrue(tmpDir.contains(day2))
+        assertFalse(tmpDir.contains(dayX))
+        
+        tmpDir.remove(day2)
+        assert 1 == tmpDir.size
+        assertSame(day1, tmpDir[0])
+        assertTrue(tmpDir.contains(day1))
+        assertFalse(tmpDir.contains(day2))
+        assertFalse(tmpDir.contains(dayX))
+        
+        mock.verify(mockListener)
     }
 
 }

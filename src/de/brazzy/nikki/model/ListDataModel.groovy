@@ -6,11 +6,11 @@ import java.lang.ClassNotFoundException
 import java.io.IOException
 import java.io.ObjectOutput
 
-public class ListDataModel<T> extends AbstractListModel
+public class ListDataModel<T extends Comparable> extends AbstractListModel
 {
     public static final long serialVersionUID = 1;
 
-    protected List<T> data = [];
+    protected List<T> dataList = new ArrayList<T>()
 
     public void add(T d)
     {
@@ -18,15 +18,30 @@ public class ListDataModel<T> extends AbstractListModel
         {
             throw new IllegalArgumentException("must not be null!");
         }
-        data.add(d)
-        fireIntervalAdded(this, data.size()-1, data.size()-1)
+        int index = Collections.binarySearch(dataList, d)
+        def lastIndex = dataList.size();
+        
+        if(index > 0)
+        {
+            throw new IllegalArgumentException("Already present!");            
+        }
+        else if(-index-1 == lastIndex)
+        {
+            dataList.add(d)
+            fireIntervalAdded(this, lastIndex, lastIndex)
+        }
+        else
+        {
+            dataList.add(-index-1, d)
+            fireIntervalAdded(this, -index-1, -index-1)
+        }
     }
     public boolean remove(T d)
     {
-        def index = data.indexOf(d);
+        def index = dataList.indexOf(d);
         if(index >= 0)
         {
-            data.remove(d)
+            dataList.remove(d)
             fireIntervalRemoved(this, index, index)
             return true;
         }
@@ -35,15 +50,19 @@ public class ListDataModel<T> extends AbstractListModel
     
     public boolean contains(T d)
     {
-        return data.contains(d)
+        dataList.contains(d)
     }
-
     int getSize()
     {
-        return data.size()
+        dataList.size()
     }    
     T getElementAt(int index)
     {
-        return data[index]
+        getAt(index)
+    }    
+    T getAt(int index)
+    {
+        dataList[index]
     }
+
 }
