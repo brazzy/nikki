@@ -55,23 +55,19 @@ class TimezoneFinder {
      */
     public TimezoneFinder(InputStream zoneData)
     {
-        this()
         ObjectInputStream data = new ObjectInputStream(zoneData)
         for(def zone=data.readUTF();zone != "";zone=data.readUTF())
         {
             zones.add(DateTimeZone.forID(zone))
         }
         
-        while(true)
+        def lat=data.readFloat()
+        while(!Float.isNaN(lat))
         {
-            def lat=data.readFloat()
-            if(Float.isNaN(lat))
-            {
-                break
-            }
             def lng=data.readFloat()
             def zone=data.readShort()
             tree.add(new Rectangle(lat, lng, lat, lng), zone)
+            lat=data.readFloat()
         }
     }
 
