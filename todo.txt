@@ -1,4 +1,3 @@
-- Genauigkeitsverlust beim Speichern von GPS-Koordinaten
 - Zeit in KML anzeigen?
 - Möglichkeit, GPS-Daten/Zeit manuell zuzuweisen
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
@@ -21,6 +20,7 @@
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
 
+v Genauigkeitsverlust beim Speichern von GPS-Koordinaten
 v Falsche neu angelegte Exif-Daten/Zeitstempel 
 v Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden, letzte verwendete Zeitzone vorbelegen
 v Thumbnails in Bilder schreiben

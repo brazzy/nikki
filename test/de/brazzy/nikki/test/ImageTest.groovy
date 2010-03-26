@@ -1,5 +1,6 @@
 package de.brazzy.nikki.test
 import de.brazzy.nikki.util.ImageReader
+import de.brazzy.nikki.util.ImageWriter;
 import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.model.Rotation
 import de.brazzy.nikki.model.Image
@@ -8,6 +9,9 @@ import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Waypoint
 import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
+
+import mediautil.image.jpeg.Entry;
+
 import org.apache.commons.io.IOUtils;
 import java.util.Arrays
 
@@ -101,7 +105,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(-16.5f, reader.waypoint.longitude.value)
     }
 
-    public void testOffsetFinder()
+    public void _testOffsetFinder()
     {
         TimezoneFinder tzFinder = new TimezoneFinder();
         Image im = reader.createImage()
@@ -220,6 +224,15 @@ class ImageTest extends AbstractNikkiTest{
         assertTrue(image.modified)
         image.save(tmpDir.path)
         assertFalse(image.modified)
+    }
+    
+    public void testGPS()
+    {
+        double start = 12.38599967956543;
+        Entry e = ImageWriter.writeGpsMagnitude(start)
+        print e
+        double end = ImageReader.readGpsMagnitude(e)
+        assert Math.abs(start-end) < 0.00017d
     }
 }
 

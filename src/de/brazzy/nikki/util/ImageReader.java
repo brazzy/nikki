@@ -242,17 +242,30 @@ public class ImageReader extends ImageDataIO
         {
             GeoCoordinate c = new GeoCoordinate();
             c.setDirection(Cardinal.parse((String) latRef.getValue(0)));            
-            c.setMagnitude(((Rational)lat.getValue(0)).floatValue());
+            c.setMagnitude(readGpsMagnitude(lat));
             result.setLatitude(c);
         }
         if(lonRef!=null && lon!=null)
         {
             GeoCoordinate c = new GeoCoordinate();
             c.setDirection(Cardinal.parse((String) lonRef.getValue(0)));
-            c.setMagnitude(((Rational)lon.getValue(0)).floatValue());
+            c.setMagnitude(readGpsMagnitude(lon));
             result.setLongitude(c);
         }
 
+        return result;
+    }
+    
+    public static float readGpsMagnitude(Entry e)
+    {
+        Object[] values = e.getValues();
+        float result = ((Rational)values[0]).floatValue();
+        if(values.length > 1){
+            result += ((Rational)values[1]).floatValue() / 60.0;            
+        }
+        if(values.length > 2){
+            result += ((Rational)values[2]).floatValue() / (60.0*60.0);
+        }
         return result;
     }
 

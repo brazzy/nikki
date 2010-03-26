@@ -176,19 +176,34 @@ public class ImageWriter extends ImageDataIO
             Entry entry = new Entry(Exif.ASCII);
             entry.setValue(0, wp.getLatitude().getDirection().getCharacter());
             gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitudeRef), 0, entry);
-            entry = new Entry(Exif.RATIONAL);
-            entry.setValue(0, new Rational((float)wp.getLatitude().getMagnitude()));
-            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitude), 0, entry);
+            
+            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitude), 0, 
+                    writeGpsMagnitude(wp.getLatitude().getMagnitude()));
 
             entry = new Entry(Exif.ASCII);
             entry.setValue(0, wp.getLongitude().getDirection().getCharacter());
             gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitudeRef), 0, entry);
-            entry = new Entry(Exif.RATIONAL);
-            entry.setValue(0, new Rational((float)wp.getLongitude().getMagnitude()));
-            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitude), 0, entry);
+
+            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitude), 0, 
+                    writeGpsMagnitude(wp.getLongitude().getMagnitude()));
         }
     }
 
+    public static Entry writeGpsMagnitude(double value)
+    {
+        Entry entry = new Entry(Exif.RATIONAL);
+
+        double magnitude = Math.abs(value);
+        int degrees = (int)magnitude;
+        double minutes = (magnitude - degrees) * 60.0;
+        double seconds = (minutes - (int)minutes) * 60.0;
+        
+        entry.setValue(0, new Rational(degrees, 1));
+        entry.setValue(1, new Rational((int)minutes, 1));
+        entry.setValue(2, new Rational((float)seconds));
+        
+        return entry;
+    }
     private void writeThumbnail() throws IOException
     { // TODO: überschreiben eines existierenden Thumbnails?
         //llj.removeThumbnail();
