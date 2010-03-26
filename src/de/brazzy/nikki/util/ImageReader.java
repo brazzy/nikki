@@ -229,23 +229,29 @@ public class ImageReader extends ImageDataIO
         {
             return null;
         }
-        Entry e;
-        GeoCoordinate lat = new GeoCoordinate();
-        GeoCoordinate lon = new GeoCoordinate();
+        
         Waypoint result = new Waypoint();
-        result.setLatitude(lat);
-        result.setLongitude(lon);
         result.setTimestamp(getTime());
 
-        e = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
-        lat.setDirection(Cardinal.parse((String) e.getValue(0)));
-        e = gpsIFD.getEntry(Exif.GPSLatitude, 0);
-        lat.setMagnitude(((Rational)e.getValue(0)).floatValue());
-
-        e = gpsIFD.getEntry(Exif.GPSLongitudeRef, 0);
-        lon.setDirection(Cardinal.parse((String) e.getValue(0)));
-        e = gpsIFD.getEntry(Exif.GPSLongitude, 0);
-        lon.setMagnitude(((Rational)e.getValue(0)).floatValue());
+        Entry latRef = gpsIFD.getEntry(Exif.GPSLatitudeRef, 0);
+        Entry lat = gpsIFD.getEntry(Exif.GPSLatitude, 0);
+        Entry lonRef = gpsIFD.getEntry(Exif.GPSLongitudeRef, 0);
+        Entry lon = gpsIFD.getEntry(Exif.GPSLongitude, 0);
+        
+        if(latRef!=null && lat!=null)
+        {
+            GeoCoordinate c = new GeoCoordinate();
+            c.setDirection(Cardinal.parse((String) latRef.getValue(0)));            
+            c.setMagnitude(((Rational)lat.getValue(0)).floatValue());
+            result.setLatitude(c);
+        }
+        if(lonRef!=null && lon!=null)
+        {
+            GeoCoordinate c = new GeoCoordinate();
+            c.setDirection(Cardinal.parse((String) lonRef.getValue(0)));
+            c.setMagnitude(((Rational)lon.getValue(0)).floatValue());
+            result.setLongitude(c);
+        }
 
         return result;
     }

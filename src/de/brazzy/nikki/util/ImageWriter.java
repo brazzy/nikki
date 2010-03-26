@@ -13,6 +13,9 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.IOUtils;
+
 import mediautil.gen.Rational;
 import mediautil.image.ImageResources;
 import mediautil.image.jpeg.Entry;
@@ -27,6 +30,19 @@ import mediautil.image.jpeg.LLJTranException;
  */
 public class ImageWriter extends ImageDataIO
 {
+    private static final byte[] EMPTY_EXIF = readEmptyExif();
+    private static byte[] readEmptyExif()
+    {
+        try
+        {
+            return IOUtils.toByteArray(ImageWriter.class.getResourceAsStream("empty_exif.bin"));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
     private Image image;
 
     public ImageWriter(Image img, File directory) throws LLJTranException
@@ -37,19 +53,32 @@ public class ImageWriter extends ImageDataIO
 
         if(exifData == null)
         {
-            llj.addAppx(LLJTran.dummyExifHeader, 0,
-                        LLJTran.dummyExifHeader.length, true);
+            llj.addAppx(EMPTY_EXIF, 0, EMPTY_EXIF.length, true);
             exifData = (Exif)llj.getImageInfo();
-            IFD mainIFD = exifData.getIFDs()[0];
-            IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
-            nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
-            gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
         }
-        if (nikkiIFD == null)
+            
+        IFD mainIFD = exifData.getIFDs()[0];
+
+        if(mainIFD==null)
+        {
+            mainIFD = new IFD(0, Exif.UNDEFINED);
+            exifData.getIFDs()[0] = mainIFD;
+        }
+        
+        gpsIFD = mainIFD.getIFDs() == null ? null : mainIFD.getIFD(Exif.GPSINFO);    
+        IFD exifIFD = mainIFD.getIFDs() == null ? null : mainIFD.getIFD(Exif.EXIFOFFSET);
+        
+        if(exifIFD==null)
+        {
+            exifIFD = new IFD(Exif.EXIFOFFSET, Exif.UNDEFINED);
+            mainIFD.addIFD(exifIFD);            
+        }
+        
+        if(nikkiIFD == null)
         {
             nikkiIFD = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
             nikkiIFD.addEntry(ENTRY_NIKKI, new Entry(Exif.ASCII, ENTRY_NIKKI_CONTENT));
-            exifData.getIFDs()[0].getIFD(Exif.EXIFOFFSET).addIFD(nikkiIFD);
+            exifIFD.addIFD(nikkiIFD);
         }
         if(img.getWaypoint() != null && gpsIFD == null)
         {

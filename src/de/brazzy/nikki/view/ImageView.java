@@ -190,8 +190,14 @@ public class ImageView extends JPanel
         }
         if(value.getWaypoint() != null)
         {
-            latitude.setText(value.getWaypoint().getLatitude().toString());
-            longitude.setText(value.getWaypoint().getLongitude().toString());            
+            if(value.getWaypoint().getLatitude()!=null)
+            {
+                latitude.setText(value.getWaypoint().getLatitude().toString());                
+            }
+            if(value.getWaypoint().getLongitude()!=null)
+            {            
+                longitude.setText(value.getWaypoint().getLongitude().toString());            
+            }
         }
         else
         {

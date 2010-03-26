@@ -171,6 +171,7 @@ class ImageTest extends AbstractNikkiTest{
         image = reader.createImage()
         assertTrue(reader.thumbnailNew)
         assertTrue(image.modified)
+        assertNull(image.time)
         th = image.thumbnail
         image.save(tmpDir.path)
         reader = new ImageReader(new File(tmpDir.path, "no_exif.jpg"),
@@ -179,6 +180,7 @@ class ImageTest extends AbstractNikkiTest{
         thumb = image.thumbnail
         assertFalse(reader.thumbnailNew)
         assertFalse(image.modified)
+        assertNull(image.time)
         assertTrue(Arrays.equals(thumb, th))
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
