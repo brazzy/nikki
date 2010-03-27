@@ -38,15 +38,16 @@ public class NikkiModel extends ListDataModel<Directory>{
         selectionDir = new File(prefs.get(PREF_KEY_SELECTION_DIR, System.getProperty("user.dir")))
         exportDir = new File(prefs.get(PREF_KEY_EXPORT_DIR, System.getProperty("user.dir")))
         
-        def dirs = prefs.get(PREF_KEY_DIRECTORIES, null);
-        if(dirs)
+        parseDirectories(prefs.get(PREF_KEY_DIRECTORIES, ""));
+    }
+    
+    private parseDirectories(String dirList)
+    {
+        for(String entry in dirList.split(SEP))
         {
-            dirs = dirs.split(SEP)
-            dirs.each{
-                if(it && it.length()>0)
-                {
-                    super.add(new Directory(path: new File(it)))
-                }
+            if(entry.length()>0)
+            {
+                super.add(new Directory(path: new File(entry)))
             }
         }
     }

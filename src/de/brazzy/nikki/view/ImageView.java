@@ -32,8 +32,8 @@ public class ImageView extends JPanel
 {
     public static final int DIFF_THRESHOLD = 30;
     
-    private JTextArea textArea;
-    private JLabel icon = new JLabel();
+    private JTextArea textArea = new JTextArea(2, 40);
+    private JLabel thumbnail = new JLabel();
     private JTextField title = new JTextField();
     private JTextField filename = new JTextField();
     private JTextField time = new JTextField();
@@ -44,12 +44,14 @@ public class ImageView extends JPanel
     private JCheckBox export = new JCheckBox("export");
     
     private Image value;
+    private Dialogs dialogs;
 
     public ImageView(final Dialogs dialogs)
     {
         super(new BorderLayout());
+        this.dialogs = dialogs;
         setBorder(new EmptyBorder(5,5,5,5));
-        add(icon, BorderLayout.WEST);        
+        add(thumbnail, BorderLayout.WEST);        
         JPanel grid = new JPanel();
         add(grid, BorderLayout.CENTER);
         
@@ -57,42 +59,12 @@ public class ImageView extends JPanel
         JLabel timeLabel = new JLabel("Time:");
         JLabel latitudeLabel = new JLabel("Latitude:");
         JLabel longitudeLabel = new JLabel("Longitude:");
-        textArea = new JTextArea(2, 40);
         textArea.setBorder(new EmptyBorder(3,3,3,3));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
         geoLink.setMargin(new Insets(0,0,0,0));
-        geoLink.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                OutputStream tmpOut = null;
-                try
-                {
-                    File tmpFile = File.createTempFile("nikki", ".kml");
-                    tmpOut = new FileOutputStream(tmpFile);
-                    value.offsetFinder(tmpOut);
-                    dialogs.open(tmpFile);
-                }
-                catch (Exception ex)
-                {
-                    JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-                finally
-                {
-                    try
-                    {
-                        tmpOut.close();
-                    }
-                    catch (Exception e1)
-                    {
-                        e1.printStackTrace();
-                    }
-                }
-            }            
-        });
+        geoLink.addActionListener(offsetFinderAction);
 
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -154,6 +126,37 @@ public class ImageView extends JPanel
         geoLink.setEnabled(true);
     }
 
+    private ActionListener offsetFinderAction = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            OutputStream tmpOut = null;
+            try
+            {
+                File tmpFile = File.createTempFile("nikki", ".kml");
+                tmpOut = new FileOutputStream(tmpFile);
+                value.offsetFinder(tmpOut);
+                dialogs.open(tmpFile);
+            }
+            catch (Exception ex)
+            {
+                JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+            finally
+            {
+                try
+                {
+                    tmpOut.close();
+                }
+                catch (Exception e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }            
+    };
+    
     public void setValue(Image value)
     {
         this.value = value;
@@ -204,7 +207,7 @@ public class ImageView extends JPanel
             latitude.setText("?");
             longitude.setText("?");            
         }
-        icon.setIcon(new ImageIcon(value.getThumbnail()));
+        thumbnail.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
         export.setSelected(value.getExport());
     }

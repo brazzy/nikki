@@ -57,11 +57,12 @@ class TimezoneFinder {
     {
         this()
         ObjectInputStream data = new ObjectInputStream(zoneData)
-        for(def zone=data.readUTF();zone != "";zone=data.readUTF())
-        {
-            zones.add(DateTimeZone.forID(zone))
-        }
-        
+        parseZones(data)
+        parseTowns(data)
+    }
+
+    private parseTowns(ObjectInputStream data)
+    {
         def lat=data.readFloat()
         while(!Float.isNaN(lat))
         {
@@ -69,6 +70,14 @@ class TimezoneFinder {
             def zone=data.readShort()
             tree.add(new Rectangle(lat, lng, lat, lng), zone)
             lat=data.readFloat()
+        }
+    }
+    
+    private parseZones(ObjectInputStream data)
+    {
+        for(def zone=data.readUTF();zone != "";zone=data.readUTF())
+        {
+            zones.add(DateTimeZone.forID(zone))
         }
     }
 
