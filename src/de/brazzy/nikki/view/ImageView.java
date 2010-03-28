@@ -42,7 +42,7 @@ public class ImageView extends JPanel
     private JTextField timeDiff = new JTextField();
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
-    private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("globe.gif")));
+    private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("/icons/find.png")));
     private JCheckBox export = new JCheckBox("export");
     
     private Image value;

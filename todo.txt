@@ -1,24 +1,24 @@
-- Zeit in KML anzeigen?
-- Möglichkeit, GPS-Daten/Zeit manuell zuzuweisen
+- Möglichkeit, GPS-Daten/Zeit manuell zuzuweisen (copy/paste?)
+- export als Icon-Button mit wechselndem Icon, kein text
+- Scan/Geotag/Persistierung automatisch
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 - Fehler bei Export ohne Geotag
 - Rückfrage bei Schliessen mit ungespeicherten Änderungen
 - (API-)Dokumentation/Lizenz
 - I18n
+- Zeit in KML anzeigen?
 - Logging und Fehlerpopups
+- Kontextmenüs
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
 - Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)
 - Thumbnail-Größe bei schon rotierten Bildern
-- Einlesen der Bilddaten
-  - alternative Datumsfelder nutzen?
-  - verschiedene Speicherorte von thumbnails?
 - Eliminieren von Waypoints, die zu nah zusammen sind
 - Individuelle Tabellenzeilenhöhe
-- Scan/Persistierung automatisch
 - Progressbar verbessern (Oberfläche sperren?)
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
+- About mit Referenzen (iconset, libraries)
 
 v Genauigkeitsverlust beim Speichern von GPS-Koordinaten
 v Falsche neu angelegte Exif-Daten/Zeitstempel 

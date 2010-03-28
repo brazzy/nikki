@@ -1,16 +1,14 @@
 package de.brazzy.nikki.view
 
-import groovy.swing.SwingBuilder
-import java.awt.BorderLayout as BL
-import javax.swing.JSplitPane
-import javax.swing.BoxLayout
-import javax.swing.ImageIcon
-import javax.swing.border.EmptyBorder
-import javax.swing.table.DefaultTableModel
-import javax.swing.JFrame
+import java.awt.BorderLayout;
 
-import de.brazzy.nikki.model.Image
-import de.brazzy.nikki.util.Dialogs
+import groovy.swing.SwingBuilder;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+
+import de.brazzy.nikki.util.Dialogs;
 
 /**
  * @author Michael Borgwardt
@@ -34,28 +32,34 @@ public class NikkiFrame{
         
         result.frame = swing.frame(title:'Nikki') {
             borderLayout()
-            splitPane(orientation: JSplitPane.HORIZONTAL_SPLIT, constraints: BL.CENTER){
+            splitPane(orientation: JSplitPane.HORIZONTAL_SPLIT, constraints: BorderLayout.CENTER){
                 splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
                     panel(){
                         borderLayout()
-                        scrollPane(constraints: BL.CENTER){
+                        scrollPane(constraints: BorderLayout.CENTER){
                             result.dirList = list()
                         }
-                        panel(constraints: BL.SOUTH){
-                            result.addButton = button(text:'Add')
-                            result.deleteButton = button(text:'Delete', enabled:false)                            
-                            result.scanButton = button(text:'Scan', enabled:false)                      
-                            result.saveButton = button(text:'Save', enabled:false)
+                        panel(constraints: BorderLayout.SOUTH){
+                            result.addButton = button(text:'Add', 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/add.png")))
+                            result.deleteButton = button(text:'Delete', enabled:false, 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/bin_closed.png")))                       
+                            result.scanButton = button(text:'Scan', enabled:false, 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/find.png")))
+                            result.saveButton = button(text:'Save', enabled:false, 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/disk.png")))
                         }
                     }
                     panel(){
                         borderLayout()
-                        scrollPane(constraints: BL.CENTER){
+                        scrollPane(constraints: BorderLayout.CENTER){
                             result.dayList = list()
                         }
-                        panel(constraints: BL.SOUTH){
-                            result.tagButton = button(text:'Geotag', enabled:false)
-                            result.exportButton = button(text:'Export', enabled:false)
+                        panel(constraints: BorderLayout.SOUTH){
+                            result.tagButton = button(text:'Geotag', enabled:false, 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_link.png")))
+                            result.exportButton = button(text:'Export', enabled:false, 
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_go.png")))
                         }
                     }
                 }
@@ -63,7 +67,7 @@ public class NikkiFrame{
                       result.imageTable = table(tableHeader:null, rowHeight: 180)
                 }
             }
-            result.progressBar = progressBar(constraints: BL.SOUTH, minimum:0, maximum:100)
+            result.progressBar = progressBar(constraints: BorderLayout.SOUTH, minimum:0, maximum:100)
         }
         
         result.frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE;
