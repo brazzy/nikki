@@ -1,8 +1,5 @@
 package de.brazzy.nikki.model;
 
-import java.text.SimpleDateFormat
-import java.text.DateFormat
-
 import org.joda.time.DateTime;
 import org.joda.time.Instant
 import org.joda.time.DateTimeZone

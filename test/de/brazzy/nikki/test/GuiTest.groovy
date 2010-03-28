@@ -13,8 +13,6 @@ import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import java.text.SimpleDateFormat
-import java.text.DateFormat
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

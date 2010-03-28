@@ -7,7 +7,6 @@ import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Waypoint
-import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 
 import mediautil.image.jpeg.Entry;

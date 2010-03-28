@@ -3,9 +3,7 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Directory
-import java.text.SimpleDateFormat
 import de.brazzy.nikki.model.Image
-import java.text.DateFormat
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry

@@ -7,8 +7,6 @@ import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.TimezoneFinder
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 

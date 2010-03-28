@@ -19,7 +19,6 @@ import de.brazzy.nikki.model.Day
 import javax.swing.UIManager
 import java.util.zip.ZipOutputStream
 import de.brazzy.nikki.util.ExportWorker
-import java.text.SimpleDateFormat
 import javax.swing.JOptionPane
 
 import org.joda.time.DateTimeZone;

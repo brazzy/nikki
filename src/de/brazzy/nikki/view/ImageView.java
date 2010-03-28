@@ -32,6 +32,8 @@ public class ImageView extends JPanel
 {
     public static final int DIFF_THRESHOLD = 30;
     
+    private static final DateTimeFormatter TIMESTAMP_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+    
     private JTextArea textArea = new JTextArea(2, 40);
     private JLabel thumbnail = new JLabel();
     private JTextField title = new JTextField();
@@ -166,8 +168,8 @@ public class ImageView extends JPanel
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeNoMillis();
-            time.setText(fmt.print(value.getTime()));
+            
+            time.setText(TIMESTAMP_FORMAT.print(value.getTime()));
             if(value.getWaypoint() != null)
             {
                 long diff = (value.getTime().getMillis() - value.getWaypoint().getTimestamp().getMillis()) / 1000;

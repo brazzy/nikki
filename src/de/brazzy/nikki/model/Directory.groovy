@@ -1,14 +1,12 @@
 package de.brazzy.nikki.model;
 
 import java.io.FilenameFilter
-import java.text.SimpleDateFormat
 import java.util.HashMap
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
-import java.text.DateFormat
 import java.awt.RenderingHints
 import de.brazzy.nikki.util.ImageReader
 import de.brazzy.nikki.util.ScanResult;

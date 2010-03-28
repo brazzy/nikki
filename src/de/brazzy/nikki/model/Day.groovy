@@ -15,7 +15,6 @@ import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
 import java.util.TimeZone
-import java.text.DateFormat
 import java.util.zip.CRC32
 import java.text.DecimalFormat
 
@@ -38,7 +37,9 @@ import org.joda.time.format.ISODateTimeFormat;
 class Day extends AbstractTableModel implements Comparable<Day>
 {
     public static final long serialVersionUID = 1
-
+    
+    private static final DateTimeFormatter DISPLAY_FORMAT = ISODateTimeFormat.date()
+    
     /** 
      * Waypoints further apart than this will result in beginning a new path
      * (thus creating a gap) in the exported KML file
@@ -63,8 +64,8 @@ class Day extends AbstractTableModel implements Comparable<Day>
     
     public String toString()
     {
-        DateTimeFormatter format = ISODateTimeFormat.date()
-        return (date==null? "unknown" : format.print(date)) +
+
+        return (date==null? "unknown" : DISPLAY_FORMAT.print(date)) +
                " ("+images.size()+", "+waypoints.size()+")"
     }
 
