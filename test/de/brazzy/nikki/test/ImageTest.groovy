@@ -68,7 +68,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(120, thumb.width)
         assertEquals(160, thumb.height)
 
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource(IMAGE2).toURI()),
             TZ_BERLIN)
         assertEquals(Rotation.NONE, reader.rotation)
         assertNull(reader.thumbnailNew)
@@ -79,7 +79,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(180, thumb.width)
         assertEquals(135, thumb.height)
 
-        reader = new ImageReader(new File(getClass().getResource("no_exif.jpg").toURI()),
+        reader = new ImageReader(new File(getClass().getResource(NO_EXIF).toURI()),
                 TZ_BERLIN)
         assertNull(reader.thumbnailNew)
         assertEquals(Rotation.NONE, reader.rotation)
@@ -168,8 +168,8 @@ class ImageTest extends AbstractNikkiTest{
         def thumb = reader.thumbnail
         assertTrue(Arrays.equals(thumb, th))
         
-        copyFile("no_exif.jpg")
-        reader = new ImageReader(new File(tmpDir.path, "no_exif.jpg"),
+        copyFile(NO_EXIF)
+        reader = new ImageReader(new File(tmpDir.path, NO_EXIF),
                 TZ_BERLIN)
         image = reader.createImage()
         assertTrue(reader.thumbnailNew)
@@ -177,7 +177,7 @@ class ImageTest extends AbstractNikkiTest{
         assertNull(image.time)
         th = image.thumbnail
         image.save(tmpDir.path)
-        reader = new ImageReader(new File(tmpDir.path, "no_exif.jpg"),
+        reader = new ImageReader(new File(tmpDir.path, NO_EXIF),
                 TZ_BERLIN)
         image = reader.createImage()
         thumb = image.thumbnail
@@ -225,13 +225,59 @@ class ImageTest extends AbstractNikkiTest{
         assertFalse(image.modified)
     }
     
-    public void testGPS()
+    public void testCoordinatePrecision()
     {
         double start = 12.38599967956543;
         Entry e = ImageWriter.writeGpsMagnitude(start)
         print e
         double end = ImageReader.readGpsMagnitude(e)
-        assert Math.abs(start-end) < 0.00017d
+        assert Math.abs(start-end) < 0.00001d
+    }
+    
+    public void testCopyPasteTime()
+    {
+        Image imageWithDate = addImage(DAY1, IMAGE1)
+        Image imageNoDate1 = addImage(null, NO_EXIF)
+        Image imageNoDate2 = addImage(null, IMAGE2)
+        imageNoDate1.modified = false
+        imageNoDate2.modified = false
+        
+        assertEquals(2, tmpDir.getSize())
+        assertEquals(null, tmpDir[0].date)
+        assertEquals(2, tmpDir[0].images.size())
+        assertSame(imageNoDate1, tmpDir[0].images[0])
+        assertSame(imageNoDate2, tmpDir[0].images[1])
+        assertEquals(DAY1, tmpDir[1].date)
+        assertEquals(1, tmpDir[1].images.size())
+        assertSame(imageWithDate, tmpDir[1].images[0])
+        assertFalse(imageNoDate1.modified)
+        
+        imageNoDate1.pasteTime(TIME2)
+        
+        assertTrue(imageNoDate1.modified)
+        assertEquals(3, tmpDir.getSize())
+        assertEquals(null, tmpDir[0].date)
+        assertEquals(1, tmpDir[0].images.size())
+        assertSame(imageNoDate2, tmpDir[0].images[0])
+        assertEquals(DAY1, tmpDir[1].date)
+        assertEquals(1, tmpDir[1].images.size())
+        assertSame(imageWithDate, tmpDir[1].images[0])
+        assertEquals(DAY2, tmpDir[2].date)
+        assertEquals(1, tmpDir[2].images.size())
+        assertSame(imageNoDate1, tmpDir[2].images[0])
+        assertFalse(imageNoDate2.modified)
+        
+        imageNoDate2.pasteTime(TIME1)
+        
+        assertTrue(imageNoDate2.modified)
+        assertEquals(2, tmpDir.getSize())
+        assertEquals(DAY1, tmpDir[0].date)
+        assertEquals(2, tmpDir[0].images.size())
+        assertSame(imageWithDate, tmpDir[0].images[0])
+        assertSame(imageNoDate2, tmpDir[0].images[1])
+        assertEquals(DAY2, tmpDir[1].date)
+        assertEquals(1, tmpDir[1].images.size())
+        assertSame(imageNoDate1, tmpDir[1].images[0])
     }
 }
 

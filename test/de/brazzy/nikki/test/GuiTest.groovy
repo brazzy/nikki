@@ -8,6 +8,7 @@ import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.view.ImageView;
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
@@ -105,7 +106,7 @@ class GuiTest extends AbstractNikkiTest {
 
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
-        assertTrue(editor.geoLink.enabled)
+        assertTrue(editor.offsetFinder.enabled)
 
         view.dayList.clearSelection()
         assertTrue(view.addButton.enabled)
@@ -232,7 +233,7 @@ class GuiTest extends AbstractNikkiTest {
 
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
-        editor.geoLink.actionListeners[0].actionPerformed()
+        editor.offsetFinder.actionListeners[0].actionPerformed()
         def file = dialogs.getOpened()
         assertNotNull(file)
         assertTrue(file.name.endsWith(".kml"))
@@ -324,6 +325,54 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals("otherTitle", image.title)
     }
 
+    public void testCopyPaste()
+    {
+        Image imageWithDate = addImage(DAY1, IMAGE1)
+        Image imageNoDate = addImage(null, NO_EXIF)
+        model.add(tmpDir)
+        assertEquals(2, tmpDir.getSize())
+        assertEquals(1, tmpDir[0].images.size())
+        assertEquals(1, tmpDir[1].images.size())
+        
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        def button = editor.copyPaste
+        assertFalse(button.enabled)
+        assertSame(ImageView.PASTE_ICON, button.icon)
+        
+        view.dayList.selectedIndex = 1
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent
+        button = editor.copyPaste
+        assertTrue(button.enabled)
+        assertSame(ImageView.COPY_ICON, button.icon)
+        
+        button.actionListeners[0].actionPerformed()
+        assertTrue(button.enabled)
+        assertSame(ImageView.COPY_ICON, button.icon)
+        
+        view.dayList.selectedIndex = 0
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent
+        button = editor.copyPaste
+        assertTrue(button.enabled)
+        assertSame(ImageView.PASTE_ICON, button.icon)
+        
+        button.actionListeners[0].actionPerformed()
+        assertEquals(-1, view.dayList.selectedIndex)
+        
+        assertEquals(imageNoDate.time, imageWithDate.time)
+        assertEquals(1, tmpDir.getSize())
+        assertEquals(2, tmpDir[0].images.size())
+        
+        view.dayList.selectedIndex = 0
+        view.imageTable.editCellAt(0,0)
+        assertTrue(button.enabled)
+        assertSame(ImageView.COPY_ICON, button.icon)        
+   }
+    
     public void testScanOptions()
     {
         String[] zones = DateTimeZone.getAvailableIDs().toArray()
@@ -347,6 +396,5 @@ class GuiTest extends AbstractNikkiTest {
         op.spinner.value = -100;
         assertEquals(-100, op.getOffset())
     }
-
 }
 

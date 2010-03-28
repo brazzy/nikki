@@ -21,9 +21,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
 
@@ -33,6 +35,8 @@ public class ImageView extends JPanel
     public static final int DIFF_THRESHOLD = 30;
     
     private static final DateTimeFormatter TIMESTAMP_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+    public static final ImageIcon COPY_ICON = new ImageIcon(ImageView.class.getResource("/icons/page_copy.png"));
+    public static final ImageIcon PASTE_ICON = new ImageIcon(ImageView.class.getResource("/icons/paste_plain.png"));
     
     private JTextArea textArea = new JTextArea(2, 40);
     private JLabel thumbnail = new JLabel();
@@ -42,9 +46,12 @@ public class ImageView extends JPanel
     private JTextField timeDiff = new JTextField();
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
-    private JButton geoLink = new JButton(new ImageIcon(ImageView.class.getResource("/icons/find.png")));
+    private JButton offsetFinder = new JButton(
+            new ImageIcon(ImageView.class.getResource("/icons/find.png")));
+    private JButton copyPaste = new JButton(COPY_ICON);
     private JCheckBox export = new JCheckBox("export");
     
+    private DateTime clipboard; // TODO: use real (system?) clipboard
     private Image value;
     private Dialogs dialogs;
 
@@ -65,8 +72,10 @@ public class ImageView extends JPanel
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        geoLink.setMargin(new Insets(0,0,0,0));
-        geoLink.addActionListener(offsetFinderAction);
+        offsetFinder.setMargin(new Insets(0,0,0,0));
+        offsetFinder.addActionListener(offsetFinderAction);
+        copyPaste.setMargin(new Insets(0,0,0,0));
+        copyPaste.addActionListener(copyPasteAction);
 
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -92,10 +101,11 @@ public class ImageView extends JPanel
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(time)
-                                .addComponent(timeDiff))
+                                .addComponent(timeDiff)
+                                .addComponent(copyPaste))
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(longitude)
-                                .addComponent(geoLink)
+                                .addComponent(offsetFinder)
                         )))
                 .addComponent(scrollPane)                    
         );
@@ -110,13 +120,14 @@ public class ImageView extends JPanel
                     .addComponent(filename)
                     .addComponent(timeLabel)
                     .addComponent(time)
-                    .addComponent(timeDiff))
+                    .addComponent(timeDiff)
+                    .addComponent(copyPaste))
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(latitudeLabel)
                     .addComponent(latitude)
                     .addComponent(longitudeLabel)
                     .addComponent(longitude)
-                    .addComponent(geoLink))
+                    .addComponent(offsetFinder))
             .addComponent(scrollPane)
         );
         filename.setEditable(false);
@@ -125,7 +136,7 @@ public class ImageView extends JPanel
         timeDiff.setColumns(5);
         latitude.setEditable(false);
         longitude.setEditable(false);
-        geoLink.setEnabled(true);
+        offsetFinder.setEnabled(true);
     }
 
     private ActionListener offsetFinderAction = new ActionListener(){
@@ -159,6 +170,26 @@ public class ImageView extends JPanel
         }            
     };
     
+    private ActionListener copyPasteAction = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(value.getTime() != null)
+            {
+                clipboard = value.getTime();
+            }
+            else if(clipboard != null)
+            {
+                value.pasteTime(clipboard);
+            }
+            else
+            {
+                throw new IllegalStateException("button should not be "+
+                        "enabled when both time and clipboard are empty");
+            }
+        }
+    };
+    
     public void setValue(Image value)
     {
         this.value = value;
@@ -168,7 +199,8 @@ public class ImageView extends JPanel
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            
+            copyPaste.setIcon(COPY_ICON);
+            copyPaste.setEnabled(true);
             time.setText(TIMESTAMP_FORMAT.print(value.getTime()));
             if(value.getWaypoint() != null)
             {
@@ -191,6 +223,8 @@ public class ImageView extends JPanel
         }
         else
         {
+            copyPaste.setIcon(PASTE_ICON);
+            copyPaste.setEnabled(clipboard!=null);
             time.setText(null);
         }
         if(value.getWaypoint() != null)

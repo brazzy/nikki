@@ -1,4 +1,5 @@
-- Möglichkeit, GPS-Daten/Zeit manuell zuzuweisen (copy/paste?)
+- Schreiben von neuen Zeitstempeln
+- Reihenfolge Bilder nach time-paste oder rescan
 - export als Icon-Button mit wechselndem Icon, kein text
 - Scan/Geotag/Persistierung automatisch
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
@@ -19,7 +20,9 @@
 - mehr GPS-Formate lesen?
 - Nachfragen beim Überscheiben
 - About mit Referenzen (iconset, libraries)
+- Möglichkeit, GPS-Daten/Zeit manuell zu setzen
 
+v Copy/Paste Zeit
 v Genauigkeitsverlust beim Speichern von GPS-Koordinaten
 v Falsche neu angelegte Exif-Daten/Zeitstempel 
 v Beim Scan nur nach Zeitzone Fragen wenn ungetaggte Bilder vorhanden, letzte verwendete Zeitzone vorbelegen

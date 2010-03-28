@@ -34,6 +34,7 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final String DATE2 = "2009-11-12";
     protected static final String IMAGE1 = "IMG${DATE1}.JPG";
     protected static final String IMAGE2 = "IMG${DATE2}.JPG";
+    protected static final String NO_EXIF = "no_exif.jpg";
     protected static final String WAYPOINTS1 = "20091111.nmea";
     protected static final String WAYPOINTS2 = "20091112.nmea";
     protected static final LocalDate DAY1 = new LocalDate(2009, 11, 11);
@@ -108,10 +109,10 @@ class AbstractNikkiTest extends GroovyTestCase
             day = new Day(date: date, directory:tmpDir)
             tmpDir.add(day);
         }
-        Waypoint wp = constructWaypoint(day, 5)
+        Waypoint wp = date == null ? null : constructWaypoint(day, 5)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: wp.timestamp.toDateTime(ZONE), waypoint: wp, modified: true)
+            export: true, time: wp?.timestamp?.toDateTime(ZONE), waypoint: wp, modified: true)
         day.images.add(image)
         tmpDir.images.put(fileName, image)
         return image

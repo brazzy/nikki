@@ -51,6 +51,16 @@ class Image implements Serializable{
         this.@"$name"=value
     }
 
+    public void pasteTime(DateTime time)
+    {
+        if(time != this.time)
+        {
+            def dir = day.directory
+            dir.removeImage(this)
+            setTime(time)
+            dir.addImage(this)            
+        }
+    }
 
     public String getLongDescription()
     {

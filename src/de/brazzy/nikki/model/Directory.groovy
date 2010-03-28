@@ -77,8 +77,6 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
 
         int count = 0;
         def imageFiles = path.listFiles(FILTER_JPG)
-        Map days = this.dataList.groupBy{it.date}
-        days.entrySet().each{it.value = it.value[0]}
         
         for(file in imageFiles){
             if(!this.images[file.name])
@@ -88,24 +86,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
                 {
                     return ScanResult.TIMEZONE_MISSING
                 }
-                Image image = reader.createImage()
-                this.images[file.name] = image
-
-                def date = image.time?.toLocalDate()
-                def day = days[date]
-                if(day)
-                {
-                    day.images.add(image)
-                }
-                else
-                {
-                    day = new Day(date:date, images:[image], directory: this)
-                    days.put(date, day)
-                    this.add(day)
-                } 
-                def modified = image.modified
-                image.day = day
-                image.modified = modified
+                addImage(reader.createImage())
             }
             
             worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
@@ -123,7 +104,50 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         fireContentsChanged(this, 0, this.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
-    }  
+    }
+    
+    public void addImage(Image image)
+    {
+        this.images[image.fileName] = image
+        def date = image.time?.toLocalDate()
+        def day = getDay(date)
+        if(day)
+        {
+            day.images.add(image)
+        }
+        else
+        {
+            day = new Day(date:date, images:[image], directory: this)
+            this.add(day)
+        } 
+        def modified = image.modified
+        image.day = day
+        image.modified = modified
+    }
+
+    public void removeImage(Image image)
+    {
+        if(!this.images.remove(image.fileName))
+        {
+            throw new IllegalStateException("tried to remove non-present image ${image.fileName}")
+        }
+        
+        def date = image.time?.toLocalDate()
+        def day = getDay(date)
+        if(day)
+        {
+            day.images.remove(image)
+            image.day = null
+            if(day.images.size() == 0)
+            {
+                remove(day)
+            }
+        }
+        else
+        {
+            throw new IllegalStateException("tried to remove image for unknown day $date")            
+        }
+    }
 
     /**
      * Saves all changed image data to the EXIF headers

@@ -34,6 +34,15 @@ class DayTest extends AbstractNikkiTest{
         d.images.remove(1)
         d.waypoints.remove(0)
         assertEquals(DATE1+" (1, 0)", d.toString())
+        
+        d = new Day(directory: tmpDir)
+        assertEquals("unknown (0, 0)", d.toString())
+        d.images.add(new Image())
+        d.waypoints.add(new Waypoint())
+        assertEquals("unknown (1, 1)", d.toString())
+        d.images.remove(0)
+        d.waypoints.remove(0)
+        assertEquals("unknown (0, 0)", d.toString())
     }
 
     public void testGeotag()
