@@ -31,6 +31,11 @@ import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Rotation;
 import de.brazzy.nikki.model.Waypoint;
 
+/**
+ * Extracts all data from an image file
+ * 
+ * @author Michael Borgwardt
+ */
 public class ImageReader extends ImageDataIO
 {
 
@@ -53,6 +58,11 @@ public class ImageReader extends ImageDataIO
     private BufferedImage mainImage;
     private Boolean thumbnailNew;
     
+    /**
+     * @param file to read from
+     * @param zone to use when image does not contain time zone in EXIF
+     * @throws LLJTranException
+     */
     public ImageReader(File file, DateTimeZone zone) throws LLJTranException
     {
         super(file, LLJTran.READ_INFO);
@@ -60,6 +70,9 @@ public class ImageReader extends ImageDataIO
         this.scanZone = zone;
     }
 
+    /**
+     * @return Image with all fields filled from file data
+     */
     public Image createImage()
     {
         Image image = new Image();
@@ -86,7 +99,7 @@ public class ImageReader extends ImageDataIO
         return image;
     }
 
-    public Rotation getRotation()
+    private Rotation getRotation()
     {
         if(rotation != null)
         {
@@ -114,6 +127,10 @@ public class ImageReader extends ImageDataIO
         return Rotation.NONE;
     }
 
+    /**
+     * @return thumbnail, scaled down from image data if not
+     * found in EXIF, auto-rotated if rotation is known
+     */
     public byte[] getThumbnail() throws Exception
     {
         if(exifData != null)
@@ -196,12 +213,12 @@ public class ImageReader extends ImageDataIO
 
     public String getTitle()
     {
-        return getUTF8(ENTRY_TITLE);
+        return getUTF8(ENTRY_TITLE_INDEX);
     }
 
     public String getDescription()
     {
-        return getUTF8(ENTRY_DESCRIPTION);
+        return getUTF8(ENTRY_DESCRIPTION_INDEX);
     }
 
     public boolean isExport()
@@ -210,10 +227,15 @@ public class ImageReader extends ImageDataIO
         {
             return false;
         }
-        Integer export = (Integer)nikkiIFD.getEntry(ENTRY_EXPORT, 0).getValue(0);
+        Integer export = (Integer)nikkiIFD.getEntry(ENTRY_EXPORT_INDEX, 0).getValue(0);
         return export != null && export != 0;
     }
     
+    /**
+     * @return {@link Boolean#FALSE} when a thumbnail was found in EXIF,
+     *         {@link Boolean#FALSE} when it was computed by scaling down
+     *         image, null when not yet requested
+     */
     public Boolean isThumbnailNew()
     {
         return thumbnailNew;
@@ -252,6 +274,10 @@ public class ImageReader extends ImageDataIO
         return result;
     }
     
+    /**
+     * Reads a GPS coordinate from EXIF, possible consisting of
+     * separate arc degree, minute and second values
+     */
     public static float readGpsMagnitude(Entry e)
     {
         Object[] values = e.getValues();
@@ -265,6 +291,10 @@ public class ImageReader extends ImageDataIO
         return result;
     }
 
+    /**
+     * @return time zone read from EXIF if present, default passed into
+     * constructor otherwise
+     */
     public DateTimeZone getTimeZone()
     {
         if(nikkiIFD == null)
@@ -272,7 +302,7 @@ public class ImageReader extends ImageDataIO
             return this.scanZone;
         }
         
-        Entry entry = nikkiIFD.getEntry(ENTRY_TIMEZONE, 0);
+        Entry entry = nikkiIFD.getEntry(ENTRY_TIMEZONE_INDEX, 0);
         if(entry != null && entry.getValue(0) != null)
         {
             String zoneID = (String)entry.getValue(0);
@@ -284,6 +314,12 @@ public class ImageReader extends ImageDataIO
         }
     }
 
+    /**
+     * Scales image to given size, preserving aspec ratio
+     * 
+     * @param toWidth width to scale to
+     * @param paintBorder whether to paint an etched border around the image
+     */
     public byte[] scale(int toWidth, boolean paintBorder) throws IOException, LLJTranException
     {
         if(mainImage == null)

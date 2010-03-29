@@ -16,24 +16,46 @@ import mediautil.image.jpeg.LLJTranException;
  * @author Michael Borgwardt
  */
 public abstract class ImageDataIO {
+    /** For formatting/parsing timestamps */
     protected static final DateTimeFormatter TIME_FORMAT = 
         DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss");
+    
+    /** clear text marker for app-specific EXIF IFD */
     protected static final String ENTRY_NIKKI_CONTENT = 
         "Application-specific data of the Nikki GPS/Photo log tool http://www.brazzy.de/nikki";
-    protected static final int ENTRY_NIKKI = 1;
-    protected static final int ENTRY_TIMEZONE = 2;
-    protected static final int ENTRY_TITLE = 3;
-    protected static final int ENTRY_DESCRIPTION = 4;
-    protected static final int ENTRY_EXPORT = 5;
+    protected static final int ENTRY_NIKKI_INDEX = 1;
+    protected static final int ENTRY_TIMEZONE_INDEX = 2;
+    protected static final int ENTRY_TITLE_INDEX = 3;
+    protected static final int ENTRY_DESCRIPTION_INDEX = 4;
+    protected static final int ENTRY_EXPORT_INDEX = 5;
 
+    /** File to read from / write to */
     protected File file;
+    
+    /** Exif manipulation API */
     protected LLJTran llj;
+    
+    /** Root EXIF data object */
     protected Exif exifData;
-    protected IFD nikkiIFD;
+
+    /** Root EXIF IFD */
     protected IFD mainIFD;
+    
+    /** Main data EXIF IFD */
     protected IFD exifIFD;
+
+    /** GPS data EXIF IFD */
     protected IFD gpsIFD;
 
+    /** App-specific EXIF IFD */
+    protected IFD nikkiIFD;
+
+    /**
+     * Read EXIF headers
+     * 
+     * @param file to read from
+     * @param readUpto see {@link LLJTran#read(int, boolean)}
+     */
     public ImageDataIO(File file, int readUpto) throws LLJTranException
     {
         this.file = file;
@@ -55,7 +77,7 @@ public abstract class ImageDataIO {
                 if(exifIFD != null && exifIFD.getIFDs() != null)
                 {
                     this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
-                    if(this.nikkiIFD != null && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD.getEntry(ENTRY_NIKKI, 0).getValue(0)))
+                    if(this.nikkiIFD != null && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD.getEntry(ENTRY_NIKKI_INDEX, 0).getValue(0)))
                     {
                         throw new IllegalArgumentException("Foreign Appnote IFD present");
                     }

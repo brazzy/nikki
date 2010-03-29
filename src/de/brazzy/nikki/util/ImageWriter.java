@@ -25,8 +25,9 @@ import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
 /**
+ * Writes image data to EXIF headers, creating new ones if necessary.
  *
- * @author Brazil
+ * @author Michael Borgwardt
  */
 public class ImageWriter extends ImageDataIO
 {
@@ -45,6 +46,10 @@ public class ImageWriter extends ImageDataIO
     
     private Image image;
 
+    /**
+     * @param img contains the image data
+     * @param directory contains the actual image file
+     */
     public ImageWriter(Image img, File directory) throws LLJTranException
     {
         super(new File(directory.getPath(), img.getFileName()), LLJTran.READ_ALL);
@@ -69,7 +74,7 @@ public class ImageWriter extends ImageDataIO
         if(nikkiIFD == null)
         {
             nikkiIFD = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
-            nikkiIFD.addEntry(ENTRY_NIKKI, new Entry(Exif.ASCII, ENTRY_NIKKI_CONTENT));
+            nikkiIFD.addEntry(ENTRY_NIKKI_INDEX, new Entry(Exif.ASCII, ENTRY_NIKKI_CONTENT));
             exifIFD.addIFD(nikkiIFD);
         }
         if(img.getWaypoint() != null && gpsIFD == null)
@@ -79,6 +84,9 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
+    /**
+     * causes all image data to be written to the file's EXIF headers.
+     */
     public void saveImage() throws Exception
     {
         try {
@@ -130,7 +138,7 @@ public class ImageWriter extends ImageDataIO
     {
         if(image.getTitle() != null)
         {
-            nikkiIFD.addEntry(ENTRY_TITLE, utf8Entry(image.getTitle()));
+            nikkiIFD.addEntry(ENTRY_TITLE_INDEX, utf8Entry(image.getTitle()));
         }
     }
 
@@ -138,7 +146,7 @@ public class ImageWriter extends ImageDataIO
     {
         if(image.getDescription() != null)
         {
-            nikkiIFD.addEntry(ENTRY_DESCRIPTION, utf8Entry(image.getDescription()));
+            nikkiIFD.addEntry(ENTRY_DESCRIPTION_INDEX, utf8Entry(image.getDescription()));
         }
     }
 
@@ -155,7 +163,7 @@ public class ImageWriter extends ImageDataIO
             
             entry = new Entry(Exif.ASCII);
             entry.setValue(0, image.getTime().getZone().getID());            
-            nikkiIFD.addEntry(ENTRY_TIMEZONE, entry);
+            nikkiIFD.addEntry(ENTRY_TIMEZONE_INDEX, entry);
         }
     }
 
@@ -163,7 +171,7 @@ public class ImageWriter extends ImageDataIO
     {
         Entry entry = new Entry(Exif.BYTE);
         entry.setValue(0, image.getExport() ? 1 : 0);
-        nikkiIFD.addEntry(ENTRY_EXPORT, entry);
+        nikkiIFD.addEntry(ENTRY_EXPORT_INDEX, entry);
     }
 
     private void writeGPS()
@@ -188,6 +196,10 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
+    /**
+     * Creates {@link Entry} containing GPS coordinate
+     * as arc degree, minute and second values.
+     */
     public static Entry writeGpsMagnitude(double value)
     {
         Entry entry = new Entry(Exif.RATIONAL);

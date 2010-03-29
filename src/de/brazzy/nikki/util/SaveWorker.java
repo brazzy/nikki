@@ -4,8 +4,9 @@ import javax.swing.SwingWorker;
 import de.brazzy.nikki.model.Directory;
 
 /**
+ * Saves image data to EXIF headers
  *
- * @author Brazil
+ * @author Michael Borgwardt
  */
 public class SaveWorker extends SwingWorker<Void, Void>
 {

@@ -11,6 +11,9 @@ import javax.swing.JSplitPane;
 import de.brazzy.nikki.util.Dialogs;
 
 /**
+ * Main UI class for the application.
+ * 
+ * @see Nikki for controller logic
  * @author Michael Borgwardt
  */
 public class NikkiFrame{
@@ -26,6 +29,9 @@ public class NikkiFrame{
     def imageTable
     def progressBar
     
+    /**
+     * @param dialogs For user interaction via modal dialogs
+     */
     public static NikkiFrame create(Dialogs dialogs){
         def swing = new SwingBuilder()
         def result = new NikkiFrame()

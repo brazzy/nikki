@@ -28,9 +28,17 @@ import org.joda.time.format.ISODateTimeFormat;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
 
-
+/**
+ * Used to render and edit {@link Image}s in a JTable
+ * 
+ * @author Michael Borgwardt
+ */
 public class ImageView extends JPanel
 {
+    /** 
+     * Seconds beyond which a difference in image time
+     * and waypoint time will be highlighted 
+     */
     public static final int DIFF_THRESHOLD = 30;
     
     private static final DateTimeFormatter TIMESTAMP_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
@@ -54,6 +62,9 @@ public class ImageView extends JPanel
     private Image value;
     private Dialogs dialogs;
 
+    /**
+     * @param dialogs used for offset finder button
+     */
     public ImageView(final Dialogs dialogs)
     {
         super(new BorderLayout());

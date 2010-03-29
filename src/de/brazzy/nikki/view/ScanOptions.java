@@ -8,10 +8,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.joda.time.DateTimeZone;
 
+import de.brazzy.nikki.model.Directory;
+
+/**
+ * UI for modal dialog that asks user for parameters used
+ * when looking for new files in a {@link Directory}.
+ */
 public class ScanOptions extends JPanel
 {
     private JComboBox combobox = new JComboBox();
 
+    /**
+     * @param selected preselected time zone
+     */
     public ScanOptions(DateTimeZone selected)
     {
         @SuppressWarnings("unchecked")
@@ -30,6 +39,9 @@ public class ScanOptions extends JPanel
         add(combobox);
     }
 
+    /**
+     * @return time zone selected by the user
+     */
     public DateTimeZone getTimezone()
     {
         return combobox.getSelectedItem() == null ? null :
