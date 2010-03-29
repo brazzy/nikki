@@ -1,5 +1,12 @@
 package de.brazzy.nikki.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.joda.time.DateTimeZone;
 
 import com.infomatiq.jsi.IntProcedure;
@@ -18,7 +25,7 @@ import com.infomatiq.jsi.rtree.RTree;
  * 
  * @author Michael Borgwardt
  */
-class TimezoneFinder {
+public class TimezoneFinder {
     
     /**
      * Spatial index to find the geographically nearest settlement,
@@ -28,21 +35,21 @@ class TimezoneFinder {
      * line. This could be fixed by having several overlapping indices
      * using transformed coordinates.
      */
-    RTree tree
+    private RTree tree;
     
     /**
      * List of time zones in no particular order.
      */
-    List<DateTimeZone> zones
+    private List<DateTimeZone> zones;
     
     /**
      * Creates a finder containing no data, which can be used for tests
      */
     public TimezoneFinder()
     {
-        this.zones = []
-        this.tree = new RTree()
-        tree.init(new Properties())
+        this.zones = new ArrayList<DateTimeZone>();
+        this.tree = new RTree();
+        tree.init(new Properties());
     }
 
     /**
@@ -53,31 +60,31 @@ class TimezoneFinder {
      * @see de.brazzy.nikki.util.PrepTimezoneData
      * @see timezones.dat
      */
-    public TimezoneFinder(InputStream zoneData)
+    public TimezoneFinder(InputStream zoneData) throws IOException
     {
-        this()
-        ObjectInputStream data = new ObjectInputStream(zoneData)
-        parseZones(data)
-        parseTowns(data)
+        this();
+        ObjectInputStream data = new ObjectInputStream(zoneData);
+        parseZones(data);
+        parseTowns(data);
     }
 
-    private parseTowns(ObjectInputStream data)
+    private void parseTowns(ObjectInputStream data) throws IOException
     {
-        def lat=data.readFloat()
+        float lat=data.readFloat();
         while(!Float.isNaN(lat))
         {
-            def lng=data.readFloat()
-            def zone=data.readShort()
-            tree.add(new Rectangle(lat, lng, lat, lng), zone)
-            lat=data.readFloat()
+            float lng=data.readFloat();
+            short zone=data.readShort();
+            tree.add(new Rectangle(lat, lng, lat, lng), zone);
+            lat=data.readFloat();
         }
     }
     
-    private parseZones(ObjectInputStream data)
+    private void parseZones(ObjectInputStream data) throws IOException
     {
-        for(def zone=data.readUTF();zone != "";zone=data.readUTF())
+        for(String zone=data.readUTF();!zone.equals("");zone=data.readUTF())
         {
-            zones.add(DateTimeZone.forID(zone))
+            zones.add(DateTimeZone.forID(zone));
         }
     }
 
@@ -89,11 +96,16 @@ class TimezoneFinder {
      */
     public DateTimeZone find(float latitude, float longitude)
     {
-        def result;
-        def point = new Point(latitude, longitude)
-        def callback = { result = zones[it]; return false } as IntProcedure
-        tree.nearest(point, callback, Float.POSITIVE_INFINITY)
-        return result
+        final DateTimeZone[] result = new DateTimeZone[1];
+        Point point = new Point(latitude, longitude);
+        IntProcedure callback = new IntProcedure(){
+            public boolean execute(int id)
+            {
+                result[0] = zones.get(id);
+                return false; 
+            }};
+        tree.nearest(point, callback, Float.POSITIVE_INFINITY);
+        return result[0];
     }
 
 }

@@ -104,7 +104,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(-16.5f, reader.waypoint.longitude.value)
     }
 
-    public void _testOffsetFinder()
+    public void testOffsetFinder()
     {
         TimezoneFinder tzFinder = new TimezoneFinder();
         Image im = reader.createImage()

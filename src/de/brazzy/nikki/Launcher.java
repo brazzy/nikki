@@ -12,7 +12,7 @@ import de.brazzy.nikki.view.NikkiFrame;
  */
 public class Launcher
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         TimezoneFinder finder = new TimezoneFinder(TimezoneFinder.class.getResourceAsStream("timezones.dat"));
         Dialogs d = new Dialogs();
