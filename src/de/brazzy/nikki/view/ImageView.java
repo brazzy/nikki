@@ -25,7 +25,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
 
@@ -181,6 +180,7 @@ public class ImageView extends JPanel
             else if(clipboard != null)
             {
                 value.pasteTime(clipboard);
+                repaint();
             }
             else
             {
@@ -202,9 +202,12 @@ public class ImageView extends JPanel
             copyPaste.setIcon(COPY_ICON);
             copyPaste.setEnabled(true);
             time.setText(TIMESTAMP_FORMAT.print(value.getTime()));
-            if(value.getWaypoint() != null)
+            if(value.getWaypoint() != null && 
+               value.getWaypoint().getTimestamp() != null)
             {
-                long diff = (value.getTime().getMillis() - value.getWaypoint().getTimestamp().getMillis()) / 1000;
+                long diff = (value.getTime().getMillis() 
+                             - value.getWaypoint().getTimestamp().getMillis()) 
+                           / 1000;
                 timeDiff.setText(String.valueOf(diff));
                 timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
                 if(Math.abs(diff) > DIFF_THRESHOLD)

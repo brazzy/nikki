@@ -56,24 +56,16 @@ public class ImageWriter extends ImageDataIO
             llj.addAppx(EMPTY_EXIF, 0, EMPTY_EXIF.length, true);
             exifData = (Exif)llj.getImageInfo();
         }
-            
-        IFD mainIFD = exifData.getIFDs()[0];
-
         if(mainIFD==null)
         {
             mainIFD = new IFD(0, Exif.UNDEFINED);
             exifData.getIFDs()[0] = mainIFD;
         }
-        
-        gpsIFD = mainIFD.getIFDs() == null ? null : mainIFD.getIFD(Exif.GPSINFO);    
-        IFD exifIFD = mainIFD.getIFDs() == null ? null : mainIFD.getIFD(Exif.EXIFOFFSET);
-        
         if(exifIFD==null)
         {
-            exifIFD = new IFD(Exif.EXIFOFFSET, Exif.UNDEFINED);
+            exifIFD = new IFD(Exif.EXIFOFFSET, Exif.LONG);
             mainIFD.addIFD(exifIFD);            
         }
-        
         if(nikkiIFD == null)
         {
             nikkiIFD = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
@@ -83,7 +75,7 @@ public class ImageWriter extends ImageDataIO
         if(img.getWaypoint() != null && gpsIFD == null)
         {
             gpsIFD = new IFD(Exif.GPSINFO, Exif.LONG);
-            exifData.getIFDs()[0].addIFD(gpsIFD);
+            mainIFD.addIFD(gpsIFD);
         }
     }
 
@@ -92,7 +84,7 @@ public class ImageWriter extends ImageDataIO
         try {
             writeTitle();
             writeDescription();
-            writeTimezone();
+            writeTime();
             writeExport();
             writeGPS();
             writeThumbnail();
@@ -150,11 +142,18 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
-    private void writeTimezone()
+    private void writeTime()
     {
         if(image.getTime() != null)
         {
+            String timeString = TIME_FORMAT.print(image.getTime());
             Entry entry = new Entry(Exif.ASCII);
+            entry.setValue(0, timeString);
+            mainIFD.addEntry(Exif.DATETIME, entry);
+            
+            String after = exifData.getDataTimeOriginalString();
+            
+            entry = new Entry(Exif.ASCII);
             entry.setValue(0, image.getTime().getZone().getID());            
             nikkiIFD.addEntry(ENTRY_TIMEZONE, entry);
         }

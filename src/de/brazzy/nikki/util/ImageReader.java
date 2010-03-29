@@ -7,30 +7,29 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 import javax.imageio.ImageIO;
 import javax.swing.border.EtchedBorder;
 
+import mediautil.gen.Rational;
+import mediautil.image.jpeg.Entry;
+import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.mortennobel.imagescaling.ResampleOp;
+
 import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.Rotation;
-import java.io.UnsupportedEncodingException;
-import mediautil.gen.Rational;
-import mediautil.image.jpeg.Entry;
-import mediautil.image.jpeg.Exif;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import de.brazzy.nikki.model.Waypoint;
 
 public class ImageReader extends ImageDataIO
 {
@@ -159,11 +158,8 @@ public class ImageReader extends ImageDataIO
                 {
                     return null;
                 }
-                DateTimeFormatter format = DateTimeFormat
-                        .forPattern("yyyy:MM:dd HH:mm:ss")
-                        .withZone(zone);
-
-                time = format.parseDateTime(date.substring(0, 19));
+                time = TIME_FORMAT.withZone(zone).parseDateTime(
+                        date.substring(0, 19));
             }            
         }
         return time;

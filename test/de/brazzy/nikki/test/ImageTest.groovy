@@ -172,18 +172,19 @@ class ImageTest extends AbstractNikkiTest{
         reader = new ImageReader(new File(tmpDir.path, NO_EXIF),
                 TZ_BERLIN)
         image = reader.createImage()
+        image.time = TIME2
         assertTrue(reader.thumbnailNew)
         assertTrue(image.modified)
-        assertNull(image.time)
         th = image.thumbnail
         image.save(tmpDir.path)
         reader = new ImageReader(new File(tmpDir.path, NO_EXIF),
-                TZ_BERLIN)
+                null)
+        assertNotNull(reader.timeZone)
         image = reader.createImage()
         thumb = image.thumbnail
         assertFalse(reader.thumbnailNew)
         assertFalse(image.modified)
-        assertNull(image.time)
+        assertEquals(TIME2, image.time)
         assertTrue(Arrays.equals(thumb, th))
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
@@ -278,6 +279,11 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(DAY2, tmpDir[1].date)
         assertEquals(1, tmpDir[1].images.size())
         assertSame(imageNoDate1, tmpDir[1].images[0])
+        
+        imageWithDate.pasteTime(TIME1.plusMinutes(10))
+        assertSame(imageWithDate, tmpDir[0].images[0])
+        assertSame(imageNoDate2, tmpDir[0].images[1])
+        assertEquals(TIME1.plusMinutes(10), imageWithDate.time)
     }
 }
 

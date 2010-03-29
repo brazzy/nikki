@@ -55,10 +55,17 @@ class Image implements Serializable{
     {
         if(time != this.time)
         {
-            def dir = day.directory
-            dir.removeImage(this)
-            setTime(time)
-            dir.addImage(this)            
+            if(time?.toLocalDate() == this.time?.toLocalDate())
+            {
+                setTime(time)                
+            }
+            else
+            {
+                def dir = day.directory
+                dir.removeImage(this)
+                setTime(time)
+                dir.addImage(this)                            
+            }
         }
     }
 

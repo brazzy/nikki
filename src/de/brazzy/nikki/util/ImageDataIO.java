@@ -2,6 +2,9 @@ package de.brazzy.nikki.util;
 
 import java.io.File;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
@@ -12,7 +15,10 @@ import mediautil.image.jpeg.LLJTranException;
  * @author Brazil
  */
 public class ImageDataIO {
-    protected static final String ENTRY_NIKKI_CONTENT = "Application-specific data of the Nikki GPS/Photo log tool http://www.brazzy.de/nikki";
+    protected static final DateTimeFormatter TIME_FORMAT = 
+        DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss");
+    protected static final String ENTRY_NIKKI_CONTENT = 
+        "Application-specific data of the Nikki GPS/Photo log tool http://www.brazzy.de/nikki";
     protected static final int ENTRY_NIKKI = 1;
     protected static final int ENTRY_TIMEZONE = 2;
     protected static final int ENTRY_TITLE = 3;
@@ -23,6 +29,8 @@ public class ImageDataIO {
     protected LLJTran llj;
     protected Exif exifData;
     protected IFD nikkiIFD;
+    protected IFD mainIFD;
+    protected IFD exifIFD;
     protected IFD gpsIFD;
 
     public ImageDataIO(File file, int readUpto) throws LLJTranException
@@ -37,12 +45,12 @@ public class ImageDataIO {
         if(exifData != null && exifData.getIFDs() != null &&
            exifData.getIFDs().length > 0 && exifData.getIFDs()[0] != null)
         {
-            IFD mainIFD = exifData.getIFDs()[0];
+            mainIFD = exifData.getIFDs()[0];
             
             if(mainIFD != null && mainIFD.getIFDs() != null)
             {
-                this.gpsIFD = mainIFD.getIFD(Exif.GPSINFO);                
-                IFD exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
+                gpsIFD = mainIFD.getIFD(Exif.GPSINFO);                
+                exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
                 if(exifIFD != null && exifIFD.getIFDs() != null)
                 {
                     this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
