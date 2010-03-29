@@ -22,7 +22,7 @@ import org.joda.time.LocalDate;
 
 /**
  * Represents on filesystem directory containing images and GPS tracks
- * from one journey
+ * from one journey, visible as a list of days.
  * 
  * @author Michael Borgwardt
  */
@@ -106,6 +106,9 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         return ScanResult.COMPLETE
     }
     
+    /**
+     * Adds an Image, creates a Day as well if necessary
+     */
     public void addImage(Image image)
     {
         this.images[image.fileName] = image
@@ -125,6 +128,9 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         image.modified = modified
     }
 
+    /**
+     * Removes an Image, deletes Day if empty
+     */
     public void removeImage(Image image)
     {
         if(!this.images.remove(image.fileName))
@@ -146,6 +152,22 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         else
         {
             throw new IllegalStateException("tried to remove image for unknown day $date")            
+        }
+    }
+
+    /**
+     * Returns the Day in this Directory that corresponds to the given date
+     */
+    public Day getDay(LocalDate date)
+    {
+        int index = Collections.binarySearch(dataList, new Day(date:date))
+        if(index >= 0)
+        {
+            return getAt(index)
+        }
+        else
+        {
+            return null
         }
     }
 
@@ -199,16 +221,4 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         return path.name.compareTo(other.path.name)
     }
     
-    public Day getDay(LocalDate date)
-    {
-        int index = Collections.binarySearch(dataList, new Day(date:date))
-        if(index >= 0)
-        {
-            return getAt(index)
-        }
-        else
-        {
-            return null
-        }
-    }
 }

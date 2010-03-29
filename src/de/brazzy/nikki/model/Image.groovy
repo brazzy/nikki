@@ -22,20 +22,46 @@ import org.joda.time.ReadablePeriod;
 import org.joda.time.Seconds;
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
+    
+    /** Color used for the pin that marks the image position in the offset finder */
     public static final String OFFSET_FINDER_COLOR = "801977FF";
+
+    /** Size factor the pin that marks the image position in the offset finder */
     public static final double OFFSET_FINDER_SCALE = 3.0
 
+    /** 
+     * Set to true to show that data has been added or changed that
+     * should be persisted  
+     */
     boolean modified
 
+    /** Name of the image data file */
     String fileName
+
+    /** Briefly describes the image */
     String title
+    
+    /** Longer description of the image */
     String description
+    
+    /** Time at which the image was taken */
     DateTime time
+    
+    /** Day instance that contains the image */
     Day day
+    
+    /** Contains the GPS coordinates assigned to the image */
     Waypoint waypoint
+    
+    /** Scaled-down version for display */
     byte[] thumbnail
+    
+    /** Determines whether the image will be part of an export to KMZ */
     boolean export
 
+    /**
+     * Sets the modified property when other properties change content
+     */
     void setProperty(String name, value)
     {
         if(name == "modified")
@@ -51,6 +77,11 @@ class Image implements Serializable{
         this.@"$name"=value
     }
 
+    /**
+     * Allows the copying of the timestamp from another image
+     * when an image has none; will result in the image being
+     * moved to the correct Day
+     */
     public void pasteTime(DateTime time)
     {
         if(time != this.time)
@@ -69,7 +100,7 @@ class Image implements Serializable{
         }
     }
 
-    public String getLongDescription()
+    private String getHtmlForExport()
     {
         def writer = new StringWriter()  
         def builder = new groovy.xml.MarkupBuilder(writer) 
@@ -82,6 +113,9 @@ class Image implements Serializable{
         return writer.toString()
     }
     
+    /**
+     * Saves the image data to the file's EXIF headers
+     */
     public void save(File directory)
     {
         if(modified)
@@ -91,6 +125,11 @@ class Image implements Serializable{
         modified = false
     }
 
+    /**
+     * Displays a KML file that marks the image's current position
+     * as well as the position and offsets of all known waypoints,
+     * to allow choosing a more correct offset for geotagging.
+     */
     public void offsetFinder(OutputStream out)
     {
         if(!waypoint)
@@ -126,6 +165,12 @@ class Image implements Serializable{
         out.close()
     }
 
+    /**
+     * Finds and sets the Waypoint that is closest in time to this
+     * image's timestamp.
+     * 
+     * @param offset to adjust for incorrectly set camera time
+     */
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         def imagetime = this.time.plus(offset)
@@ -170,6 +215,13 @@ class Image implements Serializable{
         }
     }
     
+    /**
+     * Write this image to a KMZ file
+     * 
+     * @param out for writing image data itself to
+     * @param doc for writing KML data to
+     * @param imgIndex for display in title
+     */
     void exportTo(ZipOutputStream out, Document doc, int imgIndex)
     {
         if(export)
@@ -177,7 +229,7 @@ class Image implements Serializable{
             def imgIndexFmt = new DecimalFormat("000 ");
             Placemark pm = doc.createAndAddPlacemark()
                 .withName(imgIndexFmt.format(imgIndex++) + (title ?: ""))
-                .withDescription(longDescription)
+                .withDescription(htmlForExport)
                 .withVisibility(true)
             pm.createAndSetPoint()
                 .withCoordinates([new Coordinate(waypoint.longitude.value, waypoint.latitude.value)])

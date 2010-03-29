@@ -6,12 +6,23 @@ import java.lang.ClassNotFoundException
 import java.io.IOException
 import java.io.ObjectOutput
 
+/**
+ * Base class for domain objects to be displayed in a sorted list on the GUI.
+ * 
+ * @author Michael Borgwardt
+ *
+ * @param <T> type to display in list
+ */
 public class ListDataModel<T extends Comparable> extends AbstractListModel
 {
     public static final long serialVersionUID = 1;
 
+    /** Contains the elements, kept sorted automatically */
     protected List<T> dataList = new ArrayList<T>()
 
+    /**
+     * Adds new element at the appropriate place in the sort order
+     */
     public void add(T d)
     {
         if(!d)
@@ -36,6 +47,7 @@ public class ListDataModel<T extends Comparable> extends AbstractListModel
             fireIntervalAdded(this, -index-1, -index-1)
         }
     }
+    
     public boolean remove(T d)
     {
         def index = dataList.indexOf(d);
@@ -48,18 +60,22 @@ public class ListDataModel<T extends Comparable> extends AbstractListModel
         return false;
     }
     
-    public boolean contains(T d)
+   public boolean contains(T d)
     {
         dataList.contains(d)
     }
+    
+    @Override
     int getSize()
     {
         dataList.size()
     }    
+    
+    @Override
     T getElementAt(int index)
     {
         getAt(index)
-    }    
+    }
     T getAt(int index)
     {
         dataList[index]

@@ -6,6 +6,11 @@ import javax.swing.SwingWorker;
 
 import de.brazzy.nikki.model.Day;
 
+/**
+ * Exports data to a KMZ file
+ * 
+ * @author Michael Borgwardt
+ */
 public class ExportWorker extends SwingWorker<Void, Void>
 {
     private Day day;

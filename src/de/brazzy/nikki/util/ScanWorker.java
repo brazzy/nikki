@@ -7,6 +7,11 @@ import javax.swing.SwingWorker;
 import de.brazzy.nikki.model.Directory;
 import org.joda.time.DateTimeZone;
 
+/**
+ * Scans directory for new image and GPS files
+ * 
+ * @author Michael Borgwardt
+ */
 public class ScanWorker extends SwingWorker<Void, Void>
 {
     private Dialogs dialogs;

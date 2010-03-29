@@ -64,7 +64,6 @@ class Day extends AbstractTableModel implements Comparable<Day>
     
     public String toString()
     {
-
         return (date==null? "unknown" : DISPLAY_FORMAT.print(date)) +
                " ("+images.size()+", "+waypoints.size()+")"
     }
@@ -72,6 +71,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /**
      * From AbstractTableModel
      */
+    @Override
     public int getRowCount()
     {
         images.size()
@@ -80,6 +80,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /**
      * From AbstractTableModel
      */
+    @Override
     public int getColumnCount()
     {
         1
@@ -88,6 +89,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /**
      * From AbstractTableModel
      */
+    @Override
     public Object getValueAt(int row, int column)
     {
         images[row]
@@ -96,6 +98,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /**
      * From AbstractTableModel
      */
+    @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) 
     {
         true

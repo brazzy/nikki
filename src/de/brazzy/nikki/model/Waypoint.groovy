@@ -8,20 +8,36 @@ import org.joda.time.format.DateTimeFormatter;
 
 import de.brazzy.nikki.util.TimezoneFinder;
 
+/**
+ * An entry in a GPS track, with timestamp and GPS coordinates
+ */
 class Waypoint implements Serializable{
     public static final long serialVersionUID = 1;
     
     private static final DateTimeFormatter PARSE_FORMAT = DateTimeFormat.forPattern('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
-    
+
+    /** GPS log file in which the waypoint is recorded */
     WaypointFile file
+
+    /** Day to which the waypoint is assigned (based on timezone of nearest town) */
     Day day
+    
+    /** Timestamp of the log entry (based on timezone of nearest town) */
     DateTime timestamp
+    
     GeoCoordinate latitude
+    
     GeoCoordinate longitude
     
+    /**
+     * Parses a log entry in NMEA format
+     * 
+     * @param wpFile file in which the waypoint is recorded
+     * @param line log entry data
+     * @param finder used to assign the timezone of the nearest town
+     */
     public static Waypoint parse(WaypointFile wpFile, String line, TimezoneFinder finder)
-    {
-        
+    {        
         def result = new Waypoint(file:wpFile)
         
         def data = line.trim().tokenize(',')        

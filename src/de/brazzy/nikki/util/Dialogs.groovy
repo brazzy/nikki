@@ -11,10 +11,18 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Seconds;
 
+/**
+ * Encapsulates user interaction via modal dialogs for testability
+ */
 class Dialogs
 {
     def parentComponent
 
+    /**
+     * Opens a JFileChooser to return a directory
+     * 
+     * @param startDir default starting dir
+     */
     public File askDirectory(File startDir)
     {
         def fc = new JFileChooser(startDir)
@@ -24,6 +32,12 @@ class Dialogs
             null;
     }
 
+    /**
+     * Opens a JFileChooser to return a file
+     * 
+     * @param startDir default starting dir
+     * @param defaultFileName
+     */
     public File askFile(File dir, String defaultFileName)
     {
         def fc = new JFileChooser(dir);
@@ -34,6 +48,9 @@ class Dialogs
             null;
     }
 
+    /**
+     * Asks user for an offset to adjust for wrong camera time before geotagging
+     */
     public ReadablePeriod askOffset()
     {
         def opt = new GeotagOptions()
@@ -41,6 +58,11 @@ class Dialogs
         return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : null
     }
 
+    /**
+     * Asks user for time zone used to set camera clock
+     * 
+     * @param defaultZone
+     */
     public DateTimeZone askTimeZone(DateTimeZone defaultZone)
     {
         ScanOptions opt = new ScanOptions(defaultZone)
@@ -48,11 +70,17 @@ class Dialogs
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
     }
 
+    /**
+     * Opens fial via OS
+     */
     public void open(File f)
     {
         Desktop.getDesktop().open(f);
     }
 
+    /**
+     * Allows waiting for background actions to be completed during tests
+     */
     public void registerWorker(SwingWorker worker)
     {
 

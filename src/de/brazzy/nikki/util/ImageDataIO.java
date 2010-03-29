@@ -11,10 +11,11 @@ import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
 /**
+ * Base class for dealing with EXIF headers
  *
- * @author Brazil
+ * @author Michael Borgwardt
  */
-public class ImageDataIO {
+public abstract class ImageDataIO {
     protected static final DateTimeFormatter TIME_FORMAT = 
         DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss");
     protected static final String ENTRY_NIKKI_CONTENT = 

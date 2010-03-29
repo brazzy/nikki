@@ -3,18 +3,31 @@ package de.brazzy.nikki.model
 import java.util.prefs.Preferences
 
 /**
+ * Root domain object, visible as a list of directories.
+ * The list is persisted via the preferences API
+ * 
  * @author Michael Borgwardt
  *
  */
 public class NikkiModel extends ListDataModel<Directory>{
     public static final long serialVersionUID = 1;
 
+    private static final String SEP = System.getProperty("path.separator")
+
+    /** key used in the Preferences API for the list of directories */
     public static final String PREF_KEY_DIRECTORIES = "directories"
+
+    /** key used in the Preferences API to remember the selectionDir */
     public static final String PREF_KEY_SELECTION_DIR = "selectionDir"
+        
+    /** key used in the Preferences API to remember the exportDir */
     public static final String PREF_KEY_EXPORT_DIR = "exportDir"
-    public static final String SEP = System.getProperty("path.separator")
+        
     
+    /** (FileChooser default) directory from which to add more directories */
     File selectionDir
+    
+    /** (FileChooser default) directory to which KMZ files are exported */
     File exportDir
 
     Preferences prefs
@@ -25,6 +38,7 @@ public class NikkiModel extends ListDataModel<Directory>{
         this.selectionDir = f;
         prefs.flush()
     }
+    
     public void setExportDir(File f)
     {
         prefs.put(PREF_KEY_EXPORT_DIR, f.absolutePath)
@@ -32,6 +46,9 @@ public class NikkiModel extends ListDataModel<Directory>{
         prefs.flush()
     }
 
+    /**
+     * @param prefsClass used for access to the preferences
+     */
     public NikkiModel(Class prefsClass)
     {
         prefs = Preferences.userNodeForPackage(prefsClass)

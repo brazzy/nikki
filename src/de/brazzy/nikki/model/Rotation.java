@@ -2,6 +2,11 @@ package de.brazzy.nikki.model;
 
 import mediautil.image.jpeg.LLJTran;
 
+/**
+ * Represents image rotation angles 
+ * 
+ * @author Michael Borgwardt
+ */
 public enum Rotation
 {
     RIGHT(LLJTran.ROT_90), 
@@ -15,7 +20,11 @@ public enum Rotation
     }
 
     private int tranConstant;
-    
+
+    /**
+     * Returns the constant representing the corresponding rotation
+     * in {@link LLJTran}.
+     */
     public int getLLJTranConstant()
     {
         return tranConstant;
