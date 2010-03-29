@@ -202,27 +202,7 @@ public class ImageView extends JPanel
             copyPaste.setIcon(COPY_ICON);
             copyPaste.setEnabled(true);
             time.setText(TIMESTAMP_FORMAT.print(value.getTime()));
-            if(value.getWaypoint() != null && 
-               value.getWaypoint().getTimestamp() != null)
-            {
-                long diff = (value.getTime().getMillis() 
-                             - value.getWaypoint().getTimestamp().getMillis()) 
-                           / 1000;
-                timeDiff.setText(String.valueOf(diff));
-                timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
-                if(Math.abs(diff) > DIFF_THRESHOLD)
-                {
-                    timeDiff.setForeground(Color.RED);
-                }
-                else
-                {
-                    timeDiff.setForeground(Color.BLACK);                    
-                }
-            }
-            else
-            {
-                timeDiff.setText(null);
-            }
+            setTimeDiff(value);
         }
         else
         {
@@ -230,6 +210,14 @@ public class ImageView extends JPanel
             copyPaste.setEnabled(clipboard!=null);
             time.setText(null);
         }
+        setGpsData(value);
+        thumbnail.setIcon(new ImageIcon(value.getThumbnail()));
+        textArea.setText(value.getDescription());
+        export.setSelected(value.getExport());
+    }
+
+    private void setGpsData(Image value)
+    {
         if(value.getWaypoint() != null)
         {
             if(value.getWaypoint().getLatitude()!=null)
@@ -246,9 +234,31 @@ public class ImageView extends JPanel
             latitude.setText("?");
             longitude.setText("?");            
         }
-        thumbnail.setIcon(new ImageIcon(value.getThumbnail()));
-        textArea.setText(value.getDescription());
-        export.setSelected(value.getExport());
+    }
+
+    private void setTimeDiff(Image value)
+    {
+        if(value.getWaypoint() != null && 
+           value.getWaypoint().getTimestamp() != null)
+        {
+            long diff = (value.getTime().getMillis() 
+                         - value.getWaypoint().getTimestamp().getMillis()) 
+                       / 1000;
+            timeDiff.setText(String.valueOf(diff));
+            timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
+            if(Math.abs(diff) > DIFF_THRESHOLD)
+            {
+                timeDiff.setForeground(Color.RED);
+            }
+            else
+            {
+                timeDiff.setForeground(Color.BLACK);                    
+            }
+        }
+        else
+        {
+            timeDiff.setText(null);
+        }
     }
 
     public Image getValue()

@@ -20,15 +20,8 @@ public class SaveWorker extends SwingWorker<Void, Void>
     @Override
     protected Void doInBackground() throws Exception
     {
-        try{
-            dir.save(this);
-            return null;
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-            throw ex;
-        }
+        dir.save(this);
+        return null;
     }
 
 }
