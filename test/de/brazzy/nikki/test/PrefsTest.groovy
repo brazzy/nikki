@@ -1,5 +1,7 @@
 package de.brazzy.nikki.test
 
+import java.util.prefs.Preferences;
+
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 
@@ -22,6 +24,11 @@ class PrefsTest extends AbstractNikkiTest{
         dirC = new Directory(path: new File("C:\\testC"))
     }
 
+    public void tearDown()
+    {
+        Preferences.userNodeForPackage(PrefsTest.class)?.removeNode()
+    }
+    
     public void testAddDirectory()
     {
         assertEquals(0, model.size())
