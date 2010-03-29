@@ -396,5 +396,13 @@ class GuiTest extends AbstractNikkiTest {
         op.spinner.value = -100;
         assertEquals(-100, op.getOffset())
     }
+    
+    public void testSeparateRendererAndEditor()
+    {
+        def editor = view.imageTable.getDefaultEditor(Object.class)
+        def renderer = view.imageTable.getDefaultRenderer(Object.class)
+        assertSame(editor.getClass(), renderer.getClass())
+        assertNotSame(editor, renderer)
+    }
 }
 
