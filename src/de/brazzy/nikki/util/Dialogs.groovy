@@ -19,6 +19,8 @@ package de.brazzy.nikki.util
 import java.awt.Desktop
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
+
+import de.brazzy.nikki.view.AboutBox;
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import javax.swing.SwingWorker
@@ -34,6 +36,12 @@ class Dialogs
 {
     def parentComponent
 
+    public void showAboutBox()
+    {
+        def box = new AboutBox()
+        JOptionPane.showOptionDialog(parentComponent, box, "About Nikki", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
+    }
+    
     /**
      * Opens a JFileChooser to return a directory
      * 

@@ -23,6 +23,7 @@ import groovy.swing.SwingBuilder
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JSplitPane
+import javax.swing.border.EmptyBorder;
 
 import de.brazzy.nikki.util.Dialogs
 
@@ -44,6 +45,7 @@ public class NikkiFrame{
     def dayList
     def imageTable
     def progressBar
+    def helpButton
     
     /**
      * @param dialogs For user interaction via modal dialogs
@@ -58,6 +60,7 @@ public class NikkiFrame{
                 splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
                     panel(){
                         borderLayout()
+                        label(constraints: BorderLayout.NORTH, text:'Directories')
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dirList = list()
                         }
@@ -74,6 +77,7 @@ public class NikkiFrame{
                     }
                     panel(){
                         borderLayout()
+                        label(constraints: BorderLayout.NORTH, text:'Days')
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dayList = list()
                         }
@@ -85,8 +89,17 @@ public class NikkiFrame{
                         }
                     }
                 }
-                scrollPane(){
-                      result.imageTable = table(tableHeader:null, rowHeight: 180)
+                panel(){
+                    borderLayout()
+                    panel(constraints: BorderLayout.NORTH){
+                        borderLayout()
+                        label(constraints: BorderLayout.WEST, text:'Images', border: new EmptyBorder(0,5,0,0))
+                        result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
+                                icon:new ImageIcon(NikkiFrame.class.getResource("/icons/help.png")))
+                    }
+                    scrollPane(constraints: BorderLayout.CENTER){
+                          result.imageTable = table(tableHeader:null, rowHeight: 180)
+                    }
                 }
             }
             result.progressBar = progressBar(constraints: BorderLayout.SOUTH, minimum:0, maximum:100)

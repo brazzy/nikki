@@ -155,6 +155,10 @@ public class Nikki{
             }
         }
     
+    private aboutAction = {
+        dialogs.showAboutBox()
+    }
+    
     /**
      * Builds the model and the view and connects everything
      * 
@@ -176,6 +180,7 @@ public class Nikki{
         view.dayList.addListSelectionListener(selectDayAction)
         view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
+        view.helpButton.actionPerformed = aboutAction
     }
 
     /**

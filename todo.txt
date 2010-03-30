@@ -6,11 +6,11 @@
 - Parameter beim Export: Bildgröße, Dokumentenname, Dateiname - auch als prefs speichern
 - Fehler bei Export ohne Geotag
 - Rückfrage bei Schliessen mit ungespeicherten Änderungen
-- (API-)Dokumentation/Lizenz
 - I18n
 - Zeit in KML anzeigen?
 - Logging und Fehlerpopups
 - Kontextmenüs
+- package-doku
 
 - Zeitkorrektur bei Anzeige der Abweichung berücksichtigen
 - Paralleler Export für Google Maps (kleinere Bilder, Prefix nur dort)
@@ -23,6 +23,7 @@
 - About mit Referenzen (iconset, libraries)
 - Möglichkeit, GPS-Daten/Zeit manuell zu setzen
 
+v (API-)Dokumentation/Lizenz
 v Schreiben von neuen Zeitstempeln
 v Copy/Paste Zeit
 v Genauigkeitsverlust beim Speichern von GPS-Koordinaten
@@ -100,9 +101,9 @@ http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
 http://labs.micromata.de/display/jak/Home
 http://download.geonames.org/export/dump/
 http://jsi.sourceforge.net/
-http://asm.ow2.org/license.html
+http://asm.ow2.org
 http://code.google.com/p/java-image-scaling/
 http://jakarta.apache.org/oro/
 http://trove4j.sourceforge.net/
 http://logging.apache.org/log4j/index.html
-https://jaxb.dev.java.net/
+http://jaxb.dev.java.net/
