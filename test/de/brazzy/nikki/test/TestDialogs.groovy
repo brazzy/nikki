@@ -19,6 +19,8 @@ package de.brazzy.nikki.test
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
 
+import junit.framework.AssertionFailedError;
+
 import org.joda.time.DateTimeZone
 import org.joda.time.ReadablePeriod
 
@@ -89,6 +91,12 @@ class TestDialogs extends Dialogs{
         def result = opened
         opened = null
         return result
+    }
+
+    @Override
+    public void showAboutBox()
+    {
+        queue.remove(0)
     }
 }
 

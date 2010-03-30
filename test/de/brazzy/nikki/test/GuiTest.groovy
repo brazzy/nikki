@@ -24,6 +24,7 @@ import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.view.AboutBox;
 import de.brazzy.nikki.view.ImageView;
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.view.ScanOptions
@@ -387,8 +388,22 @@ class GuiTest extends AbstractNikkiTest {
         view.imageTable.editCellAt(0,0)
         assertTrue(button.enabled)
         assertSame(ImageView.COPY_ICON, button.icon)        
-   }
+    }
     
+    public void testHelp()
+    {
+        dialogs.add(null)
+        view.helpButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+    }
+
+    public void testAboutBox()
+    {
+        AboutBox box = new AboutBox();
+        assertTrue(box.content.text.contains("Nikki GPS"))
+        assertTrue(box.content.text.contains("Michael Borgwardt"))
+    }
+
     public void testScanOptions()
     {
         String[] zones = DateTimeZone.getAvailableIDs().toArray()

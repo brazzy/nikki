@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -36,18 +35,20 @@ import javax.swing.event.HyperlinkListener;
  */
 public class AboutBox extends JPanel
 {
+    private JEditorPane content;
+    
     public AboutBox() throws Exception
     {
         setLayout(new BorderLayout());
         JLabel img = new JLabel(new ImageIcon(getClass().getResource("/icons/logo.png")));
         add(img, BorderLayout.NORTH);
         
-        JEditorPane txt = new JEditorPane();
-        txt.setContentType("text/html");
-        txt.setEditable(false);
-        txt.setBackground(getBackground());
-        txt.read(new InputStreamReader(getClass().getResourceAsStream("about.html"), "UTF-8"), null);
-        txt.addHyperlinkListener(new HyperlinkListener(){
+        content = new JEditorPane();
+        content.setContentType("text/html");
+        content.setEditable(false);
+        content.setBackground(getBackground());
+        content.read(new InputStreamReader(getClass().getResourceAsStream("about.html"), "UTF-8"), null);
+        content.addHyperlinkListener(new HyperlinkListener(){
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e)
             {
@@ -63,11 +64,11 @@ public class AboutBox extends JPanel
                     }                    
                 }
             }});
-        add(txt, BorderLayout.CENTER);
+        add(content, BorderLayout.CENTER);
     }
-    
-    public static void main(String... args) throws Exception
-    {
-        JOptionPane.showOptionDialog(null, new AboutBox(), "About Nikki", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    }
+//    
+//    public static void main(String... args) throws Exception
+//    {
+//        JOptionPane.showOptionDialog(null, new AboutBox(), "About Nikki", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+//    }
 }
