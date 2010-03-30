@@ -21,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import de.brazzy.nikki.model.Directory;
-
 /**
  * UI for modal dialog that asks user for parameters used
  * when geotagging images.
