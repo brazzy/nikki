@@ -1,3 +1,4 @@
+- Manifest, META-INF und root von JAR aufräumen
 - neue version von Java image scaling: fast thumbnails
 - bei copy/paste auch waypoint übernehmen
 - Reihenfolge Bilder nach time-paste oder rescan

@@ -192,7 +192,7 @@
 
     <target name="create_build_id">
     	<tstamp/>
-    	<property name="build.id" value="${DSTAMP}_${SVN_REVISION}"/>
+    	<property name="build.id" value="${DSTAMP}_${env.SVN_REVISION}_${env.BUILD_NUMBER}"/>
     </target>
 	
     <target name="create_run_jar" depends="create_build_id">
