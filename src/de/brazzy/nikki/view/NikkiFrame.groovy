@@ -60,7 +60,7 @@ public class NikkiFrame{
                 splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
                     panel(){
                         borderLayout()
-                        label(constraints: BorderLayout.NORTH, text:'Directories')
+                        label(constraints: BorderLayout.NORTH, text:'Directories', border: new EmptyBorder(0,5,0,0))
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dirList = list()
                         }
@@ -81,7 +81,7 @@ public class NikkiFrame{
                     }
                     panel(){
                         borderLayout()
-                        label(constraints: BorderLayout.NORTH, text:'Days')
+                        label(constraints: BorderLayout.NORTH, text:'Days', border: new EmptyBorder(0,5,0,0))
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dayList = list()
                         }
