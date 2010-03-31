@@ -66,12 +66,16 @@ public class NikkiFrame{
                         }
                         panel(constraints: BorderLayout.SOUTH){
                             result.addButton = button(text:'Add', 
+                                    toolTipText:'Add a directory containing images and GPS log files',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/add.png")))
                             result.deleteButton = button(text:'Delete', enabled:false, 
+                                    toolTipText:'Remove directory from list',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/bin_closed.png")))                       
                             result.scanButton = button(text:'Scan', enabled:false, 
+                                    toolTipText:'Find images and GPS log files in directory',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/find.png")))
                             result.saveButton = button(text:'Save', enabled:false, 
+                                    toolTipText:'Save all changed data to EXIF headers in image files',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/disk.png")))
                         }
                     }
@@ -83,8 +87,10 @@ public class NikkiFrame{
                         }
                         panel(constraints: BorderLayout.SOUTH){
                             result.tagButton = button(text:'Geotag', enabled:false, 
+                                    toolTipText:'Assign GPS coordinates from log files to images based on time',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_link.png")))
                             result.exportButton = button(text:'Export', enabled:false, 
+                                    toolTipText:'Export images and GPS paths to compact KMZ file for display in Google Earth',
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_go.png")))
                         }
                     }
@@ -95,6 +101,7 @@ public class NikkiFrame{
                         borderLayout()
                         label(constraints: BorderLayout.WEST, text:'Images', border: new EmptyBorder(0,5,0,0))
                         result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
+                                toolTipText:'Information about this program',
                                 icon:new ImageIcon(NikkiFrame.class.getResource("/icons/help.png")))
                     }
                     scrollPane(constraints: BorderLayout.CENTER){
