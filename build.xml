@@ -190,11 +190,18 @@
     	</jdepend>
     </target>
 
-    <target name="create_run_jar">
+    <target name="create_build_id">
+    	<tstamp/>
+    	<property name="build.id" value="${DSTAMP}_${SVN_REVISION}"/>
+    </target>
+	
+    <target name="create_run_jar" depends="create_build_id">
+    	<replace file="${build.dir}/de/brazzy/nikki/view/about.html" token="@@BUILD_ID@@" value="${build.id}"/>
         <jar destfile="build/Nikki.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
                 <attribute name="Class-Path" value="."/>
+                <attribute name="Implementation-Version" value="${build.id}"/>
             </manifest>
             <fileset dir="${build.dir}"/>
             <zipfileset excludes="META-INF/*.SF,org/codehaus/groovy/tools/" src="lib/groovy-all-1.7.0.jar"/>
