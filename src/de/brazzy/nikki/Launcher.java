@@ -16,6 +16,8 @@ package de.brazzy.nikki;
  *   limitations under the License.
  */
 
+import javax.swing.UIManager;
+
 import de.brazzy.nikki.model.NikkiModel;
 import de.brazzy.nikki.util.Dialogs;
 import de.brazzy.nikki.util.TimezoneFinder;
@@ -30,6 +32,9 @@ public class Launcher
 {
     public static void main(String[] args) throws Exception
     {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        //UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         TimezoneFinder finder = new TimezoneFinder(TimezoneFinder.class.getResourceAsStream("timezones.dat"));
         Dialogs d = new Dialogs();
         Nikki n = new Nikki();

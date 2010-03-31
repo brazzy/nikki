@@ -16,31 +16,18 @@ package de.brazzy.nikki
  *   limitations under the License.
  */
 
-import groovy.swing.SwingBuilder
-import java.awt.BorderLayout as BL
-import javax.swing.JSplitPane
-import javax.swing.BoxLayout
-import javax.swing.ImageIcon
-import javax.swing.border.EmptyBorder
 import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
-import javax.swing.JFileChooser
 import javax.swing.event.ListSelectionListener
 import javax.swing.DefaultListModel
 import javax.swing.table.DefaultTableModel
 import java.beans.PropertyChangeListener
 import de.brazzy.nikki.util.ScanWorker
-import de.brazzy.nikki.model.Day
-import javax.swing.UIManager
 import java.util.zip.ZipOutputStream
 import de.brazzy.nikki.util.ExportWorker
-import javax.swing.JOptionPane
 
-import org.joda.time.DateTimeZone;
 
-import de.brazzy.nikki.view.ScanOptions
-import de.brazzy.nikki.view.GeotagOptions
 import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder;
@@ -165,7 +152,6 @@ public class Nikki{
      * @param prefsClass used as key in the Preferences API
      */
     public void build(Class prefsClass, Dialogs dialogs, TimezoneFinder finder){
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         this.view = NikkiFrame.create(dialogs)
         this.dialogs = dialogs
         this.model = new NikkiModel(prefsClass)
