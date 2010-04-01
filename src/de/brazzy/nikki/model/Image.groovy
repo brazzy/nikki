@@ -245,7 +245,7 @@ class Image implements Serializable{
         {
             def imgIndexFmt = new DecimalFormat("000 ");
             Placemark pm = doc.createAndAddPlacemark()
-                .withName(imgIndexFmt.format(imgIndex++) + (title ?: ""))
+                .withName(imgIndexFmt.format(imgIndex) + (title ?: ""))
                 .withDescription(htmlForExport)
                 .withVisibility(true)
             pm.createAndSetPoint()

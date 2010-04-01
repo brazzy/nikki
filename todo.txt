@@ -24,6 +24,7 @@
 - About mit Referenzen (iconset, libraries)
 - Möglichkeit, GPS-Daten/Zeit manuell zu setzen
 
+v Nummerierung immer 0!
 v (API-)Dokumentation/Lizenz
 v Schreiben von neuen Zeitstempeln
 v Copy/Paste Zeit

@@ -155,7 +155,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
         def imgIndex = 0;
         images.sort{ it.time }
         for(Image image : images) {
-            image.exportTo(out, doc, imgIndex)
+            image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))
         }
 

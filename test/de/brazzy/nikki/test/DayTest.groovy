@@ -109,7 +109,11 @@ class DayTest extends AbstractNikkiTest{
     public void testExport()
     {
         copyFile(IMAGE1)
-        Image image = addImage(DAY1, IMAGE1)
+        Image image1 = addImage(DAY1, IMAGE1)
+        copyFile(IMAGE2)
+        Image image2 = addImage(DAY1, IMAGE2)
+        image2.description = "otherDescription"
+        image2.title = "otherTitle"
         File file = new File(tmpDir.path, "export"+DATE1+".kmz")
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file))
         Day day = tmpDir[0]
@@ -118,33 +122,46 @@ class DayTest extends AbstractNikkiTest{
         ZipEntry entry;
 
         entry = input.getNextEntry()
-        assertEquals(entry.getName(), "images/");
-        assertEquals(entry.getSize(), 0);
+        assertEquals("images/", entry.getName());
+        assertEquals(0, entry.getSize());
 
         entry = input.getNextEntry()
         assertEquals(entry.getName(), "thumbs/");
-        assertEquals(entry.getSize(), 0);
+        assertEquals(0, entry.getSize());
 
         entry = input.getNextEntry()
-        assertEquals(entry.getName(), "images/"+IMAGE1);
+        assertEquals("images/"+IMAGE1, entry.getName());
         assertTrue(entry.getSize() > 0);
 
         entry = input.getNextEntry()
-        assertEquals(entry.getName(), "thumbs/"+IMAGE1);
+        assertEquals("thumbs/"+IMAGE1, entry.getName());
         assertTrue(entry.getSize() > 0);
 
         entry = input.getNextEntry()
-        assertEquals(entry.getName(), "diary.kml");
+        assertEquals("images/"+IMAGE2, entry.getName());
+        assertTrue(entry.getSize() > 0);
+
+        entry = input.getNextEntry()
+        assertEquals("thumbs/"+IMAGE2, entry.getName());
+        assertTrue(entry.getSize() > 0);
+
+        entry = input.getNextEntry()
+        assertEquals("diary.kml", entry.getName());
 
         String kml = IOUtils.toString(input, "UTF-8")
         assertTrue(kml.length() > 0)
         def finder = new XmlSlurper().parseText(kml)
         def placemarks = finder.Document.Placemark
-        assertEquals(1, placemarks.size())
+        assertEquals(2, placemarks.size())
         def pm = placemarks[0]
         assertEquals("000 testTitle", pm.name.text())
         assertEquals("thumbs/"+IMAGE1, pm.Style.IconStyle.Icon.href.text())
         assertTrue(kml.contains("&lt;p&gt;testDescription&lt;/p&gt;"))
+        
+        pm = placemarks[1]
+        assertEquals("001 otherTitle", pm.name.text())
+        assertEquals("thumbs/"+IMAGE2, pm.Style.IconStyle.Icon.href.text())
+        assertTrue(kml.contains("&lt;p&gt;otherDescription&lt;/p&gt;"))
 
         assertNull(input.getNextEntry())
         input.close()
