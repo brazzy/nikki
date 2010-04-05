@@ -1,0 +1,8 @@
+*.class
+license.txt
+org/codehaus/groovy/tools/
+META-INF/*.SF
+log4j.properties
+META-INF/*.txt
+META-INF/LICENSE
+META-INF/maven/
