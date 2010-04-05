@@ -1,0 +1,27 @@
+Libraries/licenses:
+- Joda Time: Apache
+- Java KML: BSD
+- Mediautil: free
+- geonames:  creative commons attrib
+- JSI: LGPL
+- commons-io: Apache
+- groovy: apache/BSD
+- ASM: free, special
+- Java image scaling: LGPL
+- Jakarta ORO: Apache
+- Trove: LGPL
+- Log4J: apache
+- JAXB: Dual license consisting of the  CDDL v1.0 and GPL v2. 
+
+http://mediachest.sourceforge.net/mediautil/
+http://joda-time.sourceforge.net/
+http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
+http://labs.micromata.de/display/jak/Home
+http://download.geonames.org/export/dump/
+http://jsi.sourceforge.net/
+http://asm.ow2.org
+http://code.google.com/p/java-image-scaling/
+http://jakarta.apache.org/oro/
+http://trove4j.sourceforge.net/
+http://logging.apache.org/log4j/index.html
+http://jaxb.dev.java.net/
