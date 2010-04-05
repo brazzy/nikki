@@ -192,7 +192,8 @@
 
     <target name="create_build_id">
     	<tstamp/>
-    	<property name="build.id" value="${DSTAMP}_${env.SVN_REVISION}_${env.BUILD_NUMBER}"/>
+    	<property name="build.id" value="${DSTAMP}_${env.BUILD_NUMBER}"/>
+    	<echo message="Build ID: ${build.id}"/>
     </target>
 	
     <target name="create_run_jar" depends="create_build_id">
