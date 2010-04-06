@@ -37,7 +37,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -74,7 +73,7 @@ public class ImageView extends JPanel
     private JButton copyPaste = new JButton(COPY_ICON);
     private JCheckBox export = new JCheckBox("export");
     
-    private DateTime clipboard; // TODO: use real (system?) clipboard
+    private Image clipboard; // TODO: use real (system?) clipboard
     private Image value;
     private Dialogs dialogs;
 
@@ -202,11 +201,12 @@ public class ImageView extends JPanel
         {
             if(value.getTime() != null)
             {
-                clipboard = value.getTime();
+                clipboard = value;
             }
             else if(clipboard != null)
             {
-                value.pasteTime(clipboard);
+                value.pasteTime(clipboard.getTime());
+                value.setWaypoint(clipboard.getWaypoint());
                 repaint();
             }
             else

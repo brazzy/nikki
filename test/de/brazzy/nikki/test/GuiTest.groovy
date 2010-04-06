@@ -376,11 +376,14 @@ class GuiTest extends AbstractNikkiTest {
         button = editor.copyPaste
         assertTrue(button.enabled)
         assertSame(ImageView.PASTE_ICON, button.icon)
+        assertNull(imageNoDate.time)
+        assertNull(imageNoDate.waypoint)
         
         button.actionListeners[0].actionPerformed()
         assertEquals(-1, view.dayList.selectedIndex)
         
         assertEquals(imageNoDate.time, imageWithDate.time)
+        assertSame(imageNoDate.waypoint, imageWithDate.waypoint)
         assertEquals(1, tmpDir.getSize())
         assertEquals(2, tmpDir[0].images.size())
         
