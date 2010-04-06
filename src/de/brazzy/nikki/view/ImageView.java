@@ -40,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
 
@@ -205,9 +206,11 @@ public class ImageView extends JPanel
             }
             else if(clipboard != null)
             {
-                value.pasteTime(clipboard.getTime());
+                Day d = value.getDay();
                 value.setWaypoint(clipboard.getWaypoint());
-                repaint();
+                value.pasteTime(clipboard.getTime());
+                d.fireTableStructureChanged();
+                d.fireTableDataChanged();
             }
             else
             {
