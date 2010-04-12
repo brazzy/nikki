@@ -73,7 +73,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     
     /** 
      *  Contains the files (images and GPS logs) used by this Day instance.
-     *  Must not be null (TODO: enforce. Currently not possible, as Groovy
+     *  Must not be null (Enforcement currently not possible, as Groovy
      *  ignores "private")
      */
     Directory directory

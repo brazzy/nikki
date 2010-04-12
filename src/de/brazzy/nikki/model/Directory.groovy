@@ -66,7 +66,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     
     /**
      * This directory's filesystem path.
-     *  Must not be null (TODO: enforce. Currently not possible, as Groovy
+     *  Must not be null (Enforcement currently not possible, as Groovy
      *  ignores "private")
      */
     File path

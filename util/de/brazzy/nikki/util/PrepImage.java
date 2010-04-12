@@ -35,8 +35,6 @@ import mediautil.image.jpeg.LLJTran;
  * Used for trying out EXIF access code and producing image files with
  * specific data for unit tests
  *
- * TODO: turn this into "learning tests"??
- *
  * @author Michael Borgwardt
  */
 public class PrepImage {

@@ -74,7 +74,7 @@ public class ImageView extends JPanel
     private JButton copyPaste = new JButton(COPY_ICON);
     private JCheckBox export = new JCheckBox("export");
     
-    private Image clipboard; // TODO: use real (system?) clipboard
+    private Image clipboard;
     private Image value;
     private Dialogs dialogs;
 

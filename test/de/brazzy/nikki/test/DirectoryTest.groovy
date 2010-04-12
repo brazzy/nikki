@@ -39,8 +39,6 @@ import org.apache.commons.io.IOUtils
 import org.junit.Test;
 
 /**
- * TODO: rescan mit entfernten images und waypointFiles
- *
  * @author Michael Borgwardt
  */
 public class DirectoryTest extends AbstractNikkiTest {

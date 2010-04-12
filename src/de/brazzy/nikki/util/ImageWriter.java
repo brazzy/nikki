@@ -232,8 +232,7 @@ public class ImageWriter extends ImageDataIO
         return entry;
     }
     private void writeThumbnail() throws IOException
-    { // TODO: überschreiben eines existierenden Thumbnails?
-        //llj.removeThumbnail();
+    {
         if(exifData.getThumbnailBytes() == null &&  image.getThumbnail() != null &&
            !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
                              ImageResources.EXT_JPG))

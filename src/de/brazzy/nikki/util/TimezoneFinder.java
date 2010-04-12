@@ -46,10 +46,6 @@ public class TimezoneFinder {
     /**
      * Spatial index to find the geographically nearest settlement,
      * value is an index into the zones list.
-     * 
-     * TODO: this breaks down near the poles and the international date
-     * line. This could be fixed by having several overlapping indices
-     * using transformed coordinates.
      */
     private RTree tree;
     
