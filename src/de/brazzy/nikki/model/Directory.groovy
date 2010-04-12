@@ -132,13 +132,18 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         def day = getDay(date)
         if(day)
         {
-            day.images.add(image)
         }
         else
         {
-            day = new Day(date:date, images:[image], directory: this)
+            day = new Day(date:date, directory: this)
             this.add(day)
         } 
+        day.images.add(image)
+        if(image.waypoint)
+        {
+            day.waypoints.add(image.waypoint)
+        }
+        
         def modified = image.modified
         image.day = day
         image.modified = modified

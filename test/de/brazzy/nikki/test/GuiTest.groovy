@@ -158,7 +158,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(1, tmpDir.size())
         assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
-        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
+        assertEquals(DATE1+" (1, 3)", tmpDir[0].toString())
         
         assertEquals(2, tmpDir.path.list().length)
         tmpDir.images[IMAGE1].title = "changedTitle"
@@ -189,7 +189,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
         assertEquals(tmpDir.path.name + " (3, 2)", model[0].toString())
-        assertEquals(DATE1+" (2, 2)", tmpDir[0].toString())
+        assertEquals(DATE1+" (2, 4)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 
