@@ -431,6 +431,10 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(-100, op.getOffset())
     }
     
+    /**
+     * Using the same instance as table editor and renderer causes
+     * UI defects when a table cell is removed.
+     */
     public void testSeparateRendererAndEditor()
     {
         def editor = view.imageTable.getDefaultEditor(Object.class)
