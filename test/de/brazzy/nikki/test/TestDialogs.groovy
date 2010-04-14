@@ -16,6 +16,7 @@ package de.brazzy.nikki.test
  *   limitations under the License.
  */
 
+import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
 
@@ -95,6 +96,12 @@ class TestDialogs extends Dialogs{
 
     @Override
     public void showAboutBox()
+    {
+        queue.remove(0)
+    }
+    
+    @Override
+    public ConfirmResult confirm(String message, int optionType)
     {
         queue.remove(0)
     }

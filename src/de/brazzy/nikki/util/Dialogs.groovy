@@ -93,9 +93,23 @@ class Dialogs
         int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
     }
+    
+    /**
+     * Ask user for confirmation for an action
+     * 
+     * @param message Text shown to user
+     * @param optionType which buttons to show (see constants in JOptionPane)
+     */
+    public ConfirmResult confirm(String message, int optionType)
+    {
+        int pressed = JOptionPane.showConfirmDialog(parentComponent, message, "Confirmation", optionType)
+        return (pressed == JOptionPane.YES_OPTION ? ConfirmResult.YES :
+                pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
+                pressed == JOptionPane.CANCEL_OPTION ? ConfirmResult.CANCEL : null);
+    }
 
     /**
-     * Opens fial via OS
+     * Opens file via OS
      */
     public void open(File f)
     {
