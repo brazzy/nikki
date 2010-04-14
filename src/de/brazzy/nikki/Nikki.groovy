@@ -22,6 +22,10 @@ import de.brazzy.nikki.model.Directory
 import javax.swing.event.ListSelectionListener
 import javax.swing.DefaultListModel
 import javax.swing.table.DefaultTableModel
+import de.brazzy.nikki.util.ConfirmResult
+import javax.swing.JOptionPane
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.beans.PropertyChangeListener
 import de.brazzy.nikki.util.ScanWorker
 import java.util.zip.ZipOutputStream
@@ -30,7 +34,7 @@ import de.brazzy.nikki.util.ExportWorker
 
 import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.util.SaveWorker
-import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.TimezoneFinder
 
 /**
  * Controller that builds the view and the model, connects them
@@ -167,6 +171,35 @@ public class Nikki{
         view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
         view.helpButton.actionPerformed = aboutAction
+        
+        view.frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) {
+                def modifiedDirs = model.dataList.findAll{ it.modified }
+                if(modifiedDirs)
+                {
+                    switch(dialogs.confirm("There are unsaved changes. Save changed data before exiting?", JOptionPane.YES_NO_CANCEL_OPTION))
+                    {
+                    case ConfirmResult.YES:
+                        for(Directory d in modifiedDirs)
+                        {
+                            SaveWorker worker = new SaveWorker(d)
+                            worker.addPropertyChangeListener(progressListener)
+                            worker.execute()
+                            dialogs.registerWorker(worker)
+                        }
+                    case ConfirmResult.NO:
+                        System.exit(0)
+                    case ConfirmResult.CANCEL:
+                    default:
+                        break;
+                    }
+                }
+                else
+                {
+                    System.exit(0)                    
+                }
+            }
+        })
     }
 
     /**
