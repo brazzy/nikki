@@ -67,7 +67,7 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected Directory tmpDir;
 
-    public void setUp()
+    protected void setUp()
     {
         File tmpFile = File.createTempFile("nikkitest",null)
         tmpFile.delete()
@@ -76,7 +76,7 @@ class AbstractNikkiTest extends GroovyTestCase
         tmpDir = new Directory(path: tmpFile)
     }
 
-    public void tearDown()
+    protected void tearDown()
     {
         Preferences p = Preferences.userNodeForPackage(getClass())
         p.removeNode()
