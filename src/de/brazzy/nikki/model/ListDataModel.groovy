@@ -21,6 +21,7 @@ import java.io.ObjectInput
 import java.lang.ClassNotFoundException
 import java.io.IOException
 import java.io.ObjectOutput
+import java.util.List;
 
 /**
  * Base class for domain objects to be displayed in a sorted list on the GUI.
@@ -29,7 +30,8 @@ import java.io.ObjectOutput
  *
  * @param <T> type to display in list
  */
-public class ListDataModel<T extends Comparable> extends AbstractListModel
+public class ListDataModel<T extends Comparable> 
+extends AbstractListModel implements Iterable<T>
 {
     public static final long serialVersionUID = 1;
 
@@ -76,11 +78,18 @@ public class ListDataModel<T extends Comparable> extends AbstractListModel
         return false;
     }
     
-   public boolean contains(T d)
+    public boolean contains(T d)
     {
         dataList.contains(d)
     }
     
+    @Override
+    public Iterator<T> iterator()
+    {
+        return dataList.iterator()
+    }
+    
+
     @Override
     int getSize()
     {
