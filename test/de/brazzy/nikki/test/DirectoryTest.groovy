@@ -279,5 +279,17 @@ public class DirectoryTest extends AbstractNikkiTest {
         mock.verify(mockListener)
     }
 
+    public void testIsModified()
+    {
+        copyFile(IMAGE1)
+        Image image = addImage(DAY1, IMAGE1)
+        image.modified = false
+        Day day1 = tmpDir[0] 
+        assertFalse(tmpDir.modified)
+        image.description="changed"
+        assertTrue(tmpDir.modified)
+        tmpDir.save(null)
+        assertFalse(tmpDir.modified)
+    }
 }
 

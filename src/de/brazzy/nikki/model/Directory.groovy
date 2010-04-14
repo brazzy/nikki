@@ -218,6 +218,18 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
 
         worker?.progress = 0;
     }
+    
+    public boolean isModified()
+    {
+        for(entry in images.values())
+        {
+            if(entry.modified)
+            {
+                return true
+            }
+        }
+        return false
+    }
 
     @Override
     public int hashCode()
@@ -240,6 +252,5 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     public int compareTo(Directory other)
     {
         return path.name.compareTo(other.path.name)
-    }
-    
+    }    
 }
