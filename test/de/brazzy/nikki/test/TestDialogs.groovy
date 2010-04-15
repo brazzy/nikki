@@ -111,11 +111,7 @@ class TestDialogs extends Dialogs{
     @Override
     public UncaughtExceptionHandler getExceptionHandler()
     {
-        return new UncaughtExceptionHandler(){
-            void uncaughtException(Thread t, Throwable e){
-                print "xyzzy!"
-            }
-        };
+        return {} as UncaughtExceptionHandler
     }
 }
 

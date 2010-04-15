@@ -46,9 +46,9 @@ import de.brazzy.nikki.util.TimezoneFinder
  */
 public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
-        public static final int EXIT_CODE_NO_MODIFICATIONS = 0
-        public static final int EXIT_CODE_UNSAVED_MODIFICATIONS = 1
-        public static final int EXIT_CODE_SAVED_MODIFICATIONS = 2
+    public static final int EXIT_CODE_NO_MODIFICATIONS = 0
+    public static final int EXIT_CODE_UNSAVED_MODIFICATIONS = 1
+    public static final int EXIT_CODE_SAVED_MODIFICATIONS = 2
 
     /** View instance */
     def view
@@ -155,8 +155,8 @@ public class Nikki{
         dialogs.showAboutBox()
     }
     
-    private closeListener = new WindowAdapter(){
-        public void windowClosing(WindowEvent e) {
+    private closeListener = [
+        windowClosing: {
             view.imageTable.editorComponent?.getValue()
             def modifiedDirs = model.dataList.findAll{ it.modified }
             if(modifiedDirs)
@@ -181,7 +181,7 @@ public class Nikki{
                 System.exit(EXIT_CODE_NO_MODIFICATIONS)
             }
         }
-    }
+    ] as WindowAdapter
     
     /**
      * Builds the model and the view and connects everything
