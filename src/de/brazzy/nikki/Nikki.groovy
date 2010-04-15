@@ -21,6 +21,7 @@ import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import javax.swing.event.ListSelectionListener
 import javax.swing.DefaultListModel
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel
 import de.brazzy.nikki.util.ConfirmResult
 import javax.swing.JOptionPane
@@ -33,6 +34,7 @@ import de.brazzy.nikki.util.ExportWorker
 
 
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.util.SaveExitWorker;
 import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder
 
@@ -44,6 +46,9 @@ import de.brazzy.nikki.util.TimezoneFinder
  */
 public class Nikki{
     public static final String EXPORT_FILE_NAME="diary_"
+        public static final int EXIT_CODE_NO_MODIFICATIONS = 0
+        public static final int EXIT_CODE_UNSAVED_MODIFICATIONS = 1
+        public static final int EXIT_CODE_SAVED_MODIFICATIONS = 2
 
     /** View instance */
     def view
@@ -150,6 +155,34 @@ public class Nikki{
         dialogs.showAboutBox()
     }
     
+    private closeListener = new WindowAdapter(){
+        public void windowClosing(WindowEvent e) {
+            view.imageTable.editorComponent?.getValue()
+            def modifiedDirs = model.dataList.findAll{ it.modified }
+            if(modifiedDirs)
+            {
+                switch(dialogs.confirm("There are unsaved changes. Save changed data before exiting?", JOptionPane.YES_NO_CANCEL_OPTION))
+                {
+                case ConfirmResult.YES:
+                    SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)
+                    worker.addPropertyChangeListener(progressListener)
+                    worker.execute()
+                    dialogs.registerWorker(worker);
+                    break;
+                case ConfirmResult.NO:
+                    System.exit(EXIT_CODE_UNSAVED_MODIFICATIONS)
+                case ConfirmResult.CANCEL:
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                System.exit(EXIT_CODE_NO_MODIFICATIONS)
+            }
+        }
+    }
+    
     /**
      * Builds the model and the view and connects everything
      * 
@@ -171,35 +204,7 @@ public class Nikki{
         view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
         view.helpButton.actionPerformed = aboutAction
-        
-        view.frame.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e) {
-                def modifiedDirs = model.dataList.findAll{ it.modified }
-                if(modifiedDirs)
-                {
-                    switch(dialogs.confirm("There are unsaved changes. Save changed data before exiting?", JOptionPane.YES_NO_CANCEL_OPTION))
-                    {
-                    case ConfirmResult.YES:
-                        for(Directory d in modifiedDirs)
-                        {
-                            SaveWorker worker = new SaveWorker(d)
-                            worker.addPropertyChangeListener(progressListener)
-                            worker.execute()
-                            dialogs.registerWorker(worker)
-                        }
-                    case ConfirmResult.NO:
-                        System.exit(0)
-                    case ConfirmResult.CANCEL:
-                    default:
-                        break;
-                    }
-                }
-                else
-                {
-                    System.exit(0)                    
-                }
-            }
-        })
+        view.frame.addWindowListener(closeListener)
     }
 
     /**

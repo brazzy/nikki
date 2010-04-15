@@ -16,6 +16,8 @@ package de.brazzy.nikki.test
  *   limitations under the License.
  */
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
@@ -104,6 +106,16 @@ class TestDialogs extends Dialogs{
     public ConfirmResult confirm(String message, int optionType)
     {
         queue.remove(0)
+    }
+    
+    @Override
+    public UncaughtExceptionHandler getExceptionHandler()
+    {
+        return new UncaughtExceptionHandler(){
+            void uncaughtException(Thread t, Throwable e){
+                print "xyzzy!"
+            }
+        };
     }
 }
 

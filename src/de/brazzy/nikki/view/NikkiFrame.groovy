@@ -112,6 +112,7 @@ public class NikkiFrame{
             result.progressBar = progressBar(constraints: BorderLayout.SOUTH, minimum:0, maximum:100)
         }
         
+        result.frame.defaultCloseOperation = JFrame.DO_NOTHING_ON_CLOSE;
         result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs))
         result.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs))
         

@@ -40,6 +40,7 @@ import org.joda.time.format.DateTimeFormatter
 
 import java.awt.event.WindowEvent;
 import java.security.Permission;
+import javax.swing.SwingUtilities;
 
 /**
  * @author Michael Borgwardt
@@ -50,6 +51,9 @@ class GuiTest extends AbstractNikkiTest {
     NikkiModel model
     NikkiFrame view
     Nikki nikki
+    Integer exitStatus = null
+    final long baseTime = System.currentTimeMillis()-10000000    
+    
 
     public void setUp()
     {
@@ -59,7 +63,7 @@ class GuiTest extends AbstractNikkiTest {
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder())
         model = nikki.model
         view = nikki.view
-        System.setSecurityManager(new NoExitSecurityManager())
+        System.setSecurityManager(new NoExitSecurityManager(testCase:this))
     }
     
     public void tearDown()
@@ -455,24 +459,7 @@ class GuiTest extends AbstractNikkiTest {
 //        assertSame(editor.getClass(), renderer.getClass())
 //        assertNotSame(editor, renderer)
 //    }
-    
-    class ExitException extends SecurityException { }
-
-    private static class NoExitSecurityManager extends SecurityManager 
-    {
-        // allow anything.
-        @Override
-        public void checkPermission(Permission perm) {}
-        public void checkPermission(Permission perm, Object context) {}
-        @Override
-        public void checkExit(int status) 
-        {
-                throw new ExitException()
-        }
-    }
-    
-    final long baseTime = System.currentTimeMillis()-10000000    
-    
+        
     private File prepareTestModified()
     {
         model.add(tmpDir)
@@ -494,27 +481,21 @@ class GuiTest extends AbstractNikkiTest {
         }
         catch(ExitException e)
         {
+            assertEquals(Nikki.EXIT_CODE_NO_MODIFICATIONS, exitStatus)
             assertTrue(dialogs.isQueueEmpty())
             assertEquals(baseTime, file.lastModified())
         }
-
     }
     
     public void testModifiedSave()
     {
         def file = prepareTestModified()
         dialogs.add(ConfirmResult.YES)
-        try
-        {
-            view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
-            fail("did not exit!");
-        }
-        catch(ExitException e)
-        {
-            dialogs.registerWorker(null)
-            assertTrue(dialogs.isQueueEmpty())
-            assertFalse(baseTime == file.lastModified())
-        }
+        view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
+        dialogs.registerWorker(null)
+        assertEquals(Nikki.EXIT_CODE_SAVED_MODIFICATIONS, exitStatus)
+        assertTrue(dialogs.isQueueEmpty())
+        assertFalse(baseTime == file.lastModified())
     }
     
     public void testModifiedExit()
@@ -528,6 +509,7 @@ class GuiTest extends AbstractNikkiTest {
         }
         catch(ExitException e)
         {
+            assertEquals(Nikki.EXIT_CODE_UNSAVED_MODIFICATIONS, exitStatus)
             assertTrue(dialogs.isQueueEmpty())
             assertEquals(baseTime, file.lastModified())
         }
@@ -539,8 +521,29 @@ class GuiTest extends AbstractNikkiTest {
         
         dialogs.add(ConfirmResult.CANCEL)
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
+        assertNull(exitStatus)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(baseTime, file.lastModified())
-    }    
+    }
 }
+
+class ExitException extends SecurityException { }
+
+class NoExitSecurityManager extends SecurityManager 
+{
+    GuiTest testCase
+    
+    // allow anything.
+    @Override
+    public void checkPermission(Permission perm) {}
+    public void checkPermission(Permission perm, Object context) {}
+    
+    @Override
+    public void checkExit(int status) 
+    {
+        testCase.exitStatus = Integer.valueOf(status)
+        throw new ExitException()
+    }
+}
+
 

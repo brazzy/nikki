@@ -17,6 +17,8 @@ package de.brazzy.nikki.util
  */
 
 import java.awt.Desktop
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 
@@ -122,6 +124,14 @@ class Dialogs
     public void registerWorker(SwingWorker worker)
     {
 
+    }
+    
+    /**
+     * used when testing for system exit
+     */
+    public UncaughtExceptionHandler getExceptionHandler()
+    {
+        return null;
     }
 }
 
