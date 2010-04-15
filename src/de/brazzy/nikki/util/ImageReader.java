@@ -19,6 +19,7 @@ package de.brazzy.nikki.util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +41,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.mortennobel.imagescaling.ResampleOp;
+import com.mortennobel.imagescaling.ThumpnailRescaleOp;
 
 import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.GeoCoordinate;
@@ -159,7 +161,7 @@ public class ImageReader extends ImageDataIO
             }
         }
         thumbnailNew = Boolean.TRUE;
-        return scale(THUMBNAIL_SIZE, false);
+        return scale(THUMBNAIL_SIZE, false, true);
     }
 
     private byte[] adjustForRotation(byte[] result) throws LLJTranException, IOException
@@ -335,8 +337,9 @@ public class ImageReader extends ImageDataIO
      * 
      * @param toWidth width to scale to
      * @param paintBorder whether to paint an etched border around the image
+     * @param isThumbnail if true, faster low-quality scaling will be used
      */
-    public byte[] scale(int toWidth, boolean paintBorder) throws IOException, LLJTranException
+    public byte[] scale(int toWidth, boolean paintBorder, boolean isThumbnail) throws IOException, LLJTranException
     {
         if(mainImage == null)
         {
@@ -345,7 +348,10 @@ public class ImageReader extends ImageDataIO
         
         int toHeight = heightForWidth(mainImage, toWidth);
 
-        ResampleOp op = new ResampleOp(toWidth, toHeight);        
+        BufferedImageOp op = isThumbnail ? 
+                new ThumpnailRescaleOp(toWidth, toHeight) :
+                new ResampleOp(toWidth, toHeight);        
+        
         BufferedImage scaledImage = op.filter(mainImage, null);
         if(paintBorder)
         {

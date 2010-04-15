@@ -38,7 +38,7 @@
         <pathelement location="lib/asm-tree-3.0.jar"/>
         <pathelement location="lib/cobertura.jar"/>
         <pathelement location="lib/commons-io-1.4.jar"/>
-        <pathelement location="lib/imagescaling_0_8_1.jar"/>
+        <pathelement location="lib/java-image-scaling-0.8.4.jar"/>
         <pathelement location="lib/jakarta-oro-2.0.8.jar"/>
         <pathelement location="lib/JavaAPIforKml.jar"/>
         <pathelement location="lib/jaxb-api.jar"/>
@@ -209,7 +209,7 @@
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/asm-3.0.jar"/>
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/asm-tree-3.0.jar"/>
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/commons-io-1.4.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/imagescaling_0_8_1.jar"/>
+            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/java-image-scaling-0.8.4.jar"/>
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jakarta-oro-2.0.8.jar"/>
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/JavaAPIforKml.jar"/>
             <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jaxb-api.jar"/>
@@ -224,6 +224,7 @@
 
     <target name="findbugs" depends="build">
 	    <findbugs home="${findbugs.home}"
+		          jvmargs="-Xmx128m"
 	              output="xml"
 	              outputFile="build/findbugs.xml" 
 	    	      effort="min"

@@ -257,8 +257,8 @@ class Image implements Serializable{
                .withHref("thumbs/"+fileName)
 
             ImageReader reader = new ImageReader(new File(day.directory.path, fileName), null)
-            store(reader.scale(592, false), "images/"+fileName, out)
-            store(reader.scale(96, true), "thumbs/"+fileName, out)
+            store(reader.scale(592, false, false), "images/"+fileName, out)
+            store(reader.scale(96, true, true), "thumbs/"+fileName, out)
         }
     }
     
