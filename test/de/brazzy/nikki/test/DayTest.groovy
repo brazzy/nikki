@@ -52,13 +52,13 @@ class DayTest extends AbstractNikkiTest{
         assertEquals(DATE1+" (1, 0)", d.toString())
         
         d = new Day(directory: tmpDir)
-        assertEquals("unknown (0, 0)", d.toString())
+        assertTrue(d.toString().matches("\\p{javaLetter}* \\(0, 0\\)"))
         d.images.add(new Image())
         d.waypoints.add(new Waypoint())
-        assertEquals("unknown (1, 1)", d.toString())
+        assertTrue(d.toString().matches("\\p{javaLetter}* \\(1, 1\\)"))
         d.images.remove(0)
         d.waypoints.remove(0)
-        assertEquals("unknown (0, 0)", d.toString())
+        assertTrue(d.toString().matches("\\p{javaLetter}* \\(0, 0\\)"))
     }
 
     public void testGeotag()
