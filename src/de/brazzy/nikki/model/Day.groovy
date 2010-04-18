@@ -26,6 +26,9 @@ import de.micromata.opengis.kml.v_2_2_0.LineString
 import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
+
+import de.brazzy.nikki.Nikki;
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.util.ImageReader
 import de.brazzy.nikki.util.WaypointComparator;
 
@@ -80,7 +83,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     
     public String toString()
     {
-        return (date==null? "unknown" : DISPLAY_FORMAT.print(date)) +
+        return (date==null? Texts.Main.UNKNOWN_DAY : DISPLAY_FORMAT.print(date)) +
                " ("+images.size()+", "+waypoints.size()+")"
     }
 

@@ -28,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import de.brazzy.nikki.Texts;
+
 /**
  * Displays the about box
  * 
@@ -47,7 +49,8 @@ public class AboutBox extends JPanel
         content.setContentType("text/html");
         content.setEditable(false);
         content.setBackground(getBackground());
-        content.read(new InputStreamReader(getClass().getResourceAsStream("about.html"), "UTF-8"), null);
+        content.read(new InputStreamReader(getClass().getResourceAsStream(
+                Texts.Dialogs.About.FILENAME), "UTF-8"), null);
         content.addHyperlinkListener(new HyperlinkListener(){
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e)

@@ -54,7 +54,6 @@ class GuiTest extends AbstractNikkiTest {
     Integer exitStatus = null
     final long baseTime = System.currentTimeMillis()-10000000    
     
-
     public void setUp()
     {
         super.setUp()
@@ -531,7 +530,7 @@ class ExitException extends SecurityException { }
 
 class NoExitSecurityManager extends SecurityManager 
 {
-    GuiTest testCase
+    def GuiTest testCase
     
     // allow anything.
     @Override
@@ -545,5 +544,8 @@ class NoExitSecurityManager extends SecurityManager
         throw new ExitException()
     }
 }
+
+
+
 
 

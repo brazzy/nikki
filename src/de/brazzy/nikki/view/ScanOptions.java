@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.joda.time.DateTimeZone;
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
 
 /**
@@ -51,7 +52,7 @@ public class ScanOptions extends JPanel
         {
             combobox.setSelectedItem(null);
         }
-        add(new JLabel("Camera time zone"));
+        add(new JLabel(Texts.Dialogs.ScanOptions.TIMEZONE_LABEL));
         add(combobox);
     }
 

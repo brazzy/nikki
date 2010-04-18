@@ -43,6 +43,7 @@ import org.joda.time.DateTimeZone;
 import com.mortennobel.imagescaling.ResampleOp;
 import com.mortennobel.imagescaling.ThumpnailRescaleOp;
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image;
@@ -110,7 +111,7 @@ public class ImageReader extends ImageDataIO
         catch (Throwable e)
         {
             e.printStackTrace();
-            image.setDescription("ERROR: "+e.getMessage());
+            image.setDescription(Texts.ERROR_PREFIX+e.getMessage());
             image.setThumbnail(errorIcon);
         }
         

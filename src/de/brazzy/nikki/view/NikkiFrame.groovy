@@ -25,6 +25,7 @@ import javax.swing.JFrame
 import javax.swing.JSplitPane
 import javax.swing.border.EmptyBorder;
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.util.Dialogs
 
 /**
@@ -54,43 +55,43 @@ public class NikkiFrame{
         def swing = new SwingBuilder()
         def result = new NikkiFrame()
         
-        result.frame = swing.frame(title:'Nikki') {
+        result.frame = swing.frame(title:Texts.Main.TITLE) {
             borderLayout()
             splitPane(orientation: JSplitPane.HORIZONTAL_SPLIT, constraints: BorderLayout.CENTER){
                 splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
                     panel(){
                         borderLayout()
-                        label(constraints: BorderLayout.NORTH, text:'Directories', border: new EmptyBorder(0,5,0,0))
+                        label(constraints: BorderLayout.NORTH, text:Texts.Main.DIRECTORIES, border: new EmptyBorder(0,5,0,0))
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dirList = list()
                         }
                         panel(constraints: BorderLayout.SOUTH){
-                            result.addButton = button(text:'Add', 
-                                    toolTipText:'Add a directory containing images and GPS log files',
+                            result.addButton = button(text:Texts.Main.ADD_BUTTON, 
+                                    toolTipText:Texts.Main.ADD_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/add.png")))
-                            result.deleteButton = button(text:'Delete', enabled:false, 
-                                    toolTipText:'Remove directory from list',
+                            result.deleteButton = button(text:Texts.Main.DELETE_BUTTON, enabled:false, 
+                                    toolTipText:Texts.Main.DELETE_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/bin_closed.png")))                       
-                            result.scanButton = button(text:'Scan', enabled:false, 
-                                    toolTipText:'Find images and GPS log files in directory',
+                            result.scanButton = button(text:Texts.Main.SCAN_BUTTON, enabled:false, 
+                                    toolTipText:Texts.Main.SCAN_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/find.png")))
-                            result.saveButton = button(text:'Save', enabled:false, 
-                                    toolTipText:'Save all changed data to EXIF headers in image files',
+                            result.saveButton = button(text:Texts.Main.SAVE_BUTTON, enabled:false, 
+                                    toolTipText:Texts.Main.SAVE_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/disk.png")))
                         }
                     }
                     panel(){
                         borderLayout()
-                        label(constraints: BorderLayout.NORTH, text:'Days', border: new EmptyBorder(0,5,0,0))
+                        label(constraints: BorderLayout.NORTH, text:Texts.Main.DAYS, border: new EmptyBorder(0,5,0,0))
                         scrollPane(constraints: BorderLayout.CENTER){
                             result.dayList = list()
                         }
                         panel(constraints: BorderLayout.SOUTH){
-                            result.tagButton = button(text:'Geotag', enabled:false, 
-                                    toolTipText:'Assign GPS coordinates from log files to images based on time',
+                            result.tagButton = button(text:Texts.Main.GEOTAG_BUTTON, enabled:false, 
+                                    toolTipText:Texts.Main.GEOTAG_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_link.png")))
-                            result.exportButton = button(text:'Export', enabled:false, 
-                                    toolTipText:'Export images and GPS paths to compact KMZ file for display in Google Earth',
+                            result.exportButton = button(text:Texts.Main.EXPORT_BUTTON, enabled:false, 
+                                    toolTipText:Texts.Main.EXPORT_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_go.png")))
                         }
                     }
@@ -99,9 +100,9 @@ public class NikkiFrame{
                     borderLayout()
                     panel(constraints: BorderLayout.NORTH){
                         borderLayout()
-                        label(constraints: BorderLayout.WEST, text:'Images', border: new EmptyBorder(0,5,0,0))
+                        label(constraints: BorderLayout.WEST, text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,0))
                         result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
-                                toolTipText:'Information about this program',
+                                toolTipText:Texts.Main.HELP_TOOLTIP,
                                 icon:new ImageIcon(NikkiFrame.class.getResource("/icons/help.png")))
                     }
                     scrollPane(constraints: BorderLayout.CENTER){

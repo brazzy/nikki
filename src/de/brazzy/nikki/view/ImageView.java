@@ -40,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.Dialogs;
@@ -90,10 +91,10 @@ public class ImageView extends JPanel
         JPanel grid = new JPanel();
         add(grid, BorderLayout.CENTER);
         
-        JLabel filenameLabel = new JLabel("File:");
-        JLabel timeLabel = new JLabel("Time:");
-        JLabel latitudeLabel = new JLabel("Latitude:");
-        JLabel longitudeLabel = new JLabel("Longitude:");
+        JLabel filenameLabel = new JLabel(Texts.Image.FILE);
+        JLabel timeLabel = new JLabel(Texts.Image.TIME);
+        JLabel latitudeLabel = new JLabel(Texts.Image.LATITUDE);
+        JLabel longitudeLabel = new JLabel(Texts.Image.LONGITUDE);
         textArea.setBorder(new EmptyBorder(3,3,3,3));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -179,7 +180,7 @@ public class ImageView extends JPanel
             }
             catch (Exception ex)
             {
-                JOptionPane.showMessageDialog(ImageView.this, ex, "Error showing map", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(ImageView.this, ex, Texts.Image.OFFSET_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
             finally
@@ -275,7 +276,7 @@ public class ImageView extends JPanel
                          - value.getWaypoint().getTimestamp().getMillis()) 
                        / 1000;
             timeDiff.setText(String.valueOf(diff));
-            timeDiff.setToolTipText("Difference between photo time and nearest waypoint time");
+            timeDiff.setToolTipText(Texts.Image.DIFF_TOOLTIP);
             if(Math.abs(diff) > DIFF_THRESHOLD)
             {
                 timeDiff.setForeground(Color.RED);
@@ -293,6 +294,7 @@ public class ImageView extends JPanel
 
     public Image getValue()
     {
+        // necessary to trigger setProperty()
         value.setProperty("description", textArea.getText());
         value.setProperty("title", title.getText());
         value.setProperty("export", export.isSelected());

@@ -161,7 +161,7 @@ public class Nikki{
             def modifiedDirs = model.dataList.findAll{ it.modified }
             if(modifiedDirs)
             {
-                switch(dialogs.confirm("There are unsaved changes. Save changed data before exiting?", JOptionPane.YES_NO_CANCEL_OPTION))
+                switch(dialogs.confirm(Texts.Dialogs.UNSAVED_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION))
                 {
                 case ConfirmResult.YES:
                     SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)

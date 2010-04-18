@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import de.brazzy.nikki.Texts;
+
 /**
  * UI for modal dialog that asks user for parameters used
  * when geotagging images.
@@ -32,7 +34,7 @@ public class GeotagOptions extends JPanel
 
     public GeotagOptions()
     {
-        add(new JLabel("Time offset (sec)"));
+        add(new JLabel(Texts.Dialogs.GeotagOptions.OFFSET_LABEL));
         add(spinner);
     }
 

@@ -16,6 +16,8 @@ package de.brazzy.nikki.test
  *   limitations under the License.
  */
 
+import de.brazzy.nikki.Nikki;
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Directory
@@ -52,13 +54,13 @@ class DayTest extends AbstractNikkiTest{
         assertEquals(DATE1+" (1, 0)", d.toString())
         
         d = new Day(directory: tmpDir)
-        assertTrue(d.toString().matches("\\p{javaLetter}* \\(0, 0\\)"))
+        assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
         d.images.add(new Image())
         d.waypoints.add(new Waypoint())
-        assertTrue(d.toString().matches("\\p{javaLetter}* \\(1, 1\\)"))
+        assertEquals(Texts.Main.UNKNOWN_DAY+" (1, 1)", d.toString())
         d.images.remove(0)
         d.waypoints.remove(0)
-        assertTrue(d.toString().matches("\\p{javaLetter}* \\(0, 0\\)"))
+        assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
     }
 
     public void testGeotag()

@@ -16,6 +16,8 @@ package de.brazzy.nikki.test;
  *   limitations under the License.
  */
 
+import java.util.Locale;
+
 import junit.framework.TestSuite;
 
 /**
@@ -25,8 +27,10 @@ public class Suite extends TestSuite
 {
     public static TestSuite suite()
     {
+        Locale.setDefault(Locale.ENGLISH);
+        
         TestSuite s=new UnitTest();
-       
+        
         s.addTest(IntegrationTest.suite());
         s.addTest(UnitTest.suite());
         return s;

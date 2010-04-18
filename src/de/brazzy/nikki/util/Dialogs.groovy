@@ -22,6 +22,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.view.AboutBox;
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
@@ -41,7 +42,8 @@ class Dialogs
     public void showAboutBox()
     {
         def box = new AboutBox()
-        JOptionPane.showOptionDialog(parentComponent, box, "About Nikki", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
+        JOptionPane.showOptionDialog(parentComponent, box, Texts.Dialogs.About.TITLE, 
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
     }
     
     /**
@@ -80,7 +82,8 @@ class Dialogs
     public ReadablePeriod askOffset()
     {
         def opt = new GeotagOptions()
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, "Geotagging options", JOptionPane.OK_CANCEL_OPTION)
+        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
+                Texts.Dialogs.GeotagOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : null
     }
 
@@ -92,7 +95,8 @@ class Dialogs
     public DateTimeZone askTimeZone(DateTimeZone defaultZone)
     {
         ScanOptions opt = new ScanOptions(defaultZone)
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, "Scan options", JOptionPane.OK_CANCEL_OPTION)
+        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
+                Texts.Dialogs.ScanOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
     }
     
@@ -104,7 +108,8 @@ class Dialogs
      */
     public ConfirmResult confirm(String message, int optionType)
     {
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, message, "Confirmation", optionType)
+        int pressed = JOptionPane.showConfirmDialog(parentComponent, message, 
+                Texts.Dialogs.CONFIRM_TITLE, optionType)
         return (pressed == JOptionPane.YES_OPTION ? ConfirmResult.YES :
                 pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
                 pressed == JOptionPane.CANCEL_OPTION ? ConfirmResult.CANCEL : null);
