@@ -197,7 +197,9 @@
     </target>
 	
     <target name="create_run_jar" depends="create_build_id">
-    	<replace file="${build.dir}/de/brazzy/nikki/view/about.html" token="@@BUILD_ID@@" value="${build.id}"/>
+    	<replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
+    		<include name="about*.html"/>
+    	</replace>
         <jar destfile="build/Nikki.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
