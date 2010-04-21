@@ -1,5 +1,5 @@
 package de.brazzy.nikki.util;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -16,8 +16,6 @@ package de.brazzy.nikki.util;
  *   limitations under the License.
  */
 
-import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.model.Waypoint;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,8 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
-
 import mediautil.gen.Rational;
 import mediautil.image.ImageResources;
 import mediautil.image.jpeg.Entry;
@@ -39,6 +35,11 @@ import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
+
+import org.apache.commons.io.IOUtils;
+
+import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Waypoint;
 
 /**
  * Writes image data to EXIF headers, creating new ones if necessary.
@@ -59,7 +60,7 @@ public class ImageWriter extends ImageDataIO
             throw new RuntimeException(e);
         }
     }
-    
+
     private Image image;
 
     /**
@@ -85,7 +86,7 @@ public class ImageWriter extends ImageDataIO
         if(exifIFD==null)
         {
             exifIFD = new IFD(Exif.EXIFOFFSET, Exif.LONG);
-            mainIFD.addIFD(exifIFD);            
+            mainIFD.addIFD(exifIFD);
         }
         if(nikkiIFD == null)
         {
@@ -174,11 +175,8 @@ public class ImageWriter extends ImageDataIO
             Entry entry = new Entry(Exif.ASCII);
             entry.setValue(0, timeString);
             mainIFD.addEntry(Exif.DATETIME, entry);
-            
-            String after = exifData.getDataTimeOriginalString();
-            
             entry = new Entry(Exif.ASCII);
-            entry.setValue(0, image.getTime().getZone().getID());            
+            entry.setValue(0, image.getTime().getZone().getID());
             nikkiIFD.addEntry(ENTRY_TIMEZONE_INDEX, entry);
         }
     }
@@ -199,15 +197,15 @@ public class ImageWriter extends ImageDataIO
             Entry entry = new Entry(Exif.ASCII);
             entry.setValue(0, wp.getLatitude().getDirection().getCharacter());
             gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitudeRef), 0, entry);
-            
-            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitude), 0, 
+
+            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitude), 0,
                     writeGpsMagnitude(wp.getLatitude().getMagnitude()));
 
             entry = new Entry(Exif.ASCII);
             entry.setValue(0, wp.getLongitude().getDirection().getCharacter());
             gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitudeRef), 0, entry);
 
-            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitude), 0, 
+            gpsIFD.setEntry(Integer.valueOf(Exif.GPSLongitude), 0,
                     writeGpsMagnitude(wp.getLongitude().getMagnitude()));
         }
     }
@@ -224,11 +222,11 @@ public class ImageWriter extends ImageDataIO
         int degrees = (int)magnitude;
         double minutes = (magnitude - degrees) * 60.0;
         double seconds = (minutes - (int)minutes) * 60.0;
-        
+
         entry.setValue(0, new Rational(degrees, 1));
         entry.setValue(1, new Rational((int)minutes, 1));
         entry.setValue(2, new Rational((float)seconds));
-        
+
         return entry;
     }
     private void writeThumbnail() throws IOException
