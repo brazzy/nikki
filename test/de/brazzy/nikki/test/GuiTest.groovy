@@ -20,8 +20,6 @@ import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
-import de.brazzy.nikki.model.Day
-import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.TimezoneFinder;
@@ -31,16 +29,13 @@ import de.brazzy.nikki.view.NikkiFrame
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
-import org.joda.time.format.DateTimeFormatter
 
 import java.awt.event.WindowEvent;
 import java.security.Permission;
-import javax.swing.SwingUtilities;
 
 /**
  * @author Michael Borgwardt
@@ -523,6 +518,22 @@ class GuiTest extends AbstractNikkiTest {
         assertNull(exitStatus)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(baseTime, file.lastModified())
+    }
+    
+    public void testExportNoData()
+    {
+        Image image = addImage(DAY1, IMAGE1)
+        model.add(tmpDir)
+        assertTrue(tmpDir[0].waypoints.empty)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        dialogs.add(ConfirmResult.CANCEL)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        dialogs.add(null)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
     }
 }
 
