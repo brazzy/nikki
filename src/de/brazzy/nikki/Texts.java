@@ -73,7 +73,9 @@ public final class Texts
     public static class Dialogs
     {
         public static final String CONFIRM_TITLE = bundle.getString("dialogs.confirm_title");
+        public static final String ERROR_TITLE = bundle.getString("dialogs.error_title");
         public static final String UNSAVED_MESSAGE = bundle.getString("dialogs.unsaved_message");
+        public static final String EXPORT_NODATA_MESSAGE = bundle.getString("dialogs.export_nodata_message");
         
         public static class About
         {
