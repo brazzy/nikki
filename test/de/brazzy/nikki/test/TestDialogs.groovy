@@ -22,7 +22,6 @@ import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.Dialogs
 import javax.swing.SwingWorker
 
-import junit.framework.AssertionFailedError;
 
 import org.joda.time.DateTimeZone
 import org.joda.time.ReadablePeriod
@@ -105,8 +104,15 @@ class TestDialogs extends Dialogs{
     @Override
     public ConfirmResult confirm(String message, int optionType)
     {
+        assert queue[0] != null
         queue.remove(0)
     }
+    
+    @Override
+    public void error(String message)
+    {
+        assert queue.remove(0) != null
+    }    
     
     @Override
     public UncaughtExceptionHandler getExceptionHandler()

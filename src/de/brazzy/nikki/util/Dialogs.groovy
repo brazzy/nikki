@@ -116,6 +116,17 @@ class Dialogs
     }
 
     /**
+     * Show error message to user
+     * 
+     * @param message Text shown to user
+     */
+    public void error(String message)
+    {
+        JOptionPane.showMessageDialog(parentComponent, message, 
+                Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
+    }
+
+    /**
      * Opens file via OS
      */
     public void open(File f)

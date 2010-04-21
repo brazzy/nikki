@@ -21,12 +21,10 @@ import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import javax.swing.event.ListSelectionListener
 import javax.swing.DefaultListModel
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel
 import de.brazzy.nikki.util.ConfirmResult
 import javax.swing.JOptionPane
 import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.beans.PropertyChangeListener
 import de.brazzy.nikki.util.ScanWorker
 import java.util.zip.ZipOutputStream
@@ -139,6 +137,12 @@ public class Nikki{
     private exportAction = {
             view.imageTable.editorComponent?.getValue()
             def day = view.dayList.selectedValue
+            if(day.waypoints.empty)
+            {
+                dialogs.error(Texts.Dialogs.EXPORT_NODATA_MESSAGE)
+                return
+            }
+            
             def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + day.date +".kmz");
 
             if(selectedFile){
