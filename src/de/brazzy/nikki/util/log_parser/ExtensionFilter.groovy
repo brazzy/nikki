@@ -5,7 +5,8 @@ import java.io.FilenameFilter;
 import java.util.List;
 
 /**
- * Matches any file that has one of the given extensions
+ * Matches any file that has one of the given extensions, for
+ * use by LogParser implementations
  * 
  * @author Michael Borgwardt
  */
