@@ -29,7 +29,14 @@ import org.junit.Test;
 class ExtensionFilterTest
 {
     private static final File FILE = new File(".")
-    
+
+    @Test
+    public void padding() {
+        assert ["x", "y"]*.padLeft(2, ".") == [".x", ".y"]
+        assert [".x", ".y"]*.toUpperCase() == [".X", ".Y"]
+        assert ["x", "y"]*.padLeft(2, ".")*.toUpperCase() == [".X", ".Y"]
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void constructorNoExtensions() {
         def filter = new ExtensionFilter(new String[0])
@@ -62,6 +69,19 @@ class ExtensionFilterTest
         def filter = new ExtensionFilter("x")
         filter.accept(FILE, "")
     }
+
+    @Test
+    public void strangeNames() {
+        def filter = new ExtensionFilter("x")
+        assertFalse(filter.accept(FILE, "x"))
+        assertFalse(filter.accept(FILE, "X"))
+        assertFalse(filter.accept(FILE, "x."))
+        assertFalse(filter.accept(FILE, "."))
+        assertFalse(filter.accept(FILE, "\n"))
+        assertFalse(filter.accept(FILE, " "))
+        assertFalse(filter.accept(FILE, ".."))
+    }
+
 
     @Test
     public void multipleMatch() {

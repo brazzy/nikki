@@ -21,7 +21,9 @@ public class ExtensionFilter implements FilenameFilter
         if(!extensions || Arrays.asList(extensions).contains(null)){
             throw new IllegalArgumentException("No extensions: "+extensions);
         }
-        this.extensions = extensions*.padLeft(1, ".")*.toUpperCase();
+        this.extensions = extensions.collect{ 
+            it.padLeft(it.length()+1, ".").toUpperCase() 
+        }
     }
 
     private List<String> extensions;
