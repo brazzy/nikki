@@ -1,5 +1,5 @@
 package de.brazzy.nikki.test;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -16,6 +16,7 @@ package de.brazzy.nikki.test;
  *   limitations under the License.
  */
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
 
 /**
@@ -25,13 +26,14 @@ public class UnitTest extends TestSuite{
     public static TestSuite suite()
     {
         TestSuite s=new UnitTest();
-       
+
+        s.addTest(new JUnit4TestAdapter(ExtensionFilterTest.class));
         s.addTestSuite(ImageTest.class);
         s.addTestSuite(WaypointTest.class);
         s.addTestSuite(DirectoryTest.class);
         s.addTestSuite(DayTest.class);
         s.addTestSuite(TimezoneFinderTest.class);
-        
+
         return s;
     }
 }
