@@ -1,5 +1,5 @@
 package de.brazzy.nikki.util;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -20,12 +20,13 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import de.brazzy.nikki.model.Directory;
 import org.joda.time.DateTimeZone;
+
+import de.brazzy.nikki.model.Directory;
 
 /**
  * Scans directory for new image and GPS files
- * 
+ *
  * @author Michael Borgwardt
  */
 public class ScanWorker extends SwingWorker<Void, Void>
@@ -33,11 +34,16 @@ public class ScanWorker extends SwingWorker<Void, Void>
     private Dialogs dialogs;
     private Directory dir;
     private TimezoneFinder finder;
-    
+
     private DateTimeZone zone = null;
     private Object zoneLock = new Object();
     private Thread thread;
-    
+
+    /**
+     * @param dir directory to scan
+     * @param dialogs used to ask the timezone from the user
+     * @param finder for assigning timezones to waypoints
+     */
     public ScanWorker(Directory dir, Dialogs dialogs, TimezoneFinder finder)
     {
         super();
@@ -45,13 +51,13 @@ public class ScanWorker extends SwingWorker<Void, Void>
         this.dialogs = dialogs;
         this.finder = finder;
     }
-    
+
     @Override
     protected Void doInBackground() throws Exception
     {
         thread = Thread.currentThread();
         if(dir.scan(this, null, finder)==ScanResult.TIMEZONE_MISSING)
-        {            
+        {
             try
             {
                 synchronized(zoneLock)
@@ -60,7 +66,7 @@ public class ScanWorker extends SwingWorker<Void, Void>
                     while(zone==null)
                     {
                         zoneLock.wait();
-                    }                
+                    }
                 }
                 dir.scan(this, zone, finder);
             }
@@ -69,7 +75,7 @@ public class ScanWorker extends SwingWorker<Void, Void>
                 e.printStackTrace();
             }
         }
-        return null;            
+        return null;
     }
 
     @Override
@@ -87,5 +93,5 @@ public class ScanWorker extends SwingWorker<Void, Void>
                 thread.interrupt();
             }
         }
-    }   
+    }
 }
