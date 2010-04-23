@@ -1,5 +1,5 @@
 package de.brazzy.nikki.test;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -26,6 +26,7 @@ public class IntegrationTest extends TestSuite{
     public static TestSuite suite()
     {
         TestSuite s=new IntegrationTest();
+        s.addTestSuite(DirectoryScannerTest.class);
         s.addTestSuite(GuiTest.class);
         s.addTestSuite(PrefsTest.class);
         return s;

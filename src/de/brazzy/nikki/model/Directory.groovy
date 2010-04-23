@@ -16,24 +16,8 @@ package de.brazzy.nikki.model;
  *   limitations under the License.
  */
 
-import java.io.FilenameFilter
-import java.util.HashMap
-import javax.imageio.ImageIO
-import java.awt.image.BufferedImage
-import java.io.ByteArrayOutputStream
-import java.awt.Graphics2D
-import java.awt.geom.AffineTransform
-import java.awt.RenderingHints
-import de.brazzy.nikki.util.ImageReader
-import de.brazzy.nikki.util.ScanResult;
-import de.brazzy.nikki.util.TimezoneFinder;
 
-import java.beans.XMLDecoder
-import java.beans.XMLEncoder
-import java.util.Date
 import javax.swing.SwingWorker
-import java.util.TimeZone
-import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate;
 
 /**
@@ -46,14 +30,6 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
 {
     public static final long serialVersionUID = 1;
     
-    private static final def FILTER_JPG = { dir, name ->
-        name.toUpperCase().endsWith(".JPG")
-    } as FilenameFilter
-    private static final def FILTER_NMEA = { dir, name ->
-        name.toUpperCase().endsWith(".NMEA")
-    } as FilenameFilter
-
-
     /**
      * All the images in this directory, keyed on the file name
      */
@@ -76,52 +52,6 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         path.name+" ("+images.size()+", "+waypointFiles.size()+")"
     }
 
-    /**
-     * Scans the filesystem for image and GPS files and processes the data in them
-     * 
-     * @param worker for updating progress
-     * @param zone time zone to which the camera time was set when the images were taken. 
-     *             Can be null, which assumes that all images already have time zone
-     *             set in their EXIF data
-     * @param tzFinder finds time zones for waypoints
-     * @return ScanResult.TIMEZONE_MISSING if zone was null and images were found that
-     *         have no time zone in their EXIF data
-     */
-    public ScanResult scan(SwingWorker worker, DateTimeZone zone, TimezoneFinder tzFinder)
-    {
-        worker?.progress = 0;
-
-        int count = 0;
-        def imageFiles = path.listFiles(FILTER_JPG)
-        
-        for(file in imageFiles){
-            if(!this.images[file.name])
-            {
-                ImageReader reader = new ImageReader(file, zone)
-                if(reader.timeZone==null)
-                {
-                    return ScanResult.TIMEZONE_MISSING
-                }
-                addImage(reader.createImage())
-            }
-            
-            worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
-        }
-
-        def nmeaFiles = path.listFiles(FILTER_NMEA);
-        for(file in nmeaFiles){
-            if(!this.waypointFiles[file.name])
-            {
-                WaypointFile wf = WaypointFile.parse(this, file, tzFinder)
-                this.waypointFiles[file.name] = wf            
-            }
-        }       
-        
-        fireContentsChanged(this, 0, this.size-1)
-        worker?.progress = 0
-        return ScanResult.COMPLETE
-    }
-    
     /**
      * Adds an Image, creates a Day as well if necessary
      */
