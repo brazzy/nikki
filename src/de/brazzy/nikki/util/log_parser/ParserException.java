@@ -17,21 +17,34 @@ package de.brazzy.nikki.util.log_parser;
  */
 
 /**
- * @author Michael Borgwardt
+ * Signals that something went wrong while parsing a GPS log file
  *
+ * @author Michael Borgwardt
  */
 public class ParserException extends RuntimeException
 {
+    /**
+     * @param message should contain the part of the file that
+     *        could not be parsed
+     * @param cause exception that happened during parsing
+     */
     public ParserException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
+    /**
+     * @param message should contain the part of the file that
+     *        could not be parsed
+     */
     public ParserException(String message)
     {
         super(message);
     }
 
+    /**
+     * @param cause exception that happened during parsing
+     */
     public ParserException(Throwable cause)
     {
         super(cause);

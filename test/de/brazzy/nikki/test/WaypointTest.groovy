@@ -65,31 +65,6 @@ public class WaypointTest extends GroovyTestCase{
         assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC),
                 new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2))  
     }
-    
-    public void testParseWaypoint()
-    {
-        final MockTimezoneFinder finder = new MockTimezoneFinder()
-        finder.addCall(48.2f, 11.5f, TZ_2)
-        
-        final String line = '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D'
-        Waypoint wp = Waypoint.parse(null, line, finder);
-        finder.finished()
-
-        assertEquals(TZ_2, wp.timestamp.zone)
-        
-        def dt = new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2)
-        assertEquals(dt, wp.timestamp)
-
-        def coord = wp.latitude
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.NORTH)
-        assertTrue(coord.value.toString(), 48 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < 49)
-
-        coord = wp.longitude
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.EAST)
-        assertTrue(coord.value.toString(), 11 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < 12)
-    }
 
     public void testParseWaypointFile()
     {
