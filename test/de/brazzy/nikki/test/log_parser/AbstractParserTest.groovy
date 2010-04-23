@@ -1,5 +1,6 @@
 package de.brazzy.nikki.test.log_parser;
 
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import de.brazzy.nikki.util.log_parser.LogParser;
@@ -30,13 +31,18 @@ import static org.junit.Assert.*;
  */
 class AbstractParserTest
 {
-    LogParser parser
-    byte[] unparseable
-    byte[] empty
-    byte[] oneWaypoint
-    String[] matchFilenames
+    protected LogParser parser
+    protected byte[] unparseable
+    protected byte[] empty
+    protected byte[] oneWaypoint
+    protected String[] matchFilenames
     private noMatchFilenames = [".hoodyhoo.", "xml", " "]
     
+    public AbstractParserTest(LogParser parser)
+    {
+        this.parser = parser
+    }
+                                
     @Test(expected = IllegalArgumentException.class)
     public void nullStream()
     {
@@ -55,6 +61,7 @@ class AbstractParserTest
         def it = parser.parse(new ByteArrayInputStream(oneWaypoint))
         assertTrue(it.hasNext())
         def wp = it.next()
+        assertEquals(DateTimeZone.UTC, wp.timestamp.zone)
         assertNotNull(wp.timestamp)
         assertNotNull(wp.latitude)
         assertNotNull(wp.longitude)
@@ -67,6 +74,14 @@ class AbstractParserTest
         def it = parser.parse(new ByteArrayInputStream(oneWaypoint))
         it.next()
         it.next()
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void remove()
+    {
+        def it = parser.parse(new ByteArrayInputStream(oneWaypoint))
+        it.next()
+        it.remove()
     }
     
     @Test
