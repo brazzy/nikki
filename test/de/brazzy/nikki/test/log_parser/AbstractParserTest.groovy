@@ -1,5 +1,7 @@
 package de.brazzy.nikki.test.log_parser;
 
+import java.io.File;
+
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
@@ -31,6 +33,8 @@ import static org.junit.Assert.*;
  */
 class AbstractParserTest
 {
+    private static final File DIR = new File(".")
+    
     protected LogParser parser
     protected byte[] unparseable
     protected byte[] empty
@@ -52,7 +56,7 @@ class AbstractParserTest
     @Test(expected = ParserException.class)
     public void unparseableStream()
     {
-        parser.parse(new ByteArrayInputStream(unparseable))
+        parser.parse(new ByteArrayInputStream(unparseable)).next()
     }
 
     @Test
@@ -65,7 +69,7 @@ class AbstractParserTest
         assertNotNull(wp.timestamp)
         assertNotNull(wp.latitude)
         assertNotNull(wp.longitude)
-        assertFalse(it.next)
+        assertFalse(it.hasNext())
     }
     
     @Test(expected = NoSuchElementException.class)
@@ -91,11 +95,11 @@ class AbstractParserTest
         assertNotNull(filter)
         for(name in matchFilenames)
         {
-            assertTrue(name, filter.accept(name))
+            assertTrue(name, filter.accept(DIR, name))
         }
         for(name in noMatchFilenames)
         {
-            assertFalse(name, filter.accept(name))
+            assertFalse(name, filter.accept(DIR, name))
         }
     }
 }
