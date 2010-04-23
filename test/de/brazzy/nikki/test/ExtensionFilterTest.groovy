@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 class ExtensionFilterTest
 {
-    private static final File FILE = new File(".")
+    private static final File DIR = new File(".")
 
     @Test
     public void padding() {
@@ -61,57 +61,57 @@ class ExtensionFilterTest
     @Test(expected = IllegalArgumentException.class)
     public void nullName() {
         def filter = new ExtensionFilter("x")
-        filter.accept(FILE, null)        
+        filter.accept(DIR, null)        
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void emptyName() {
         def filter = new ExtensionFilter("x")
-        filter.accept(FILE, "")
+        filter.accept(DIR, "")
     }
 
     @Test
     public void strangeNames() {
         def filter = new ExtensionFilter("x")
-        assertFalse(filter.accept(FILE, "x"))
-        assertFalse(filter.accept(FILE, "X"))
-        assertFalse(filter.accept(FILE, "x."))
-        assertFalse(filter.accept(FILE, "."))
-        assertFalse(filter.accept(FILE, "\n"))
-        assertFalse(filter.accept(FILE, " "))
-        assertFalse(filter.accept(FILE, ".."))
+        assertFalse(filter.accept(DIR, "x"))
+        assertFalse(filter.accept(DIR, "X"))
+        assertFalse(filter.accept(DIR, "x."))
+        assertFalse(filter.accept(DIR, "."))
+        assertFalse(filter.accept(DIR, "\n"))
+        assertFalse(filter.accept(DIR, " "))
+        assertFalse(filter.accept(DIR, ".."))
     }
 
 
     @Test
     public void multipleMatch() {
         def filter = new ExtensionFilter("x", "y")
-        assertTrue(filter.accept(FILE, "file.x"))
-        assertTrue(filter.accept(FILE, "file.y"))
-        assertFalse(filter.accept(FILE, "file.z"))
+        assertTrue(filter.accept(DIR, "file.x"))
+        assertTrue(filter.accept(DIR, "file.y"))
+        assertFalse(filter.accept(DIR, "file.z"))
     }
 
 
     @Test
     public void multipleDots() {
         def filter = new ExtensionFilter("x")
-        assertTrue(filter.accept(FILE, "file.y.x"))
-        assertFalse(filter.accept(FILE, "file.x.y"))        
+        assertTrue(filter.accept(DIR, "file.y.x"))
+        assertFalse(filter.accept(DIR, "file.x.y"))        
         
     }
 
     @Test
     public void longExtension() {
         def filter = new ExtensionFilter("x12345", "ab")
-        assertTrue(filter.accept(FILE, "file.x12345"))
-        assertTrue(filter.accept(FILE, "x.ab"))
-        assertFalse(filter.accept(FILE, "a.x"))        
+        assertTrue(filter.accept(DIR, "file.x12345"))
+        assertTrue(filter.accept(DIR, "x.ab"))
+        assertFalse(filter.accept(DIR, "a.x"))        
     }
 
     @Test
     public void caseInsensitive() {
         def filter = new ExtensionFilter("x", "Y")
-        assertTrue(filter.accept(FILE, "file.X"))
-        assertTrue(filter.accept(FILE, "file.y"))
+        assertTrue(filter.accept(DIR, "file.X"))
+        assertTrue(filter.accept(DIR, "file.y"))
     }
 }
