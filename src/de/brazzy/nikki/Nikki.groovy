@@ -32,6 +32,7 @@ import de.brazzy.nikki.util.ExportWorker
 
 
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.SaveExitWorker;
 import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder
@@ -111,7 +112,8 @@ public class Nikki{
         }
     
     private scanAction = {
-            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, timezoneFinder)
+            def scanner = new DirectoryScanner(finder:timezoneFinder)
+            ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
             dialogs.registerWorker(worker)                

@@ -114,9 +114,9 @@ class DirectoryScannerTest extends AbstractNikkiTest
         Waypoint wp = image1.waypoint
         assertNotNull(wp)
         assertEquals(day1, wp.day)
-        assertEquals(TIME1, wp.timestamp, )
-        assertEquals(-5d, wp.latitude.value)
-        assertEquals(25d, wp.longitude.value)
+        assertEquals(TIME1, wp.timestamp)
+        assertEquals(-5d, wp.latitude.value, 0.001)
+        assertEquals(25d, wp.longitude.value, 0.001)
 
         Day day2 = tmpDir[1]
 

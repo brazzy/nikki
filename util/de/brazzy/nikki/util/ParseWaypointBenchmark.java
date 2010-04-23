@@ -1,5 +1,5 @@
 package de.brazzy.nikki.util;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -31,7 +31,10 @@ public class ParseWaypointBenchmark
         System.out.println((System.nanoTime()-start)/(1000*1000*1000.0));
         Directory dir = new Directory();
         dir.setPath(new File(args[0]));
-        dir.scan(null, DateTimeZone.UTC, finder);
+        DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setFinder(finder);
+        scanner.setZone(DateTimeZone.UTC);
+        scanner.scan(dir,null);
         System.out.println((System.nanoTime()-start)/(1000*1000*1000.0));
     }
 }

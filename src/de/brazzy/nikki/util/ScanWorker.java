@@ -33,7 +33,7 @@ public class ScanWorker extends SwingWorker<Void, Void>
 {
     private Dialogs dialogs;
     private Directory dir;
-    private TimezoneFinder finder;
+    private DirectoryScanner scanner;
 
     private DateTimeZone zone = null;
     private Object zoneLock = new Object();
@@ -42,21 +42,21 @@ public class ScanWorker extends SwingWorker<Void, Void>
     /**
      * @param dir directory to scan
      * @param dialogs used to ask the timezone from the user
-     * @param finder for assigning timezones to waypoints
+     * @param scanner does the scanning
      */
-    public ScanWorker(Directory dir, Dialogs dialogs, TimezoneFinder finder)
+    public ScanWorker(Directory dir, Dialogs dialogs, DirectoryScanner scanner)
     {
         super();
         this.dir = dir;
         this.dialogs = dialogs;
-        this.finder = finder;
+        this.scanner = scanner;
     }
 
     @Override
     protected Void doInBackground() throws Exception
     {
         thread = Thread.currentThread();
-        if(dir.scan(this, null, finder)==ScanResult.TIMEZONE_MISSING)
+        if(scanner.scan(dir, this)==ScanResult.TIMEZONE_MISSING)
         {
             try
             {
@@ -68,11 +68,16 @@ public class ScanWorker extends SwingWorker<Void, Void>
                         zoneLock.wait();
                     }
                 }
-                dir.scan(this, zone, finder);
+                scanner.setZone(zone);
+                scanner.scan(dir, this);
             }
             catch (InterruptedException e)
             {
                 e.printStackTrace();
+            }
+            finally
+            {
+                scanner.setZone(null);
             }
         }
         return null;

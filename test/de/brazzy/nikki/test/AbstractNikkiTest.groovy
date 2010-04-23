@@ -16,7 +16,6 @@ package de.brazzy.nikki.test
  *   limitations under the License.
  */
 
-import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Image
@@ -24,21 +23,16 @@ import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
 import org.joda.time.format.ISODateTimeFormat
-import org.joda.time.Instant
 
 /**
  *
@@ -46,6 +40,10 @@ import org.joda.time.Instant
  */
 class AbstractNikkiTest extends GroovyTestCase
 {
+    public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
+    public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")
+    public static final DateTimeZone TZ_BRISBANE = DateTimeZone.forID("Australia/Brisbane")
+    protected static final DateTimeZone ZONE = TZ_DARWIN
     protected static final String DATE1 = "2009-11-11";
     protected static final String DATE2 = "2009-11-12";
     protected static final String IMAGE1 = "IMG${DATE1}.JPG";
@@ -58,10 +56,6 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final DateTime TIME1 = DAY1.toDateTime(new LocalTime(5, 0, 0), ZONE)
     protected static final DateTime TIME2 = DAY2.toDateTime(new LocalTime(5, 0, 0), ZONE)
     protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
-    public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
-    public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")
-    public static final DateTimeZone TZ_BRISBANE = DateTimeZone.forID("Australia/Brisbane")
-    protected static final DateTimeZone ZONE = TZ_DARWIN
     protected static final DateTimeFormatter FORMAT = ISODateTimeFormat.date().withZone(ZONE)
     protected static final DateTimeFormatter FORMAT_TIME = ISODateTimeFormat.dateTimeNoMillis().withZone(ZONE)
 
@@ -111,7 +105,7 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected static Waypoint constructWaypoint(Day day, int index)
     {
-        Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0)),
+        Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0), ZONE),
             latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
             longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
         return wp
@@ -128,7 +122,7 @@ class AbstractNikkiTest extends GroovyTestCase
         Waypoint wp = date == null ? null : constructWaypoint(day, 5)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: wp?.timestamp?.toDateTime(ZONE), waypoint: wp, modified: true)
+            export: true, time: wp?.timestamp, waypoint: wp, modified: true)
         day.images.add(image)
         tmpDir.images.put(fileName, image)
         return image
