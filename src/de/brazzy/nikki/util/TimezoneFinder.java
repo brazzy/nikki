@@ -1,5 +1,5 @@
 package de.brazzy.nikki.util;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -35,25 +35,25 @@ import com.infomatiq.jsi.rtree.RTree;
  * to determine to which subjective day a waypoint belongs. This is done by using
  * a database derived from geonames.org to find the settlement that is geographically
  * closest to the waypoint and using its time zone.
- * 
+ *
  * @see de.brazzy.nikki.util.PrepTimezoneData
  * @see timezones.dat
- * 
+ *
  * @author Michael Borgwardt
  */
 public class TimezoneFinder {
-    
+
     /**
      * Spatial index to find the geographically nearest settlement,
      * value is an index into the zones list.
      */
     private RTree tree;
-    
+
     /**
      * List of time zones in no particular order.
      */
     private List<DateTimeZone> zones;
-    
+
     /**
      * Creates a finder containing no data, which can be used for tests
      */
@@ -66,9 +66,9 @@ public class TimezoneFinder {
 
     /**
      * Parses the list of time zones and settelements
-     * 
+     *
      * @param zoneData input to parse
-     * 
+     *
      * @see de.brazzy.nikki.util.PrepTimezoneData
      * @see timezones.dat
      */
@@ -91,7 +91,7 @@ public class TimezoneFinder {
             lat=data.readFloat();
         }
     }
-    
+
     private void parseZones(ObjectInputStream data) throws IOException
     {
         for(String zone=data.readUTF();!zone.equals("");zone=data.readUTF())
@@ -102,7 +102,18 @@ public class TimezoneFinder {
 
     /**
      * Finds the timezone of a waypoint
-     * 
+     *
+     * @return the timezone of the settelement geographically
+     *         closest to the coordinates
+     */
+    public DateTimeZone find(double latitude, double longitude)
+    {
+        return find((float)latitude, (float)longitude);
+    }
+
+    /**
+     * Finds the timezone of a waypoint
+     *
      * @return the timezone of the settelement geographically
      *         closest to the coordinates
      */
@@ -114,7 +125,7 @@ public class TimezoneFinder {
             public boolean execute(int id)
             {
                 result[0] = zones.get(id);
-                return false; 
+                return false;
             }};
         tree.nearest(point, callback, Float.POSITIVE_INFINITY);
         return result[0];
