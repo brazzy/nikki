@@ -7,18 +7,14 @@ import java.util.Iterator;
 import de.brazzy.nikki.model.Waypoint;
 
 /**
- * A parser for a GPS logger file format
+ * A parser for a GPS logger file format.
+ * The inherited {@link #accept(java.io.File, String)}
+ * method should accept files that this parser can parse
  *
  * @author Michael Borgwardt
  */
-public interface LogParser
+public interface LogParser extends FilenameFilter
 {
-    /**
-     * @return filter that accepts files this parser can parse.
-     *         Typically just an instance of {@link ExtensionFilter}
-     */
-    public FilenameFilter getParseableFileNameFilter();
-
     /**
      * @param input stream to read from
      * @return iterator over all waypoints in the file
@@ -26,6 +22,4 @@ public interface LogParser
      *         parseable. This can also be thrown by the iterator
      */
     public Iterator<Waypoint> parse(InputStream input) throws ParserException;
-
-
 }

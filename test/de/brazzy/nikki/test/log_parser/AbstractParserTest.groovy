@@ -91,15 +91,13 @@ class AbstractParserTest
     @Test
     public void filter()
     {
-        def filter = parser.getParseableFileNameFilter()
-        assertNotNull(filter)
         for(name in matchFilenames)
         {
-            assertTrue(name, filter.accept(DIR, name))
+            assertTrue(name, parser.accept(DIR, name))
         }
         for(name in noMatchFilenames)
         {
-            assertFalse(name, filter.accept(DIR, name))
+            assertFalse(name, parser.accept(DIR, name))
         }
     }
 }

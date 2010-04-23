@@ -15,7 +15,7 @@ public class ExtensionFilter implements FilenameFilter
     /**
      * @param extensions files with these extensions will be accepted
      */
-    private ExtensionFilter(String... extensions)
+    public ExtensionFilter(String... extensions)
     {
         super();
         if(!extensions || Arrays.asList(extensions).contains(null)){

@@ -17,7 +17,6 @@ package de.brazzy.nikki.util.log_parser;
  *   limitations under the License.
  */
 
-import java.io.FilenameFilter;
 import java.util.NoSuchElementException;
 
 import org.joda.time.DateTimeZone;
@@ -32,18 +31,11 @@ import de.brazzy.nikki.model.Waypoint;
  * 
  * @author Michael Borgwardt
  */
-public class NmeaParser implements LogParser
+public class NmeaParser extends ExtensionFilter implements LogParser
 {
-    private static final FilenameFilter FILTER = 
-        new ExtensionFilter("NMEA", "NME");
-
-    /* (non-Javadoc)
-     * @see de.brazzy.nikki.util.log_parser.LogParser#getParseableFileNameFilter()
-     */
-    @Override
-    public FilenameFilter getParseableFileNameFilter()
+    public NmeaParser()
     {
-        return FILTER;
+        super(["NMEA", "NME"] as String[])
     }
 
     /* (non-Javadoc)
