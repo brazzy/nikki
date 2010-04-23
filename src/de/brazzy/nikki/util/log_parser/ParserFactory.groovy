@@ -18,11 +18,26 @@ package de.brazzy.nikki.util.log_parser
 
 
 /**
- * Responsible for finding parsers for GPS log files
+ * Finds parsers for GPS log files
  * 
  * @author Michael Borgwardt
  */
 class ParserFactory {
 
+    Collection<LogParser> parsers;
 
+    public Map<String, LogParser> getParsers(File dir, String[] fileNames)
+    {
+        def result = [:]
+        for(name in fileNames)
+        {
+            for(parser in parsers){
+                if(parser.accept(dir, name))
+                {
+                    result[name] = parser
+                }
+            }            
+        }
+        return result
+    }
 }

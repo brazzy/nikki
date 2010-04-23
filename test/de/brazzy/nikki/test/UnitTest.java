@@ -19,6 +19,7 @@ package de.brazzy.nikki.test;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
 import de.brazzy.nikki.test.log_parser.NmeaParserTest;
+import de.brazzy.nikki.test.log_parser.ParserFactoryTest;
 
 /**
  * @author Michael Borgwardt
@@ -28,6 +29,7 @@ public class UnitTest extends TestSuite{
     {
         TestSuite s=new UnitTest();
 
+        s.addTest(new JUnit4TestAdapter(ParserFactoryTest.class));
         s.addTest(new JUnit4TestAdapter(NmeaParserTest.class));
         s.addTest(new JUnit4TestAdapter(ExtensionFilterTest.class));
         s.addTestSuite(ImageTest.class);
