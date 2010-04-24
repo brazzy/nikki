@@ -24,9 +24,9 @@ package de.brazzy.nikki.util.log_parser
  */
 class ParserFactory {
 
-    Collection<LogParser> parsers;
+    Collection<LogParser> parsers = [];
 
-    public Map<String, LogParser> getParsers(File dir, String[] fileNames)
+    public Map<String, LogParser> findParsers(File dir, String[] fileNames)
     {
         def result = [:]
         for(name in fileNames)

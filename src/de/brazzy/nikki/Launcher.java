@@ -1,5 +1,5 @@
 package de.brazzy.nikki;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -21,11 +21,13 @@ import javax.swing.UIManager;
 import de.brazzy.nikki.model.NikkiModel;
 import de.brazzy.nikki.util.Dialogs;
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.log_parser.NmeaParser;
+import de.brazzy.nikki.util.log_parser.ParserFactory;
 import de.brazzy.nikki.view.NikkiFrame;
 
 /**
  * Main class for starting the app.
- * 
+ *
  * @author Michael Borgwardt
  */
 public class Launcher
@@ -38,7 +40,9 @@ public class Launcher
         TimezoneFinder finder = new TimezoneFinder(TimezoneFinder.class.getResourceAsStream("timezones.dat"));
         Dialogs d = new Dialogs();
         Nikki n = new Nikki();
-        n.build(NikkiModel.class, d, finder);
+        ParserFactory pf = new ParserFactory();
+        pf.getParsers().add(new NmeaParser());
+        n.build(NikkiModel.class, d, finder, pf);
         d.setParentComponent(((NikkiFrame)n.getView()).getFrame());
         n.start();
     }

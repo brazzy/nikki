@@ -161,6 +161,27 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         return false
     }
 
+    /**
+     * Adds waypoint file and all waypoints therein
+     * to correct Day, creating new Day if necessary
+     */
+    private addWaypointFile(WaypointFile wf)
+    {
+        for(Waypoint wp in wf.waypoints)
+        {
+            def date = wp.timestamp.toLocalDate()
+            Day d = getDay(date)
+            if(!d)
+            {
+                d = new Day(directory: this, date: date)
+                add(d)
+            }
+            wp.day = d
+            d.waypoints.add(wp)            
+        }
+        waypointFiles[wf.fileName] = wf
+    }
+
     @Override
     public int hashCode()
     {
@@ -182,5 +203,5 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     public int compareTo(Directory other)
     {
         return path.name.compareTo(other.path.name)
-    }    
+    }
 }

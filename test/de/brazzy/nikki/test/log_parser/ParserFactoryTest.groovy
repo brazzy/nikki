@@ -41,7 +41,7 @@ class ParserFactoryTest
     @Test
     void noParsers()
     {
-        assertEquals([:], factory.getParsers(DIR, ["file.xml", "file"] as String[]))
+        assertEquals([:], factory.findParsers(DIR, ["file.xml", "file"] as String[]))
     }
     
     @Test
@@ -52,7 +52,7 @@ class ParserFactoryTest
         def mockParser2 = mock.proxyDelegateInstance()
         
         factory.parsers = [mockParser1, mockParser2]
-        assertEquals([:], factory.getParsers(DIR, new String[0]))
+        assertEquals([:], factory.findParsers(DIR, new String[0]))
         mock.verify(mockParser1)
         mock.verify(mockParser2)
     }
@@ -70,7 +70,7 @@ class ParserFactoryTest
         
         factory.parsers = [mockParser1, mockParser2]
         assertEquals(["file.xml":mockParser1, "file.nmea":mockParser2, "a.xyz":mockParser2], 
-                factory.getParsers(DIR, ["file.xml", "file", "file.nmea", "a.xyz"] as String[]))
+                factory.findParsers(DIR, ["file.xml", "file", "file.nmea", "a.xyz"] as String[]))
         mock1.verify(mockParser1)
         mock2.verify(mockParser2)
     }    

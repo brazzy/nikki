@@ -36,6 +36,7 @@ import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.SaveExitWorker;
 import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder
+import de.brazzy.nikki.util.log_parser.ParserFactory;
 
 /**
  * Controller that builds the view and the model, connects them
@@ -58,6 +59,10 @@ public class Nikki{
     /** Encapsulates user interaction for testing */
     def dialogs
     
+    /** finds parsers for GPS log files */
+    def parserFactory
+    
+    /** assigns timezones to waypoints*/
     def timezoneFinder
 
     private progressListener = { evt ->
@@ -112,7 +117,7 @@ public class Nikki{
         }
     
     private scanAction = {
-            def scanner = new DirectoryScanner(finder:timezoneFinder)
+            def scanner = new DirectoryScanner(finder:timezoneFinder, parserFactory:parserFactory)
             ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
@@ -194,11 +199,13 @@ public class Nikki{
      * 
      * @param prefsClass used as key in the Preferences API
      */
-    public void build(Class prefsClass, Dialogs dialogs, TimezoneFinder finder){
+    public void build(Class prefsClass, Dialogs dialogs, 
+            TimezoneFinder finder, ParserFactory parserFactory){
         this.view = NikkiFrame.create(dialogs)
         this.dialogs = dialogs
         this.model = new NikkiModel(prefsClass)
         this.timezoneFinder = finder
+        this.parserFactory = parserFactory
         view.dirList.model = model        
         
         view.dirList.addListSelectionListener(selectDirectoryAction)        

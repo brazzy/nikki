@@ -22,13 +22,11 @@ import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.model.Rotation
 import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.Day
-import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Waypoint
 import javax.imageio.ImageIO
 
 import mediautil.image.jpeg.Entry;
 
-import org.apache.commons.io.IOUtils;
 import java.util.Arrays
 
 import org.joda.time.DateTime;
@@ -123,13 +121,16 @@ class ImageTest extends AbstractNikkiTest{
 
     public void testOffsetFinder()
     {
+        def DIFF_SECONDS = 13
         TimezoneFinder tzFinder = new TimezoneFinder();
         Image im = reader.createImage()
         im.title="testTitle"
-        Waypoint wp1 = Waypoint.parse(null, '$GPRMC,071232.000,A,4810.0900,N,01134.9470,E,000.00,0.0,270709,,,E*5D', tzFinder)
-        Waypoint wp2 = Waypoint.parse(null, '$GPRMC,071245.000,A,4810.1900,N,01134.9770,E,000.00,0.0,270709,,,E*5D', tzFinder)
+        Day d = new Day(date: DAY1)
+        Waypoint wp1 = constructWaypoint(d, 1);
+        Waypoint wp2 = constructWaypoint(d, 2);
+        wp2.timestamp = wp1.timestamp.plusSeconds(DIFF_SECONDS)
         im.time = wp1.timestamp
-        Day d = new Day(waypoints: [ wp1, wp2])
+        d.waypoints=[wp1, wp2]
         im.day = d
         def out = new ByteArrayOutputStream()
         im.offsetFinder(out)
@@ -147,7 +148,7 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals("#image", placemarks[0].styleUrl.text())
         assertEquals("0", placemarks[1].name.text())
         assertNotNull(placemarks[1].Point)
-        assertEquals("13", placemarks[2].name.text())
+        assertEquals(DIFF_SECONDS as String, placemarks[2].name.text())
         assertNotNull(placemarks[2].Point)
     }
 

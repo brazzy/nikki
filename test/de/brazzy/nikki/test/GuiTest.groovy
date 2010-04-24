@@ -23,6 +23,8 @@ import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.log_parser.NmeaParser;
+import de.brazzy.nikki.util.log_parser.ParserFactory;
 import de.brazzy.nikki.view.AboutBox;
 import de.brazzy.nikki.view.ImageView;
 import de.brazzy.nikki.view.NikkiFrame
@@ -54,7 +56,8 @@ class GuiTest extends AbstractNikkiTest {
         super.setUp()
         dialogs = new TestDialogs()
         nikki = new Nikki()
-        nikki.build(GuiTest.class, dialogs, new TimezoneFinder())
+        ParserFactory pf = new ParserFactory(parsers:[new NmeaParser()]);
+        nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
         view = nikki.view
         System.setSecurityManager(new NoExitSecurityManager(testCase:this))

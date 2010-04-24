@@ -17,12 +17,17 @@ package de.brazzy.nikki.util
  *   limitations under the License.
  */
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+
 import javax.swing.SwingWorker;
 
 import org.joda.time.DateTimeZone;
 
 import de.brazzy.nikki.model.Directory;
 import de.brazzy.nikki.model.WaypointFile;
+import de.brazzy.nikki.util.log_parser.LogParser;
+import de.brazzy.nikki.util.log_parser.ParserFactory;
 
 /**
  * Populates Directory instances with image and GPS data
@@ -42,6 +47,9 @@ class DirectoryScanner {
 
     /** finds time zones for waypoints */
     TimezoneFinder finder;
+    
+    /** Yields parsers for parsing GPS logs */
+    ParserFactory parserFactory;
     
     /**
      * time zone to which the camera time was set when the images were taken. 
@@ -79,17 +87,45 @@ class DirectoryScanner {
             worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
         }
 
-        def nmeaFiles = dir.path.listFiles(FILTER_NMEA);
-        for(file in nmeaFiles){
-            if(!dir.waypointFiles[file.name])
-            {
-                WaypointFile wf = WaypointFile.parse(dir, file, this.finder)
-                dir.waypointFiles[file.name] = wf            
-            }
-        }       
+        parseWaypointFiles(dir)
         
         dir.fireContentsChanged(dir, 0, dir.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
+    }
+    
+    private parseWaypointFiles(Directory dir)
+    {
+        def parserMap = parserFactory.findParsers(dir.path, dir.path.list())
+        
+        for(entry in parserMap){
+            if(!dir.waypointFiles[entry.key])
+            {
+                def wf = parseWaypointFile(new File(dir.path, entry.key), entry.value)
+                wf.directory = dir
+                dir.addWaypointFile(wf)
+            }
+        }
+    }
+    
+    /**
+     * Parses one GPS log file
+     */
+    public WaypointFile parseWaypointFile(File file, LogParser parser)
+    {
+        WaypointFile wf = new WaypointFile(fileName: file.getName())
+        def wpIterator = parser.parse(new BufferedInputStream(new FileInputStream(file)))
+        while(wpIterator.hasNext())
+        {
+            def wp = wpIterator.next()
+            def wpZone = finder.find(wp.latitude.value, wp.longitude.value)
+            if(wpZone)
+            {
+                wp.timestamp = wp.timestamp.withZone(wpZone)                
+            }
+            wp.file = wf
+            wf.waypoints.add(wp)
+        }
+        return wf
     }
 }

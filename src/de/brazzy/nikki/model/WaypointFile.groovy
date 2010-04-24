@@ -16,9 +16,7 @@ package de.brazzy.nikki.model;
  *   limitations under the License.
  */
 
-import org.joda.time.DateTimeZone
 
-import de.brazzy.nikki.util.TimezoneFinder
 
 /**
  * Represents a GPS log file
@@ -34,22 +32,4 @@ class WaypointFile implements Serializable{
     
     String fileName;
 
-    /**
-     * Parses a GPS log file in NMEA format
-     * 
-     * @param dir contains the file
-     * @param file the file itself
-     * @param finder used to assign the timezone of the nearsed town to waypoints
-     */
-    public static WaypointFile parse(Directory dir, File file, TimezoneFinder finder)
-    {
-        def result = new WaypointFile(directory: dir, fileName: file.name)
-        file.eachLine{ line ->
-            if(line.startsWith('$GPRMC'))
-            {
-                result.waypoints.add(Waypoint.parse(result, line, finder))
-            }
-        }
-        return result;
-    }
 }

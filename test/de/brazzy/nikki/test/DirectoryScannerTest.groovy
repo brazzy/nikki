@@ -24,6 +24,11 @@ import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.log_parser.NmeaParser;
+import de.brazzy.nikki.util.log_parser.ParserFactory;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  * @author Michael Borgwardt
@@ -31,10 +36,15 @@ import de.brazzy.nikki.util.TimezoneFinder;
  */
 class DirectoryScannerTest extends AbstractNikkiTest
 {
-    DirectoryScanner scanner = new DirectoryScanner(finder:new TimezoneFinder())
+    DirectoryScanner scanner = new DirectoryScanner(
+            finder:new MockTimezoneFinder(),
+            parserFactory:new ParserFactory(parsers:[new NmeaParser()]))
     
     public void testScan()
     {
+        scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
+        scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
+
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
 
@@ -67,6 +77,9 @@ class DirectoryScannerTest extends AbstractNikkiTest
 
     public void testRescan()
     {
+        scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
+        scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
+        
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
         Image image = addImage(DAY1, IMAGE1)
@@ -134,5 +147,78 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(ZONE, image2.time.zone)
         assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
         assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
+    }
+    
+    public void testParseWaypointFile()
+    {
+        scanner.finder.addCall(-24f, 133.2f, TZ_2)
+        scanner.finder.addCall(-23.7f, 133.8f, null)
+
+
+        WaypointFile f = scanner.parseWaypointFile(
+                new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()),
+                new NmeaParser())
+        scanner.finder.finished()
+
+        assertEquals(AbstractNikkiTest.WAYPOINTS1, f.fileName)
+        assertEquals(2, f.waypoints.size())
+
+        Waypoint wp1 = f.waypoints[0]
+        assertEquals(TZ_2, wp1.timestamp.zone)
+        assertSame(f, wp1.file)
+        assertEquals(new DateTime(2009, 11, 11, 5+2, 9, 4, 0, TZ_2), wp1.timestamp)
+        assertTrue(133 < wp1.longitude.value)
+        assertTrue(wp1.longitude.value < 134)
+        assertTrue(-24 < wp1.latitude.value)
+        assertTrue(wp1.latitude.value < -23)
+
+        Waypoint wp2 = f.waypoints[1]
+        assertEquals(DateTimeZone.UTC, wp2.timestamp.zone)
+        assertSame(f, wp2.file)
+        assertEquals(new DateTime(2009, 11, 11, 6 , 0, 33, 0, DateTimeZone.UTC), wp2.timestamp)
+        assertTrue(wp1.longitude.value < wp2.longitude.value)
+        assertTrue(wp2.latitude.value > wp1.latitude.value)
+    }
+    
+    private static final DateTimeZone TZ_2 = DateTimeZone.forID("Etc/GMT-2")
+
+    /**
+     * Tests understanding of illogical timezone names
+     * ("Etc/GMT-2" has offset of +2)
+     */
+    public void testTimezoneShift()
+    {
+        assertEquals(1000*60*60*2, TZ_2.getStandardOffset(0))
+        assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC).toInstant(),
+                new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2).toInstant())  
+    }
+}
+
+private class MockTimezoneFinder extends TimezoneFinder
+{
+    def queue = []
+    
+    public addCall(float lat, float lng, DateTimeZone result)
+    {
+        queue.add([lat, lng, result])
+    }
+    
+    public DateTimeZone find(float latitude, float longitude)
+    {
+        def entry = queue.remove(0)
+        if(!Float.isNaN(entry[0]))
+        {
+            assert Math.abs(entry[0] - latitude) < 0.1, "error: $latitude"            
+        }
+        if(!Float.isNaN(entry[1]))
+        {
+            assert Math.abs(entry[1] - longitude) < 0.1, "error: $longitude"
+        }
+        return entry[2]
+    }
+    
+    public void finished()
+    {
+        assert queue.size() == 0
     }
 }

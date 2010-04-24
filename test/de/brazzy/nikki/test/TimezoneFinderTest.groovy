@@ -16,7 +16,6 @@ package de.brazzy.nikki.test;
  *   limitations under the License.
  */
 
-import org.joda.time.DateTimeZone
 
 import com.infomatiq.jsi.Rectangle
 
@@ -71,5 +70,5 @@ class TimezoneFinderTest extends GroovyTestCase
         assertEquals(obj.find(70.0f, 0.0f), AbstractNikkiTest.TZ_BRISBANE)
         assertEquals(obj.find(1000.0f, 22.0f), AbstractNikkiTest.TZ_BRISBANE)
         
-    }
+    }    
 }
