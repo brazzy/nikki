@@ -37,18 +37,5 @@ public class GeoCoordinateTest extends GroovyTestCase{
             a = new GeoCoordinate(direction: Cardinal.WEST, magnitude: 3.0d)
             assertEquals(-3.0d, a.value)
     }
-
-    public void testParseCoord()
-    {
-        def coord = GeoCoordinate.parse("4810.0900","S")
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.SOUTH)
-        assertTrue(coord.value.toString(), -49 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < -48)
-
-        coord = GeoCoordinate.parse("01134.9470","W")
-        assertTrue(coord.direction.toString(), coord.direction == Cardinal.WEST)
-        assertTrue(coord.value.toString(), -12 < coord.value )
-        assertTrue(coord.value.toString(), coord.value < -11)
-    }
 }
 

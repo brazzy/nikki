@@ -47,8 +47,23 @@ class NmeaParserTest extends AbstractParserTest
         matchFilenames = ["a.nmea", "file.NMEA", "test.nme", "dings.NME"]
     }
 
+
     @Test
-    void testParse()
+    public void parseCoord()
+    {
+        def coord = NmeaParser.parseCoordinate("4810.0900","S")
+        assertTrue(coord.direction.toString(), coord.direction == Cardinal.SOUTH)
+        assertTrue(coord.value.toString(), -49 < coord.value )
+        assertTrue(coord.value.toString(), coord.value < -48)
+
+        coord = NmeaParser.parseCoordinate("01134.9470","W")
+        assertTrue(coord.direction.toString(), coord.direction == Cardinal.WEST)
+        assertTrue(coord.value.toString(), -12 < coord.value )
+        assertTrue(coord.value.toString(), coord.value < -11)
+    }
+    
+    @Test
+    void parse()
     {
         def iterator = parser.parse(new ByteArrayInputStream(TWO_WPS.getBytes()))
         assertTrue(iterator.hasNext())

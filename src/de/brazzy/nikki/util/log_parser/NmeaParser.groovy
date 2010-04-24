@@ -23,6 +23,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Waypoint;
 
@@ -50,6 +51,25 @@ public class NmeaParser extends ExtensionFilter implements LogParser
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(input, "US-ASCII"))
         return new NmeaIterator(reader)
+    }
+    
+    /**
+     * @param mag magnitude String
+     * @param dir direction String
+     * @return parsed result
+     */
+    public static GeoCoordinate parseCoordinate(String mag, String dir)
+    {
+        if(dir.length()!=1)
+        {
+            throw new IllegalArgumentException(dir)
+        }
+        def spl = mag.tokenize(".")
+        def degrees = Integer.parseInt(spl[0].substring(0, spl[0].length()-2))
+        double minutes = Double.parseDouble(spl[0].substring(spl[0].length()-2, spl[0].length())+"."+spl[1])
+        degrees += minutes / 60.0d
+        def result = new GeoCoordinate(direction: Cardinal.parse(dir), magnitude: degrees)
+        return result;
     }
 }
 
@@ -79,8 +99,8 @@ class NmeaIterator implements Iterator<Waypoint>
         try
         {
             def data = nextLine.trim().tokenize(',')        
-            result.latitude = GeoCoordinate.parse(data[3], data[4])
-            result.longitude = GeoCoordinate.parse(data[5], data[6])        
+            result.latitude = NmeaParser.parseCoordinate(data[3], data[4])
+            result.longitude = NmeaParser.parseCoordinate(data[5], data[6])        
             result.timestamp = PARSE_FORMAT.parseDateTime(data[9]+data[1])             
         }
         catch(Exception ex)
