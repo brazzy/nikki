@@ -115,12 +115,12 @@
 	<target depends="build" name="coverage-instrument">
 		<mkdir dir="${cobertura.instrument.dir}" />
         <mkdir dir="${cobertura.output.dir}" />
-		
         <copy todir="${cobertura.instrument.dir}">
             <fileset dir="${build.dir}" />
         </copy>
-        <cobertura-instrument 
-        	 datafile="${cobertura.datafile}">
+		
+        <cobertura-instrument
+        	datafile="${cobertura.datafile}">
             <fileset dir="${cobertura.instrument.dir}">
                 <include name="**/*.class"/>
 	            <exclude name="**/Dialogs.class"/>
@@ -148,6 +148,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
         	<sysproperty key="file.encoding" value="US-ASCII"/>
+        	<sysproperty key="net.sourceforge.cobertura.datafile" value="${cobertura.datafile}"/>
             <formatter type="xml"/>
             <test name="de.brazzy.nikki.test.Suite" todir="${junit.output.dir}"/>
             <classpath refid="nikki.classpath.test"/>
@@ -157,7 +158,7 @@
 	<target depends="junit" name="coverage-report">
         <cobertura-report format="xml" srcdir="src" 
         	datafile="${cobertura.datafile}"
-			destdir="${cobertura.output.dir}"/>
+        	destdir="${cobertura.output.dir}"/>
     </target>
 	
     <target name="html-reports" depends="junit">
@@ -168,8 +169,8 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
         <cobertura-report format="html" srcdir="src" 
-	    	datafile="${cobertura.datafile}"
-			destdir="${cobertura.output.dir}"/>
+        	datafile="${cobertura.datafile}"
+        	destdir="${cobertura.output.dir}"/>
     </target>
 	
     <target name="javadoc">
