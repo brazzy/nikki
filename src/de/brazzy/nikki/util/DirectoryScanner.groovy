@@ -39,11 +39,6 @@ class DirectoryScanner {
     private static final def FILTER_JPG = { dir, name ->
     name.toUpperCase().endsWith(".JPG")
     } as FilenameFilter
-    private static final def FILTER_NMEA = { dir, name ->
-        name.toUpperCase().endsWith(".NMEA")
-    } as FilenameFilter
-
-
 
     /** finds time zones for waypoints */
     TimezoneFinder finder;
