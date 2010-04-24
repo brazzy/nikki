@@ -19,6 +19,7 @@
     <property name="aux.dir" value="build/classes_aux"/>
     <property name="junit.output.dir" value="build/junit"/>
     <property name="javadoc.output.dir" value="build/javadoc"/>
+    <property name="cobertura.instrument.dir" value="build/cobertura/instrument"/>
     <property name="cobertura.output.dir" value="build/cobertura/report"/>
     <property name="cobertura.datafile" value="build/cobertura/cobertura.ser"/>
 	
@@ -51,8 +52,13 @@
         <pathelement location="lib/jsi-1.0b2p1.jar"/>
         <pathelement location="lib/trove-0.1.8.jar"/>
     </path>
-    <path id="nikki.classpath">
+    <path id="nikki.classpath.build">
         <pathelement location="${build.dir}"/>
+        <pathelement location="${aux.dir}"/>
+        <path refid="nikki.classpath.libraries"/>
+    </path>
+    <path id="nikki.classpath.test">
+        <pathelement location="${cobertura.instrument.dir}"/>
         <pathelement location="${aux.dir}"/>
         <path refid="nikki.classpath.libraries"/>
     </path>
@@ -96,52 +102,74 @@
         </groovyc>		
         <groovyc destdir="${aux.dir}" encoding="UTF-8">
             <src path="test"/>
-            <classpath refid="nikki.classpath"/>
+            <classpath refid="nikki.classpath.build"/>
         	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
         <groovyc destdir="${aux.dir}" encoding="UTF-8">
             <src path="util"/>
-            <classpath refid="nikki.classpath"/>
+            <classpath refid="nikki.classpath.build"/>
         	<javac source="${source}" target="${target}" debug="on" />
         </groovyc>
     </target>
 
 	<target depends="build" name="coverage-instrument">
+		<mkdir dir="${cobertura.instrument.dir}" />
         <mkdir dir="${cobertura.output.dir}" />
-        <cobertura-instrument datafile="${cobertura.datafile}">
-            <fileset dir="${build.dir}">
+		
+        <copy todir="${cobertura.instrument.dir}">
+            <fileset dir="${build.dir}" />
+        </copy>
+        <cobertura-instrument 
+        	 datafile="${cobertura.datafile}">
+            <fileset dir="${cobertura.instrument.dir}">
                 <include name="**/*.class"/>
 	            <exclude name="**/Dialogs.class"/>
 	            <exclude name="**/Launcher.class"/>
             </fileset>
         </cobertura-instrument>
+        <copy todir="${cobertura.instrument.dir}">
+            <fileset dir="test">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.groovy"/>
+            </fileset>
+        </copy>
+        <copy todir="${cobertura.instrument.dir}">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.groovy"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="junit" depends="coverage-instrument">
-    	<echo message="Test classpath: ${toString:nikki.classpath}"/>
+    	<echo message="Test classpath: ${toString:nikki.classpath.test}"/>
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr" haltonerror="on">
-      		<sysproperty key="file.encoding" value="US-ASCII"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+        	<sysproperty key="file.encoding" value="US-ASCII"/>
             <formatter type="xml"/>
             <test name="de.brazzy.nikki.test.Suite" todir="${junit.output.dir}"/>
-            <classpath refid="nikki.classpath"/>
+            <classpath refid="nikki.classpath.test"/>
         </junit>
     </target>
 	
 	<target depends="junit" name="coverage-report">
         <cobertura-report format="xml" srcdir="src" 
         	datafile="${cobertura.datafile}"
-        	destdir="${cobertura.output.dir}"/>
+			destdir="${cobertura.output.dir}"/>
     </target>
 	
-    <target name="html-reports">
-        <cobertura-report format="html" srcdir="src" destdir="${cobertura.output.dir}"/>
+    <target name="html-reports" depends="junit">
         <junitreport todir="${junit.output.dir}">
             <fileset dir="${junit.output.dir}">
                 <include name="TEST-*.xml"/>
             </fileset>
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
+        <cobertura-report format="html" srcdir="src" 
+	    	datafile="${cobertura.datafile}"
+			destdir="${cobertura.output.dir}"/>
     </target>
 	
     <target name="javadoc">
