@@ -32,8 +32,6 @@ import java.util.zip.ZipOutputStream
 
 import de.brazzy.nikki.util.ImageWriter
 import org.joda.time.DateTime
-import org.joda.time.Interval
-import org.joda.time.Period
 import org.joda.time.ReadablePeriod
 import org.joda.time.Seconds
 

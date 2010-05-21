@@ -23,10 +23,11 @@ import groovy.swing.SwingBuilder
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JSplitPane
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.EmptyBorder
 
-import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.Texts
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.model.ImageSortField
 
 /**
  * Main UI class for the application.
@@ -44,6 +45,7 @@ public class NikkiFrame{
     def saveButton
     def exportButton
     def dayList
+    def imageSortOrder
     def imageTable
     def progressBar
     def helpButton
@@ -100,7 +102,12 @@ public class NikkiFrame{
                     borderLayout()
                     panel(constraints: BorderLayout.NORTH){
                         borderLayout()
-                        label(constraints: BorderLayout.WEST, text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,0))
+                        label(constraints: BorderLayout.WEST, text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,5))
+                        panel(constraints: BorderLayout.CENTER){
+                            borderLayout()
+                            result.imageSortOrder = comboBox(constraints: BorderLayout.WEST, 
+                                    items: [ImageSortField.FILENAME, ImageSortField.TIME], selectedIndex:0)
+                        }
                         result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
                                 toolTipText:Texts.Main.HELP_TOOLTIP,
                                 icon:new ImageIcon(NikkiFrame.class.getResource("/icons/help.png")))
