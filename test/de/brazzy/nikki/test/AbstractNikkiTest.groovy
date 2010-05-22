@@ -63,11 +63,8 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected void setUp()
     {
-        File tmpFile = File.createTempFile("nikkitest",null)
-        tmpFile.delete()
-        tmpFile.mkdir()
-        tmpFile.deleteOnExit()
-        tmpDir = new Directory(path: tmpFile)
+        tmpDir = new Directory(path: new File(
+                System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
     }
 
     protected void tearDown()
@@ -79,12 +76,26 @@ class AbstractNikkiTest extends GroovyTestCase
 
     protected void copyFile(String name)
     {
+        ensureTmpDir()
+        
         File f = new File(tmpDir.path, name)
         def stream = new FileOutputStream(f)
         IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
             stream)
         stream.close()
         f.deleteOnExit()
+    }
+    
+    protected void ensureTmpDir()
+    {
+        if(!tmpDir.path.exists())
+        {
+            File tmpFile = File.createTempFile("nikkitest",null)
+            tmpFile.delete()
+            tmpFile.mkdir()
+            tmpFile.deleteOnExit()
+            tmpDir.path = tmpFile
+        }        
     }
 
     protected WaypointFile addWaypointFile(LocalDate date, String fileName)
