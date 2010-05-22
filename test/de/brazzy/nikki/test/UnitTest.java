@@ -33,6 +33,7 @@ public class UnitTest extends TestSuite{
         s.addTest(new JUnit4TestAdapter(ParserFactoryTest.class));
         s.addTest(new JUnit4TestAdapter(NmeaParserTest.class));
         s.addTest(new JUnit4TestAdapter(ExtensionFilterTest.class));
+        s.addTest(new JUnit4TestAdapter(CoverageTest.class));
         s.addTestSuite(ImageTest.class);
         s.addTestSuite(GeoCoordinateTest.class);
         s.addTestSuite(DirectoryTest.class);
