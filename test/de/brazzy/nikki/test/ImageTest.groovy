@@ -130,7 +130,6 @@ class ImageTest extends AbstractNikkiTest{
         Waypoint wp2 = constructWaypoint(d, 2);
         wp2.timestamp = wp1.timestamp.plusSeconds(DIFF_SECONDS)
         im.time = wp1.timestamp
-        d.waypoints=[wp1, wp2]
         im.day = d
         def out = new ByteArrayOutputStream()
         im.offsetFinder(out)
@@ -236,7 +235,7 @@ class ImageTest extends AbstractNikkiTest{
         image.fileName = origName
         
         image.day = new Day(date:new LocalDate(2009,1,1))
-        image.day.waypoints = [constructWaypoint(image.day, 1)]
+        constructWaypoint(image.day, 1)
         image.modified=false
         image.geotag()        
         assertTrue(image.modified)
@@ -264,8 +263,8 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(2, tmpDir.getSize())
         assertEquals(null, tmpDir[0].date)
         assertEquals(2, tmpDir[0].images.size())
-        assertSame(imageNoDate1, tmpDir[0].images[0])
-        assertSame(imageNoDate2, tmpDir[0].images[1])
+        assertSame(imageNoDate1, tmpDir[0].images[1])
+        assertSame(imageNoDate2, tmpDir[0].images[0])
         assertEquals(DAY1, tmpDir[1].date)
         assertEquals(1, tmpDir[1].images.size())
         assertSame(imageWithDate, tmpDir[1].images[0])

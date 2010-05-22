@@ -29,6 +29,7 @@ public class UnitTest extends TestSuite{
     {
         TestSuite s=new UnitTest();
 
+        s.addTest(new JUnit4TestAdapter(ComparatorTest.class));
         s.addTest(new JUnit4TestAdapter(ParserFactoryTest.class));
         s.addTest(new JUnit4TestAdapter(NmeaParserTest.class));
         s.addTest(new JUnit4TestAdapter(ExtensionFilterTest.class));

@@ -1,5 +1,4 @@
 package de.brazzy.nikki.test.log_parser
-;
 
 /*   
  *   Copyright 2010 Michael Borgwardt

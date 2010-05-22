@@ -32,8 +32,6 @@ import java.util.zip.ZipOutputStream
 
 import de.brazzy.nikki.util.ImageWriter
 import org.joda.time.DateTime
-import org.joda.time.Interval
-import org.joda.time.Period
 import org.joda.time.ReadablePeriod
 import org.joda.time.Seconds
 
@@ -94,6 +92,10 @@ class Image implements Serializable{
         this.@"$name"=value
     }
 
+    public String toString(){
+        fileName
+    }
+    
     /**
      * Allows the copying of the timestamp from another image
      * when an image has none; will result in the image being

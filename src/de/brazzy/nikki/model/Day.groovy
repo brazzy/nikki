@@ -19,31 +19,22 @@ package de.brazzy.nikki.model;
 import javax.swing.table.AbstractTableModel
 import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory
-import de.micromata.opengis.kml.v_2_2_0.Coordinate
 import de.micromata.opengis.kml.v_2_2_0.Document
-import de.micromata.opengis.kml.v_2_2_0.Placemark
 import de.micromata.opengis.kml.v_2_2_0.LineString
 import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
-import de.brazzy.nikki.Nikki;
 import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.util.ImageReader
 import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
-import java.util.TimeZone
-import java.util.zip.CRC32
-import java.text.DecimalFormat
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Seconds;
-import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -66,20 +57,30 @@ class Day extends AbstractTableModel implements Comparable<Day>
     public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
 
     /** Images taken on this day */
-    List<Image> images = []
+    private final ListDataModel<Image> images = new ListDataModel<Image>()
+    
+    private ImageSortField imageSortOrder
                           
     /** Waypoints recorded on this day */
-    List<Waypoint> waypoints = []
+    final List<Waypoint> waypoints = []
 
     /** Date represented by this day */
-    LocalDate date
+    final LocalDate date
     
     /** 
      *  Contains the files (images and GPS logs) used by this Day instance.
      *  Must not be null (Enforcement currently not possible, as Groovy
      *  ignores "private")
      */
-    Directory directory
+    final Directory directory
+
+    public Day(Map arguments){
+        this.date = arguments?.date
+        this.directory = arguments?.directory
+        setImageSortOrder(this.date ?
+            ImageSortField.TIME :
+            ImageSortField.FILENAME)
+    }
     
     public String toString()
     {
@@ -87,6 +88,20 @@ class Day extends AbstractTableModel implements Comparable<Day>
                " ("+images.size()+", "+waypoints.size()+")"
     }
 
+    public setImageSortOrder(ImageSortField order){
+        if(order == ImageSortField.TIME && !this.date)
+        {
+            throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
+        }
+        if(imageSortOrder != order)
+        {
+            imageSortOrder = order
+            images.comparator = order.comparator
+            fireTableStructureChanged();
+            fireTableDataChanged();
+        }
+    }
+    
     /**
      * From AbstractTableModel
      */
@@ -156,7 +171,6 @@ class Day extends AbstractTableModel implements Comparable<Day>
         createDirEntry(out, "thumbs/");
         
         def imgIndex = 0;
-        images.sort{ it.time }
         for(Image image : images) {
             image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))

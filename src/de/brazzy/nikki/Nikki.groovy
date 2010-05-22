@@ -24,6 +24,8 @@ import javax.swing.DefaultListModel
 import javax.swing.table.DefaultTableModel
 import de.brazzy.nikki.util.ConfirmResult
 import javax.swing.JOptionPane
+
+import java.awt.event.ActionListener 
 import java.awt.event.WindowAdapter
 import java.beans.PropertyChangeListener
 import de.brazzy.nikki.util.ScanWorker
@@ -93,16 +95,25 @@ public class Nikki{
             if(sel)
             {
                 view.imageTable.editingStopped()
-                view.imageTable.model = sel                
+                view.imageTable.model = sel
             }
             else
             {
                 view.imageTable.model = new DefaultTableModel()
             }
+            view.imageSortOrder.selectedItem = sel?.imageSortOrder                    
+            view.imageSortOrder.enabled = sel?.date != null
             view.exportButton.enabled = (sel != null)
             view.tagButton.enabled = (sel != null)
         } as ListSelectionListener 
-        
+    
+    private sortOrderAction = { it ->
+            def sel = view.dayList.selectedValue
+            if(sel){
+                sel.imageSortOrder = it.source.selectedItem
+            }
+        } as ActionListener
+    
     private addAction = {
             def selectedFile = dialogs.askDirectory(model.selectionDir);
             if(selectedFile){
@@ -214,6 +225,7 @@ public class Nikki{
         view.scanButton.actionPerformed = scanAction
         view.saveButton.actionPerformed = saveAction
         view.dayList.addListSelectionListener(selectDayAction)
+        view.imageSortOrder.addActionListener(sortOrderAction)
         view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
         view.helpButton.actionPerformed = aboutAction

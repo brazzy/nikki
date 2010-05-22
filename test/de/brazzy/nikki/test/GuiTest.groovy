@@ -17,27 +17,28 @@ package de.brazzy.nikki.test
  */
 
 import de.brazzy.nikki.Nikki
+import de.brazzy.nikki.model.Directory 
 import de.brazzy.nikki.model.NikkiModel
-import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.ImageSortField
 import de.brazzy.nikki.model.WaypointFile
-import de.brazzy.nikki.util.ConfirmResult;
+import de.brazzy.nikki.util.ConfirmResult 
 import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.util.log_parser.NmeaParser;
 import de.brazzy.nikki.util.log_parser.ParserFactory;
-import de.brazzy.nikki.view.AboutBox;
+import de.brazzy.nikki.view.AboutBox 
+import de.brazzy.nikki.view.GeotagOptions;
 import de.brazzy.nikki.view.ImageView;
 import de.brazzy.nikki.view.NikkiFrame
-import de.brazzy.nikki.view.ScanOptions
-import de.brazzy.nikki.view.GeotagOptions
-import org.apache.commons.io.FileUtils;
+import de.brazzy.nikki.view.ScanOptions;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Seconds;
 
-import java.awt.event.WindowEvent;
+import java.awt.event.WindowEvent 
 import java.security.Permission;
+import org.apache.commons.io.FileUtils 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone 
+import org.joda.time.Seconds 
 
 /**
  * @author Michael Borgwardt
@@ -273,9 +274,9 @@ class GuiTest extends AbstractNikkiTest {
     public void testImageView()
     {
         Image image1 = addImage(DAY1, IMAGE1)
-        Image image2 = addImage(DAY1, IMAGE2)
-        Image image3 = addImage(DAY1, IMAGE2)
-        Image image4 = addImage(DAY1, IMAGE2)
+        Image image2 = addImage(DAY1, "a"+IMAGE2)
+        Image image3 = addImage(DAY1, "b"+IMAGE2)
+        Image image4 = addImage(DAY1, "c"+IMAGE2)
         image1.modified = false
         model.add(tmpDir)
 
@@ -313,7 +314,7 @@ class GuiTest extends AbstractNikkiTest {
         editor = view.imageTable.editorComponent
         assertEquals("otherTitle", editor.title.text)
         assertEquals("otherDescription", editor.textArea.text)
-        assertEquals(IMAGE2, editor.filename.text)
+        assertEquals("a"+IMAGE2, editor.filename.text)
         assertEquals("", editor.time.text)
         assertEquals("", editor.timeDiff.text)
         assertEquals("?", editor.latitude.text)
@@ -331,6 +332,84 @@ class GuiTest extends AbstractNikkiTest {
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("-2", editor.timeDiff.text)
+    }
+
+    public void testImageSort()
+    {
+        Image image1_c7 = addImage(DAY1, "c",7)
+        Image image1_b9 = addImage(DAY1, "b",9)
+        Image image1_a8 = addImage(DAY1, "a",8)
+
+        Image image2_f4 = addImage(DAY2, "f",4)
+        Image image2_e6 = addImage(DAY2, "e",6)
+        Image image2_d5 = addImage(DAY2, "d",5)
+        
+        Image image3_x = addImage(null, "x")
+        Image image3_y = addImage(null, "y")
+        
+        assertNull(view.imageSortOrder.selectedItem)
+        assertFalse(view.imageSortOrder.enabled)
+
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
+        assertFalse(view.imageSortOrder.enabled)
+        assertImageName(0, "x");
+        assertImageName(1, "y");
+        
+        view.dayList.selectedIndex = 1        
+        assertEquals(ImageSortField.TIME, view.imageSortOrder.selectedItem)
+        assertTrue(view.imageSortOrder.enabled)
+        assertImageName(0, "c");
+        assertImageName(1, "a");
+        assertImageName(2, "b");
+        view.imageSortOrder.selectedItem = ImageSortField.FILENAME
+        assertImageName(0, "a");
+        assertImageName(1, "b");
+        assertImageName(2, "c");
+        
+        view.dayList.selectedIndex = 2
+        assertEquals(ImageSortField.TIME, view.imageSortOrder.selectedItem)
+        assertTrue(view.imageSortOrder.enabled)
+        assertImageName(0, "f");
+        assertImageName(1, "d");
+        assertImageName(2, "e");
+        view.imageSortOrder.selectedItem = ImageSortField.FILENAME
+        assertImageName(0, "d");
+        assertImageName(1, "e");
+        assertImageName(2, "f");
+        view.imageSortOrder.selectedItem = ImageSortField.TIME
+        assertImageName(0, "f");
+        assertImageName(1, "d");
+        assertImageName(2, "e");
+        
+        view.dayList.selectedIndex = 1
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
+        assertTrue(view.imageSortOrder.enabled)
+        assertImageName(0, "a");
+        assertImageName(1, "b");
+        assertImageName(2, "c");
+        view.imageSortOrder.selectedItem = ImageSortField.TIME
+        assertImageName(0, "c");
+        assertImageName(1, "a");
+        assertImageName(2, "b");
+        
+        view.dayList.selectedIndex = 0
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
+        assertFalse(view.imageSortOrder.enabled)
+        assertImageName(0, "x");
+        assertImageName(1, "y");
+        
+        view.dayList.clearSelection()
+        assertNull(view.imageSortOrder.selectedItem)
+        assertFalse(view.imageSortOrder.enabled)
+    }
+    
+    private assertImageName(int index, String name){
+        view.imageTable.editCellAt(index,0)
+        def editor = view.imageTable.editorComponent
+        assertEquals(name, editor.filename.text)        
     }
 
     public void testAutoCommit()
@@ -528,6 +607,7 @@ class GuiTest extends AbstractNikkiTest {
     {
         Image image = addImage(DAY1, IMAGE1)
         model.add(tmpDir)
+        tmpDir[0].waypoints.clear()
         assertTrue(tmpDir[0].waypoints.empty)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
