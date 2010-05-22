@@ -59,7 +59,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     /** Images taken on this day */
     private final ListDataModel<Image> images = new ListDataModel<Image>()
     
-    ImageSortField imageSortOrder
+    private ImageSortField imageSortOrder
                           
     /** Waypoints recorded on this day */
     final List<Waypoint> waypoints = []
@@ -93,8 +93,13 @@ class Day extends AbstractTableModel implements Comparable<Day>
         {
             throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
         }
-        imageSortOrder = order
-        images.comparator = order.comparator
+        if(imageSortOrder != order)
+        {
+            imageSortOrder = order
+            images.comparator = order.comparator
+            fireTableStructureChanged();
+            fireTableDataChanged();
+        }
     }
     
     /**

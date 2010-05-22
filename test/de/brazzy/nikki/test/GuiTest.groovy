@@ -17,28 +17,28 @@ package de.brazzy.nikki.test
  */
 
 import de.brazzy.nikki.Nikki
+import de.brazzy.nikki.model.Directory 
 import de.brazzy.nikki.model.NikkiModel
-import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
 import de.brazzy.nikki.model.ImageSortField
 import de.brazzy.nikki.model.WaypointFile
-import de.brazzy.nikki.util.ConfirmResult;
+import de.brazzy.nikki.util.ConfirmResult 
 import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.util.log_parser.NmeaParser;
 import de.brazzy.nikki.util.log_parser.ParserFactory;
-import de.brazzy.nikki.view.AboutBox;
+import de.brazzy.nikki.view.AboutBox 
+import de.brazzy.nikki.view.GeotagOptions;
 import de.brazzy.nikki.view.ImageView;
 import de.brazzy.nikki.view.NikkiFrame
-import de.brazzy.nikki.view.ScanOptions
-import de.brazzy.nikki.view.GeotagOptions
-import org.apache.commons.io.FileUtils;
+import de.brazzy.nikki.view.ScanOptions;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Seconds;
 
-import java.awt.event.WindowEvent;
+import java.awt.event.WindowEvent 
 import java.security.Permission;
+import org.apache.commons.io.FileUtils 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone 
+import org.joda.time.Seconds 
 
 /**
  * @author Michael Borgwardt
@@ -347,18 +347,19 @@ class GuiTest extends AbstractNikkiTest {
         Image image3_x = addImage(null, "x")
         Image image3_y = addImage(null, "y")
         
-        assertNull(view.imageSortOrder)
+        assertNull(view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
 
         model.add(tmpDir)
+        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-        assertEquals(ImageSortField.FILENAME, view.imageSortOrder)
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
         assertImageName(0, "x");
         assertImageName(1, "y");
         
         view.dayList.selectedIndex = 1        
-        assertEquals(ImageSortField.TIME, view.imageSortOrder)
+        assertEquals(ImageSortField.TIME, view.imageSortOrder.selectedItem)
         assertTrue(view.imageSortOrder.enabled)
         assertImageName(0, "c");
         assertImageName(1, "a");
@@ -369,7 +370,7 @@ class GuiTest extends AbstractNikkiTest {
         assertImageName(2, "c");
         
         view.dayList.selectedIndex = 2
-        assertEquals(ImageSortField.TIME, view.imageSortOrder)
+        assertEquals(ImageSortField.TIME, view.imageSortOrder.selectedItem)
         assertTrue(view.imageSortOrder.enabled)
         assertImageName(0, "f");
         assertImageName(1, "d");
@@ -384,7 +385,7 @@ class GuiTest extends AbstractNikkiTest {
         assertImageName(2, "e");
         
         view.dayList.selectedIndex = 1
-        assertEquals(ImageSortField.FILENAME, view.imageSortOrder)
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
         assertTrue(view.imageSortOrder.enabled)
         assertImageName(0, "a");
         assertImageName(1, "b");
@@ -395,10 +396,14 @@ class GuiTest extends AbstractNikkiTest {
         assertImageName(2, "b");
         
         view.dayList.selectedIndex = 0
-        assertEquals(ImageSortField.FILENAME, view.imageSortOrder)
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
         assertImageName(0, "x");
         assertImageName(1, "y");
+        
+        view.dayList.clearSelection()
+        assertNull(view.imageSortOrder.selectedItem)
+        assertFalse(view.imageSortOrder.enabled)
     }
     
     private assertImageName(int index, String name){

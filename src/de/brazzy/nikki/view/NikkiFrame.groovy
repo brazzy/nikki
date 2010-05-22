@@ -105,8 +105,8 @@ public class NikkiFrame{
                         label(constraints: BorderLayout.WEST, text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,5))
                         panel(constraints: BorderLayout.CENTER){
                             borderLayout()
-                            result.imageSortOrder = comboBox(constraints: BorderLayout.WEST, 
-                                    items: [ImageSortField.FILENAME, ImageSortField.TIME], selectedIndex:0)
+                            result.imageSortOrder = comboBox(constraints: BorderLayout.WEST, enabled: false,
+                                    items: [ImageSortField.FILENAME, ImageSortField.TIME], selectedIndex:-1)
                         }
                         result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
                                 toolTipText:Texts.Main.HELP_TOOLTIP,

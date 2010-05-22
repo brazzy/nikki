@@ -39,12 +39,14 @@ extends AbstractListModel implements Iterable<T>
     /** Used to implement the list ordering */
     Comparator<? super T> comparator = DEFAULT_COMPARATOR
     public void setComparator(Comparator<? super T> comp){
-        if(comp){
-            this.comparator = comp
-        }else{
-            comparator = DEFAULT_COMPARATOR            
+        if(comp != this.comparator){
+            if(comp){
+                this.comparator = comp
+            }else{
+                this.comparator = DEFAULT_COMPARATOR            
+            }
+            dataList.sort(this.comparator)            
         }
-        dataList.sort(comparator)
     }
 
     /**

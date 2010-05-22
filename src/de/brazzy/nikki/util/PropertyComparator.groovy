@@ -42,4 +42,11 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
         }
         return result
     }
+    
+    @Override
+    public boolean equals(Object o){
+        return o instanceof PropertyComparator && 
+               o.propertyName == this.propertyName &&
+               o.secondary == this.secondary
+    }
 }

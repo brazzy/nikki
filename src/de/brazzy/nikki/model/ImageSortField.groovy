@@ -23,20 +23,20 @@ import de.brazzy.nikki.util.PropertyComparator;
 /**
  * Provides options for sorting the image list
  */
-enum ImageSortField {
+public enum ImageSortField {
     FILENAME(Texts.Image.ORDERED_BY_FILENAME, "fileName", null),
     TIME(Texts.Image.ORDERED_BY_TIME,"time","fileName")
     
     private ImageSortField(description, field, secondary){
         this.comparator = new PropertyComparator(
                 propertyName: field, secondary: secondary)
-        this.name = name
+        this.description = description
     }
     
     def comparator
-    def name
+    def description
 
     public String toString(){
-        name
+        description
     }
 }
