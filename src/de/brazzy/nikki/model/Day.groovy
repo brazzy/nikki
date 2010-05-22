@@ -26,7 +26,6 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
 import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.util.PropertyComparator;
 import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
@@ -59,6 +58,8 @@ class Day extends AbstractTableModel implements Comparable<Day>
 
     /** Images taken on this day */
     private final ListDataModel<Image> images = new ListDataModel<Image>()
+    
+    ImageSortField imageSortOrder
                           
     /** Waypoints recorded on this day */
     final List<Waypoint> waypoints = []
@@ -75,10 +76,10 @@ class Day extends AbstractTableModel implements Comparable<Day>
 
     public Day(Map arguments){
         this.date = arguments?.date
-        this.directory = arguments?.directory        
-        images.comparator = this.date ?
-            new PropertyComparator<Image>(propertyName: "time", secondary: "fileName") :
-            new PropertyComparator<Image>(propertyName: "fileName")
+        this.directory = arguments?.directory
+        setImageSortOrder(this.date ?
+            ImageSortField.TIME :
+            ImageSortField.FILENAME)
     }
     
     public String toString()
@@ -92,6 +93,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
         {
             throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
         }
+        imageSortOrder = order
         images.comparator = order.comparator
     }
     
