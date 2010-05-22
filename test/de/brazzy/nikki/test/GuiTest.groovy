@@ -20,6 +20,7 @@ import de.brazzy.nikki.Nikki
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.ImageSortField
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.TimezoneFinder;
@@ -331,6 +332,62 @@ class GuiTest extends AbstractNikkiTest {
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("-2", editor.timeDiff.text)
+    }
+
+    public void testImageSort()
+    {
+        Image image1_c7 = addImage(DAY1, "c",7)
+        Image image1_b9 = addImage(DAY1, "b",9)
+        Image image1_a8 = addImage(DAY1, "a",8)
+
+        Image image2_f4 = addImage(DAY2, "f",4)
+        Image image2_e6 = addImage(DAY2, "e",6)
+        Image image2_d5 = addImage(DAY2, "d",5)
+        
+        assertNull(view.imageSortOrder)
+
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
+        view.dayList.selectedIndex = 0        
+        assertEquals(ImageSortField.TIME, view.imageSortOrder)
+        assertImageName(0, "c");
+        assertImageName(1, "a");
+        assertImageName(2, "b");
+        view.imageSortOrder.selectedItem = ImageSortField.FILENAME
+        assertImageName(0, "a");
+        assertImageName(1, "b");
+        assertImageName(2, "c");
+        
+        view.dayList.selectedIndex = 1
+        assertEquals(ImageSortField.TIME, view.imageSortOrder)
+        assertImageName(0, "f");
+        assertImageName(1, "d");
+        assertImageName(2, "e");
+        view.imageSortOrder.selectedItem = ImageSortField.FILENAME
+        assertImageName(0, "d");
+        assertImageName(1, "e");
+        assertImageName(2, "f");
+        view.imageSortOrder.selectedItem = ImageSortField.TIME
+        assertImageName(0, "f");
+        assertImageName(1, "d");
+        assertImageName(2, "e");
+        
+        view.dayList.selectedIndex = 0
+        assertEquals(ImageSortField.FILENAME, view.imageSortOrder)
+        assertImageName(0, "a");
+        assertImageName(1, "b");
+        assertImageName(2, "c");
+        view.imageSortOrder.selectedItem = ImageSortField.TIME
+        assertImageName(0, "c");
+        assertImageName(1, "a");
+        assertImageName(2, "b");
+    }
+    
+    private assertImageName(int index, String name){
+        view.imageTable.editCellAt(index,0)
+        def editor = view.imageTable.editorComponent
+        assertEquals(name, editor.filename.text)        
     }
 
     public void testAutoCommit()

@@ -111,7 +111,7 @@ class AbstractNikkiTest extends GroovyTestCase
         return wp
     }
 
-    protected Image addImage(LocalDate date, String fileName)
+    protected Image addImage(LocalDate date, String fileName, int index=5)
     {
         Day day = tmpDir.find{ it.date.equals(date)}
         if(!day)
@@ -119,7 +119,7 @@ class AbstractNikkiTest extends GroovyTestCase
             day = new Day(date: date, directory:tmpDir)
             tmpDir.add(day);
         }
-        Waypoint wp = date == null ? null : constructWaypoint(day, 5)
+        Waypoint wp = date == null ? null : constructWaypoint(day, index)
         Image image = new Image(fileName: fileName, title:"testTitle",
             description:"testDescription", day: day, thumbnail: THUMB,
             export: true, time: wp?.timestamp, waypoint: wp, modified: true)

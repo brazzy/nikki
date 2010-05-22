@@ -20,6 +20,7 @@ import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.Day
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.ImageSortField
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
@@ -161,6 +162,50 @@ class DayTest extends AbstractNikkiTest{
 
         assertNull(input.getNextEntry())
         input.close()
+    }
+    
+    private Image createImage(Day day, String fileName, int hour){
+        Image image = new Image(day: day, fileName: fileName, 
+                time: day.date.toDateTime(new LocalTime(hour, 0, 0), ZONE))
+        day.images.add(image)
+        return image;
+    }
+    
+    public void testImageSort()
+    {
+        Day d = new Day(directory: tmpDir, date: DAY1)
+        Image image_c6 = createImage(d, "c", 6)
+        assertEquals([image_c6], d.images)
+        Image image_a8 = createImage(d, "a", 8)
+        assertEquals([image_c6, image_a8], d.images)
+        Image image_b7 = createImage(d, "b", 7)
+        assertEquals([image_c6, image_b7, image_a8], d.images)
+        Image image_d9 = createImage(d, "d", 9)
+        assertEquals([image_c6, image_b7, image_a8, image_d9], d.images)
+        
+        d.setImageSortOrder(ImageSortField.FILENAME)        
+        assertEquals([image_a8, image_b7, image_c6, image_d9], d.images)
+        d.images.remove(image_b7)
+        assertEquals([image_a8, image_c6, image_d9], d.images)
+        
+        d.setImageSortOrder(ImageSortField.TIME)        
+        assertEquals([image_c6, image_a8, image_d9], d.images)
+        d.images.remove(image_d9)
+        assertEquals([image_c6, image_a8], d.images)
+        
+        d.setImageSortOrder(ImageSortField.FILENAME)        
+        assertEquals([image_a8, image_c6], d.images)
+        d.images.add(image_b7)
+        assertEquals([image_a8, image_b7, image_c6], d.images)
+        d.images.remove(image_a8)
+        assertEquals([image_b7, image_c6], d.images)
+        d.images.remove(image_c6)
+        assertEquals([image_b7], d.images)
+        d.images.remove(image_b7)
+        assertEquals([], d.images)
+        
+        d.setImageSortOrder(ImageSortField.TIME)        
+        assertEquals([], d.images)
     }
     
     public void testEqualsHashCode()
