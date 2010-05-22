@@ -194,7 +194,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Directory))
             return false;
         Directory other = (Directory) obj
         return path.equals(other.path)

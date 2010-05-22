@@ -236,7 +236,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
             return true
         if (obj == null)
             return false
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Day))
             return false
         Day other = (Day) obj
         if (date == null)

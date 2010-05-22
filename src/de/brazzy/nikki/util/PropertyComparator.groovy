@@ -49,4 +49,15 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
                o.propertyName == this.propertyName &&
                o.secondary == this.secondary
     }
+    
+    @Override
+    public int hashCode()
+    {
+        int result =propertyName.hashCode() 
+        if(secondary){
+            result ^= secondary.hashCode()
+        }
+        return result
+    }
+    
 }

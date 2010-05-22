@@ -1,5 +1,5 @@
 package de.brazzy.nikki.view;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -47,21 +47,21 @@ import de.brazzy.nikki.util.Dialogs;
 
 /**
  * Used to render and edit {@link Image}s in a JTable
- * 
+ *
  * @author Michael Borgwardt
  */
 public class ImageView extends JPanel
 {
-    /** 
+    /**
      * Seconds beyond which a difference in image time
-     * and waypoint time will be highlighted 
+     * and waypoint time will be highlighted
      */
     public static final int DIFF_THRESHOLD = 30;
-    
+
     private static final DateTimeFormatter TIMESTAMP_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
     public static final ImageIcon COPY_ICON = new ImageIcon(ImageView.class.getResource("/icons/page_copy.png"));
     public static final ImageIcon PASTE_ICON = new ImageIcon(ImageView.class.getResource("/icons/paste_plain.png"));
-    
+
     private JTextArea textArea = new JTextArea(2, 40);
     private JLabel thumbnail = new JLabel();
     private JTextField title = new JTextField();
@@ -74,7 +74,7 @@ public class ImageView extends JPanel
             new ImageIcon(ImageView.class.getResource("/icons/find.png")));
     private JButton copyPaste = new JButton(COPY_ICON);
     private JCheckBox export = new JCheckBox("export");
-    
+
     private Image clipboard;
     private Image value;
     private Dialogs dialogs;
@@ -87,10 +87,10 @@ public class ImageView extends JPanel
         super(new BorderLayout());
         this.dialogs = dialogs;
         setBorder(new EmptyBorder(5,5,5,5));
-        add(thumbnail, BorderLayout.WEST);        
+        add(thumbnail, BorderLayout.WEST);
         JPanel grid = new JPanel();
         add(grid, BorderLayout.CENTER);
-        
+
         JLabel filenameLabel = new JLabel(Texts.Image.FILE);
         JLabel timeLabel = new JLabel(Texts.Image.TIME);
         JLabel latitudeLabel = new JLabel(Texts.Image.LATITUDE);
@@ -107,7 +107,7 @@ public class ImageView extends JPanel
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
         layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);        
+        layout.setAutoCreateContainerGaps(true);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -134,7 +134,7 @@ public class ImageView extends JPanel
                                 .addComponent(longitude)
                                 .addComponent(offsetFinder)
                         )))
-                .addComponent(scrollPane)                    
+                .addComponent(scrollPane)
         );
         layout.setVerticalGroup(
             layout.createSequentialGroup()
@@ -166,7 +166,7 @@ public class ImageView extends JPanel
         offsetFinder.setEnabled(true);
     }
 
-    private ActionListener offsetFinderAction = new ActionListener(){
+    private transient ActionListener offsetFinderAction = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e)
         {
@@ -194,10 +194,10 @@ public class ImageView extends JPanel
                     e1.printStackTrace();
                 }
             }
-        }            
+        }
     };
-    
-    private ActionListener copyPasteAction = new ActionListener(){
+
+    private transient ActionListener copyPasteAction = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e)
         {
@@ -220,7 +220,7 @@ public class ImageView extends JPanel
             }
         }
     };
-    
+
     public void setValue(Image value)
     {
         this.value = value;
@@ -253,27 +253,27 @@ public class ImageView extends JPanel
         {
             if(value.getWaypoint().getLatitude()!=null)
             {
-                latitude.setText(value.getWaypoint().getLatitude().toString());                
+                latitude.setText(value.getWaypoint().getLatitude().toString());
             }
             if(value.getWaypoint().getLongitude()!=null)
-            {            
-                longitude.setText(value.getWaypoint().getLongitude().toString());            
+            {
+                longitude.setText(value.getWaypoint().getLongitude().toString());
             }
         }
         else
         {
             latitude.setText("?");
-            longitude.setText("?");            
+            longitude.setText("?");
         }
     }
 
     private void setTimeDiff(Image value)
     {
-        if(value.getWaypoint() != null && 
+        if(value.getWaypoint() != null &&
            value.getWaypoint().getTimestamp() != null)
         {
-            long diff = (value.getTime().getMillis() 
-                         - value.getWaypoint().getTimestamp().getMillis()) 
+            long diff = (value.getTime().getMillis()
+                         - value.getWaypoint().getTimestamp().getMillis())
                        / 1000;
             timeDiff.setText(String.valueOf(diff));
             timeDiff.setToolTipText(Texts.Image.DIFF_TOOLTIP);
@@ -283,7 +283,7 @@ public class ImageView extends JPanel
             }
             else
             {
-                timeDiff.setForeground(Color.BLACK);                    
+                timeDiff.setForeground(Color.BLACK);
             }
         }
         else
@@ -303,7 +303,7 @@ public class ImageView extends JPanel
 //        value.setExport(export.isSelected());
 
         return value;
-    }    
+    }
 
-    
+
 }
