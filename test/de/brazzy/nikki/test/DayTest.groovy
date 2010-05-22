@@ -16,23 +16,17 @@ package de.brazzy.nikki.test
  *   limitations under the License.
  */
 
-import de.brazzy.nikki.Nikki;
 import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Waypoint
 import de.brazzy.nikki.model.Day
-import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Image
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
 import org.apache.commons.io.IOUtils;
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
-import org.joda.time.Seconds;
-import org.junit.Test;
 
 /**
  * @author Michael Borgwardt
@@ -81,8 +75,8 @@ class DayTest extends AbstractNikkiTest{
         def im14 = new Image(time: dat.toDateTime(new LocalTime(14, 0)), day:day)
         def im16 = new Image(time: dat.toDateTime(new LocalTime(16, 0)), day:day)
 
-        day.images = [im08, im13l, im11, im14, im16, im12, im17, im15h]
-        day.waypoints = [wp14, wp16, wp12]
+        day.images.addAll([im08, im13l, im11, im14, im16, im12, im17, im15h])
+        day.waypoints.addAll([wp14, wp16, wp12])
 
         day.geotag()
 
@@ -154,7 +148,7 @@ class DayTest extends AbstractNikkiTest{
         assertTrue(kml.length() > 0)
         def finder = new XmlSlurper().parseText(kml)
         def placemarks = finder.Document.Placemark
-        assertEquals(2, placemarks.size())
+        assertEquals(3, placemarks.size())
         def pm = placemarks[0]
         assertEquals("000 testTitle", pm.name.text())
         assertEquals("thumbs/"+IMAGE1, pm.Style.IconStyle.Icon.href.text())

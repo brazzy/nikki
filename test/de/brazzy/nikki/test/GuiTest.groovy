@@ -528,6 +528,7 @@ class GuiTest extends AbstractNikkiTest {
     {
         Image image = addImage(DAY1, IMAGE1)
         model.add(tmpDir)
+        tmpDir[0].waypoints.clear()
         assertTrue(tmpDir[0].waypoints.empty)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0

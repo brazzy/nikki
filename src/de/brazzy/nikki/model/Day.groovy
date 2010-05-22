@@ -57,10 +57,10 @@ class Day extends AbstractTableModel implements Comparable<Day>
     public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
 
     /** Images taken on this day */
-    List<Image> images = []
+    private final List<Image> images = []
                           
     /** Waypoints recorded on this day */
-    List<Waypoint> waypoints = []
+    final List<Waypoint> waypoints = []
 
     /** Date represented by this day */
     LocalDate date
