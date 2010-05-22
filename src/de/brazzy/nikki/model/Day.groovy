@@ -19,31 +19,22 @@ package de.brazzy.nikki.model;
 import javax.swing.table.AbstractTableModel
 import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory
-import de.micromata.opengis.kml.v_2_2_0.Coordinate
 import de.micromata.opengis.kml.v_2_2_0.Document
-import de.micromata.opengis.kml.v_2_2_0.Placemark
 import de.micromata.opengis.kml.v_2_2_0.LineString
 import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
-import de.brazzy.nikki.Nikki;
 import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.util.ImageReader
 import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
-import java.util.TimeZone
-import java.util.zip.CRC32
-import java.text.DecimalFormat
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Seconds;
-import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -87,6 +78,10 @@ class Day extends AbstractTableModel implements Comparable<Day>
                " ("+images.size()+", "+waypoints.size()+")"
     }
 
+    public setImageSortOrder(ImageSortField order){
+        // TODO
+    }
+    
     /**
      * From AbstractTableModel
      */
