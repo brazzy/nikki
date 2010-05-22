@@ -16,27 +16,36 @@ package de.brazzy.nikki.model
  *   limitations under the License.
  */
 
-import javax.swing.AbstractListModel
-import java.io.ObjectInput
-import java.lang.ClassNotFoundException
-import java.io.IOException
-import java.io.ObjectOutput
-import java.util.List;
+import java.util.Collections;
+import javax.swing.AbstractListModel 
 
 /**
  * Base class for domain objects to be displayed in a sorted list on the GUI.
  * 
  * @author Michael Borgwardt
  *
- * @param <T> type to display in list
+ * @param <T> type to display in list - must be Comparable if
+ *        no comparator is supplied during construction
  */
-public class ListDataModel<T extends Comparable> 
+public class ListDataModel<T> 
 extends AbstractListModel implements Iterable<T>
 {
-    public static final long serialVersionUID = 1;
+    public static final long serialVersionUID = 1
+    private static DEFAULT_COMPARATOR = {o1, o2 -> o1.compareTo(o2)} as Comparator<T>
 
     /** Contains the elements, kept sorted automatically */
     protected List<T> dataList = new ArrayList<T>()
+
+    /** Used to implement the list ordering */
+    Comparator<? super T> comparator = DEFAULT_COMPARATOR
+    public void setComparator(Comparator<? super T> comp){
+        if(comp){
+            this.comparator = comp
+        }else{
+            comparator = DEFAULT_COMPARATOR            
+        }
+        dataList.sort(comparator)
+    }
 
     /**
      * Adds new element at the appropriate place in the sort order
@@ -45,14 +54,14 @@ extends AbstractListModel implements Iterable<T>
     {
         if(!d)
         {
-            throw new IllegalArgumentException("must not be null!");
+            throw new IllegalArgumentException("must not be null!")
         }
-        int index = Collections.binarySearch(dataList, d)
-        def size = dataList.size();
+        int index = Collections.binarySearch(dataList, d, this.comparator)
+        def size = dataList.size()
         
         if(index >= 0)
         {
-            throw new IllegalArgumentException("Already present!");            
+            throw new IllegalArgumentException("Already present!")
         }
         else if(-index-1 == size)
         {
@@ -68,19 +77,23 @@ extends AbstractListModel implements Iterable<T>
     
     public boolean remove(T d)
     {
-        def index = dataList.indexOf(d);
+        def index = dataList.indexOf(d)
         if(index >= 0)
         {
             dataList.remove(d)
             fireIntervalRemoved(this, index, index)
-            return true;
+            return true
         }
-        return false;
+        return false
     }
     
     public boolean contains(T d)
     {
         dataList.contains(d)
+    }
+    
+    public List<T> asList(){
+        return Collections.unmodifiableList(dataList);
     }
     
     @Override

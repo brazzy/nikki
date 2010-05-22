@@ -1,4 +1,4 @@
-package de.brazzy.nikki.model
+package de.brazzy.nikki.util
 /*   
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
@@ -16,27 +16,30 @@ package de.brazzy.nikki.model
  *   limitations under the License.
  */
 
-import de.brazzy.nikki.Texts 
-import de.brazzy.nikki.util.PropertyComparator;
-
+import java.io.Serializable
+import java.util.Comparator
 
 /**
- * Provides options for sorting the image list
+ * Compares objects on a given property, 
+ * optionally using a second one to break ties
+ * 
+ * @author Michael Borgwardt
  */
-enum ImageSortField {
-    FILENAME(Texts.Image.ORDERED_BY_FILENAME, "fileName", null),
-    TIME(Texts.Image.ORDERED_BY_TIME,"time","fileName")
-    
-    private ImageSortField(description, field, secondary){
-        this.comparator = new PropertyComparator(
-                propertyName: field, secondary: secondary)
-        this.name = name
-    }
-    
-    def comparator
-    def name
+public class PropertyComparator<T> implements Comparator<T>, Serializable
+{
+    public static final long serialVersionUID = 1L
 
-    public String toString(){
-        name
+    String propertyName
+    String secondary
+    
+    @Override
+    public int compare(T o1, T o2)
+    {
+        int result = o1."$propertyName".compareTo(o2."$propertyName")
+        if(result == 0 && secondary)
+        {
+            result = o1."$secondary".compareTo(o2."$secondary")            
+        }
+        return result
     }
 }

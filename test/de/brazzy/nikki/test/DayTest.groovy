@@ -37,23 +37,25 @@ class DayTest extends AbstractNikkiTest{
     public void testDayToString()
     {
         Day d = new Day(directory: tmpDir, date: DAY1)
+        Image i1 = new Image(time: TIME1, fileName:"a")
+        Image i2 = new Image(time: TIME1, fileName:"b")
         assertEquals(DATE1+" (0, 0)", d.toString())
-        d.images.add(new Image())
+        d.images.add(i1)
         assertEquals(DATE1+" (1, 0)", d.toString())
-        d.images.add(new Image())
+        d.images.add(i2)
         assertEquals(DATE1+" (2, 0)", d.toString())
         d.waypoints.add(new Waypoint())
         assertEquals(DATE1+" (2, 1)", d.toString())
-        d.images.remove(1)
+        d.images.remove(i2)
         d.waypoints.remove(0)
         assertEquals(DATE1+" (1, 0)", d.toString())
         
         d = new Day(directory: tmpDir)
         assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
-        d.images.add(new Image())
+        d.images.add(i1)
         d.waypoints.add(new Waypoint())
         assertEquals(Texts.Main.UNKNOWN_DAY+" (1, 1)", d.toString())
-        d.images.remove(0)
+        d.images.remove(i1)
         d.waypoints.remove(0)
         assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
     }
@@ -62,7 +64,7 @@ class DayTest extends AbstractNikkiTest{
     {
         def dat = new LocalDate(2009, 1, 1)
 
-        def day = new Day()
+        def day = new Day(date:dat)
         def wp12 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(12, 0)))
         def wp14 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(14, 0)))
         def wp16 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(16, 0)))
@@ -76,7 +78,9 @@ class DayTest extends AbstractNikkiTest{
         def im14 = new Image(time: dat.toDateTime(new LocalTime(14, 0)), day:day)
         def im16 = new Image(time: dat.toDateTime(new LocalTime(16, 0)), day:day)
 
-        day.images.addAll([im08, im13l, im11, im14, im16, im12, im17, im15h])
+        [im08, im13l, im11, im14, im16, im12, im17, im15h].each{ 
+            day.images.add(it)
+        } 
         day.waypoints.addAll([wp14, wp16, wp12])
 
         day.geotag()
@@ -101,6 +105,90 @@ class DayTest extends AbstractNikkiTest{
         assertSame(wp14, im13l.waypoint)
         assertSame(wp16, im15h.waypoint)
         assertSame(wp16, im17.waypoint)
+    }
+
+    private Image createImage(Day day, String fileName, int hour){
+        Image image = new Image(day: day, fileName: fileName, 
+                 time: (hour > 0 ? day.date.toDateTime(new LocalTime(hour, 0, 0), ZONE) : null))
+        day.images.add(image)
+        return image;
+    }
+    
+    public void testImageSort()
+    {
+        Day d = new Day(directory: tmpDir, date: DAY1)
+        Image image_c6 = createImage(d, "c", 6)
+        assertEquals([image_c6], d.images.asList())
+        Image image_a8 = createImage(d, "a", 8)
+        assertEquals([image_c6, image_a8], d.images.asList())
+        Image image_b7 = createImage(d, "b", 7)
+        assertEquals([image_c6, image_b7, image_a8], d.images.asList())
+        Image image_d9 = createImage(d, "d", 9)
+        assertEquals([image_c6, image_b7, image_a8, image_d9], d.images.asList())
+        
+        d.setImageSortOrder(ImageSortField.FILENAME)        
+        assertEquals([image_a8, image_b7, image_c6, image_d9], d.images.asList())
+        d.images.remove(image_b7)
+        assertEquals([image_a8, image_c6, image_d9], d.images.asList())
+        
+        d.setImageSortOrder(ImageSortField.TIME)        
+        assertEquals([image_c6, image_a8, image_d9], d.images.asList())
+        d.images.remove(image_d9)
+        assertEquals([image_c6, image_a8], d.images.asList())
+        
+        d.setImageSortOrder(ImageSortField.FILENAME)        
+        assertEquals([image_a8, image_c6], d.images.asList())
+        d.images.add(image_b7)
+        assertEquals([image_a8, image_b7, image_c6], d.images.asList())
+        d.images.remove(image_a8)
+        assertEquals([image_b7, image_c6], d.images.asList())
+        d.images.remove(image_c6)
+        assertEquals([image_b7], d.images.asList())
+        d.images.remove(image_b7)
+        assertEquals([], d.images.asList())
+        
+        d.setImageSortOrder(ImageSortField.TIME)        
+        assertEquals([], d.images.asList())
+    }
+
+    public void testImageSortUnknown()
+    {
+        Day d = new Day(directory: tmpDir)
+        Image image_c = createImage(d, "c", -1)
+        assertEquals([image_c], d.images.asList())
+        Image image_a = createImage(d, "a", -1)
+        assertEquals([image_a, image_c], d.images.asList())
+        Image image_b = createImage(d, "b", -1)
+        assertEquals([image_a, image_b, image_c], d.images.asList())
+        
+        d.images.remove(image_b)
+        assertEquals([image_a, image_c], d.images.asList())        
+        d.images.remove(image_a)
+        assertEquals([image_c], d.images.asList())
+        d.images.remove(image_c)
+        assertEquals([], d.images.asList())
+    }
+        
+    public void testImageSortUnknownError()
+    {
+        try
+        {
+            Day d = new Day(directory: tmpDir)
+            d.setImageSortOrder(ImageSortField.TIME)            
+            fail("could set sort order to time on unknown day")
+        } catch(IllegalArgumentException){} // expected
+    }
+        
+    public void testEqualsHashCode()
+    {
+        def day1 = new Day(directory: tmpDir, date: DAY1)
+        def day1a = new Day(directory: tmpDir, date: DAY1)
+        def day2 = new Day(directory: tmpDir)
+        def day2a = new Day(directory: tmpDir)
+        def day3 = new Day(directory: tmpDir, date: DAY2)
+        def day3a = new Day(directory: tmpDir, date: DAY2)
+
+        checkEqualsHashCode([day1, day2, day3], [day1a, day2a, day3a])
     }
 
     public void testExport()
@@ -164,60 +252,5 @@ class DayTest extends AbstractNikkiTest{
         input.close()
     }
     
-    private Image createImage(Day day, String fileName, int hour){
-        Image image = new Image(day: day, fileName: fileName, 
-                time: day.date.toDateTime(new LocalTime(hour, 0, 0), ZONE))
-        day.images.add(image)
-        return image;
-    }
-    
-    public void testImageSort()
-    {
-        Day d = new Day(directory: tmpDir, date: DAY1)
-        Image image_c6 = createImage(d, "c", 6)
-        assertEquals([image_c6], d.images)
-        Image image_a8 = createImage(d, "a", 8)
-        assertEquals([image_c6, image_a8], d.images)
-        Image image_b7 = createImage(d, "b", 7)
-        assertEquals([image_c6, image_b7, image_a8], d.images)
-        Image image_d9 = createImage(d, "d", 9)
-        assertEquals([image_c6, image_b7, image_a8, image_d9], d.images)
-        
-        d.setImageSortOrder(ImageSortField.FILENAME)        
-        assertEquals([image_a8, image_b7, image_c6, image_d9], d.images)
-        d.images.remove(image_b7)
-        assertEquals([image_a8, image_c6, image_d9], d.images)
-        
-        d.setImageSortOrder(ImageSortField.TIME)        
-        assertEquals([image_c6, image_a8, image_d9], d.images)
-        d.images.remove(image_d9)
-        assertEquals([image_c6, image_a8], d.images)
-        
-        d.setImageSortOrder(ImageSortField.FILENAME)        
-        assertEquals([image_a8, image_c6], d.images)
-        d.images.add(image_b7)
-        assertEquals([image_a8, image_b7, image_c6], d.images)
-        d.images.remove(image_a8)
-        assertEquals([image_b7, image_c6], d.images)
-        d.images.remove(image_c6)
-        assertEquals([image_b7], d.images)
-        d.images.remove(image_b7)
-        assertEquals([], d.images)
-        
-        d.setImageSortOrder(ImageSortField.TIME)        
-        assertEquals([], d.images)
-    }
-    
-    public void testEqualsHashCode()
-    {
-        def day1 = new Day(directory: tmpDir, date: DAY1)
-        def day1a = new Day(directory: tmpDir, date: DAY1)
-        def day2 = new Day(directory: tmpDir)
-        def day2a = new Day(directory: tmpDir)
-        def day3 = new Day(directory: tmpDir, date: DAY2)
-        def day3a = new Day(directory: tmpDir, date: DAY2)
-
-        checkEqualsHashCode([day1, day2, day3], [day1a, day2a, day3a])
-    }
 }
 

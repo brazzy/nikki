@@ -26,6 +26,7 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
 import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.util.PropertyComparator;
 import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
@@ -57,20 +58,28 @@ class Day extends AbstractTableModel implements Comparable<Day>
     public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
 
     /** Images taken on this day */
-    private final List<Image> images = []
+    private final ListDataModel<Image> images = new ListDataModel<Image>()
                           
     /** Waypoints recorded on this day */
     final List<Waypoint> waypoints = []
 
     /** Date represented by this day */
-    LocalDate date
+    final LocalDate date
     
     /** 
      *  Contains the files (images and GPS logs) used by this Day instance.
      *  Must not be null (Enforcement currently not possible, as Groovy
      *  ignores "private")
      */
-    Directory directory
+    final Directory directory
+
+    public Day(Map arguments){
+        this.date = arguments?.date
+        this.directory = arguments?.directory        
+        images.comparator = this.date ?
+            new PropertyComparator<Image>(propertyName: "time", secondary: "fileName") :
+            new PropertyComparator<Image>(propertyName: "fileName")
+    }
     
     public String toString()
     {
@@ -79,7 +88,11 @@ class Day extends AbstractTableModel implements Comparable<Day>
     }
 
     public setImageSortOrder(ImageSortField order){
-        // TODO
+        if(order == ImageSortField.TIME && !this.date)
+        {
+            throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
+        }
+        images.comparator = order.comparator
     }
     
     /**
@@ -151,7 +164,6 @@ class Day extends AbstractTableModel implements Comparable<Day>
         createDirEntry(out, "thumbs/");
         
         def imgIndex = 0;
-        images.sort{ it.time }
         for(Image image : images) {
             image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))

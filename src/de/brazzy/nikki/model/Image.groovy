@@ -92,6 +92,10 @@ class Image implements Serializable{
         this.@"$name"=value
     }
 
+    public String toString(){
+        fileName
+    }
+    
     /**
      * Allows the copying of the timestamp from another image
      * when an image has none; will result in the image being
