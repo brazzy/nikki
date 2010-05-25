@@ -95,7 +95,7 @@ class CoverageTest
     
     @Test
     public void listDataModel(){
-        def dummy = new ListDataModel<String>()
+        ListDataModel dummy = new ListDataModel<String>()
         dummy.add("a")
         dummy.add("b")
         def itr = dummy.iterator()
