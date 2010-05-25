@@ -160,6 +160,15 @@ public class Nikki{
                 dialogs.error(Texts.Dialogs.EXPORT_NODATA_MESSAGE)
                 return
             }
+            def exportFlags = day.images.asList().export
+            if(!exportFlags.contains(true))
+            {
+                ConfirmResult c = dialogs.confirm(Texts.Dialogs.EXPORT_NOIMAGE_MESSAGE, JOptionPane.OK_CANCEL_OPTION)
+                if(c == ConfirmResult.CANCEL)
+                {
+                    return                    
+                }
+            }
             
             def selectedFile = dialogs.askFile(model.exportDir, EXPORT_FILE_NAME + day.date +".kmz");
 

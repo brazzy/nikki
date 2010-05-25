@@ -602,19 +602,44 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(baseTime, file.lastModified())
     }
-    
-    public void testExportNoData()
+
+    public void testExportNoWaypoints()
     {
         Image image = addImage(DAY1, IMAGE1)
+        assertTrue(image.export)
         model.add(tmpDir)
         tmpDir[0].waypoints.clear()
-        assertTrue(tmpDir[0].waypoints.empty)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        dialogs.add(ConfirmResult.CANCEL)
+        assertNotNull(view.dayList.selectedValue)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        dialogs.add(null)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+    }
+    
+    public void testExportNoImage()
+    {
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY1, IMAGE2)
+        image1.export = false
+        image2.export = false
+        model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         dialogs.add(ConfirmResult.CANCEL)
         view.exportButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
-        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        
+        dialogs.add(ConfirmResult.YES)
+        dialogs.add(null)
+        view.exportButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+        
+        image2.export = true
         dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
