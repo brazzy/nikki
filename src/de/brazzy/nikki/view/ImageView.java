@@ -73,7 +73,7 @@ public class ImageView extends JPanel
 	    new ImageIcon(ImageView.class.getResource("/icons/page_copy.png")));
     private JButton paste = new JButton(
 	    new ImageIcon(ImageView.class.getResource("/icons/paste_plain.png")));
-    private JCheckBox export = new JCheckBox("export");
+    private JCheckBox export = new JCheckBox(Texts.Image.EXPORT);
 
     private Image[] clipboard;
     private Image value;
@@ -102,10 +102,13 @@ public class ImageView extends JPanel
         JScrollPane scrollPane = new JScrollPane(textArea);
         offsetFinder.setMargin(new Insets(0,0,0,0));
         offsetFinder.addActionListener(offsetFinderAction);
+        offsetFinder.setToolTipText(Texts.Image.OFFSETFINDER_TOOLTIP);
         copy.setMargin(new Insets(0,0,0,0));
         copy.addActionListener(copyAction);
+        copy.setToolTipText(Texts.Image.COPY_TOOLTIP);
         paste.setMargin(new Insets(0,0,0,0));
         paste.addActionListener(pasteAction);
+        paste.setToolTipText(Texts.Image.PASTE_TOOLTIP);
 
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -166,6 +169,7 @@ public class ImageView extends JPanel
         time.setEditable(false);
         timeDiff.setEditable(false);
         timeDiff.setColumns(5);
+        timeDiff.setToolTipText(Texts.Image.DIFF_TOOLTIP);
         latitude.setEditable(false);
         longitude.setEditable(false);
         offsetFinder.setEnabled(true);
@@ -293,7 +297,6 @@ public class ImageView extends JPanel
                          - value.getWaypoint().getTimestamp().getMillis())
                        / 1000;
             timeDiff.setText(String.valueOf(diff));
-            timeDiff.setToolTipText(Texts.Image.DIFF_TOOLTIP);
             if(Math.abs(diff) > DIFF_THRESHOLD)
             {
                 timeDiff.setForeground(Color.RED);

@@ -53,6 +53,10 @@ public final class Texts
         public static final String LONGITUDE = bundle.getString("image.longitude");
         public static final String OFFSET_ERROR_TITLE = bundle.getString("image.offset_error_title");
         public static final String DIFF_TOOLTIP = bundle.getString("image.diff_tooltip");
+        public static final String EXPORT = bundle.getString("image.export");
+        public static final String COPY_TOOLTIP = bundle.getString("image.copy_tooltip");
+        public static final String PASTE_TOOLTIP = bundle.getString("image.paste_tooltip");
+	public static final String OFFSETFINDER_TOOLTIP = bundle.getString("image.offsetfinder_tooltip");
     }
 
 
