@@ -78,15 +78,17 @@ public class ImageView extends JPanel
     private Image[] clipboard;
     private Image value;
     private Dialogs dialogs;
+    private ActionListener copyListener;
 
     /**
      * @param dialogs used for offset finder button
      */
-    public ImageView(final Dialogs dialogs, Image[] clipboard)
+    public ImageView(final Dialogs dialogs, Image[] clipboard, ActionListener copyListener)
     {
         super(new BorderLayout());
         this.clipboard = clipboard;
         this.dialogs = dialogs;
+        this.copyListener = copyListener;
         setBorder(new EmptyBorder(5,5,5,5));
         add(thumbnail, BorderLayout.WEST);
         JPanel grid = new JPanel();
@@ -234,6 +236,7 @@ public class ImageView extends JPanel
                 value.pasteTime(clipboard[0].getTime());
                 d.fireTableStructureChanged();
                 d.fireTableDataChanged();
+                copyListener.actionPerformed(new ActionEvent(this, 0, null));
             }
             else
             {
@@ -324,6 +327,4 @@ public class ImageView extends JPanel
 
         return value;
     }
-
-
 }

@@ -17,6 +17,7 @@ package de.brazzy.nikki.view;
  */
 
 import java.awt.Component;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
@@ -36,9 +37,9 @@ public class ImageRenderer extends AbstractCellEditor implements TableCellRender
 {
     ImageView view;
 
-    public ImageRenderer(Dialogs dialogs, Image[] clipboard)
+    public ImageRenderer(Dialogs dialogs, Image[] clipboard, ActionListener copyListener)
     {
-        view = new ImageView(dialogs, clipboard);
+        view = new ImageView(dialogs, clipboard, copyListener);
     }
 
     @Override

@@ -16,7 +16,9 @@ package de.brazzy.nikki
  *   limitations under the License.
  */
 
+import de.brazzy.nikki.view.ImageRenderer;
 import de.brazzy.nikki.view.NikkiFrame
+import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Directory
 import javax.swing.event.ListSelectionListener
@@ -75,6 +77,10 @@ public class Nikki{
             view.dayList.repaint()
         } as PropertyChangeListener
     
+    private copyListener = {
+        view.dayList.repaint()	
+    } as ActionListener
+        
     private selectDirectoryAction = { it ->
             def sel = view.dirList.selectedValue
             if(sel)
@@ -221,7 +227,7 @@ public class Nikki{
      */
     public void build(Class prefsClass, Dialogs dialogs, 
             TimezoneFinder finder, ParserFactory parserFactory){
-        this.view = NikkiFrame.create(dialogs)
+        this.view = NikkiFrame.create()
         this.dialogs = dialogs
         this.model = new NikkiModel(prefsClass)
         this.timezoneFinder = finder
@@ -239,6 +245,10 @@ public class Nikki{
         view.exportButton.actionPerformed = exportAction
         view.helpButton.actionPerformed = aboutAction
         view.frame.addWindowListener(closeListener)
+        
+        def clipboard = new Image[1];
+        view.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs, clipboard, copyListener))
+        view.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs, clipboard, copyListener))
     }
 
     /**

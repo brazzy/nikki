@@ -51,10 +51,7 @@ public class NikkiFrame{
     def progressBar
     def helpButton
     
-    /**
-     * @param dialogs For user interaction via modal dialogs
-     */
-    public static NikkiFrame create(Dialogs dialogs){
+    public static NikkiFrame create(){
         def swing = new SwingBuilder()
         def result = new NikkiFrame()
         
@@ -122,9 +119,6 @@ public class NikkiFrame{
         }
         
         result.frame.defaultCloseOperation = JFrame.DO_NOTHING_ON_CLOSE;
-        def clipboard = new Image[1];
-        result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs, clipboard))
-        result.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs, clipboard))
         
         return result;
     }    
