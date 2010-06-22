@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder
 
 import de.brazzy.nikki.Texts
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ImageSortField
 
 /**
@@ -121,8 +122,9 @@ public class NikkiFrame{
         }
         
         result.frame.defaultCloseOperation = JFrame.DO_NOTHING_ON_CLOSE;
-        result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs))
-        result.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs))
+        def clipboard = new Image[1];
+        result.imageTable.setDefaultRenderer(Object.class, new ImageRenderer(dialogs, clipboard))
+        result.imageTable.setDefaultEditor(Object.class, new ImageRenderer(dialogs, clipboard))
         
         return result;
     }    

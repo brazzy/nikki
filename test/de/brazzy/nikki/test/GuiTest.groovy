@@ -449,31 +449,28 @@ class GuiTest extends AbstractNikkiTest {
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
-        def button = editor.copyPaste
-        assertFalse(button.enabled)
-        assertSame(ImageView.PASTE_ICON, button.icon)
+        assertFalse(editor.copy.enabled)
+        assertFalse(editor.paste.enabled)
         
         view.dayList.selectedIndex = 1
         view.imageTable.editCellAt(0,0)
         editor = view.imageTable.editorComponent
-        button = editor.copyPaste
-        assertTrue(button.enabled)
-        assertSame(ImageView.COPY_ICON, button.icon)
+        assertTrue(editor.copy.enabled)
+        assertFalse(editor.paste.enabled)
         
-        button.actionListeners[0].actionPerformed()
-        assertTrue(button.enabled)
-        assertSame(ImageView.COPY_ICON, button.icon)
+        editor.copy.actionListeners[0].actionPerformed()
+        assertTrue(editor.copy.enabled)
+        assertTrue(editor.paste.enabled)
         
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         editor = view.imageTable.editorComponent
-        button = editor.copyPaste
-        assertTrue(button.enabled)
-        assertSame(ImageView.PASTE_ICON, button.icon)
+        assertFalse(editor.copy.enabled)
+        assertTrue(editor.paste.enabled)
         assertNull(imageNoDate.time)
         assertNull(imageNoDate.waypoint)
         
-        button.actionListeners[0].actionPerformed()
+        editor.paste.actionListeners[0].actionPerformed()
         assertEquals(-1, view.dayList.selectedIndex)
         
         assertEquals(imageNoDate.time, imageWithDate.time)
@@ -483,8 +480,8 @@ class GuiTest extends AbstractNikkiTest {
         
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
-        assertTrue(button.enabled)
-        assertSame(ImageView.COPY_ICON, button.icon)        
+        assertTrue(editor.copy.enabled)
+        assertTrue(editor.paste.enabled)
     }
     
     public void testHelp()

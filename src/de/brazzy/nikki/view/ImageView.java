@@ -72,19 +72,21 @@ public class ImageView extends JPanel
     private JTextField longitude = new JTextField();
     private JButton offsetFinder = new JButton(
             new ImageIcon(ImageView.class.getResource("/icons/find.png")));
-    private JButton copyPaste = new JButton(COPY_ICON);
+    private JButton copy = new JButton(COPY_ICON);
+    private JButton paste = new JButton(PASTE_ICON);
     private JCheckBox export = new JCheckBox("export");
 
-    private Image clipboard;
+    private Image[] clipboard;
     private Image value;
     private Dialogs dialogs;
 
     /**
      * @param dialogs used for offset finder button
      */
-    public ImageView(final Dialogs dialogs)
+    public ImageView(final Dialogs dialogs, Image[] clipboard)
     {
         super(new BorderLayout());
+        this.clipboard = clipboard;
         this.dialogs = dialogs;
         setBorder(new EmptyBorder(5,5,5,5));
         add(thumbnail, BorderLayout.WEST);
@@ -101,8 +103,10 @@ public class ImageView extends JPanel
         JScrollPane scrollPane = new JScrollPane(textArea);
         offsetFinder.setMargin(new Insets(0,0,0,0));
         offsetFinder.addActionListener(offsetFinderAction);
-        copyPaste.setMargin(new Insets(0,0,0,0));
-        copyPaste.addActionListener(copyPasteAction);
+        copy.setMargin(new Insets(0,0,0,0));
+        copy.addActionListener(copyAction);
+        paste.setMargin(new Insets(0,0,0,0));
+        paste.addActionListener(pasteAction);
 
         GroupLayout layout = new GroupLayout(grid);
         grid.setLayout(layout);
@@ -129,7 +133,8 @@ public class ImageView extends JPanel
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(time)
                                 .addComponent(timeDiff)
-                                .addComponent(copyPaste))
+                                .addComponent(copy)
+                                .addComponent(paste))
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(longitude)
                                 .addComponent(offsetFinder)
@@ -148,7 +153,8 @@ public class ImageView extends JPanel
                     .addComponent(timeLabel)
                     .addComponent(time)
                     .addComponent(timeDiff)
-                    .addComponent(copyPaste))
+                    .addComponent(copy)
+                    .addComponent(paste))
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(latitudeLabel)
                     .addComponent(latitude)
@@ -197,26 +203,39 @@ public class ImageView extends JPanel
         }
     };
 
-    private transient ActionListener copyPasteAction = new ActionListener(){
+    private transient ActionListener copyAction = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e)
         {
             if(value.getTime() != null)
             {
-                clipboard = value;
+                clipboard[0] = value;
+                paste.setEnabled(true);
             }
-            else if(clipboard != null)
+            else
+            {
+                throw new IllegalStateException("button should not be "+
+                        "enabled when time is empty");
+            }
+        }
+    };
+
+    private transient ActionListener pasteAction = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(clipboard[0] != null)
             {
                 Day d = value.getDay();
-                value.setWaypoint(clipboard.getWaypoint());
-                value.pasteTime(clipboard.getTime());
+                value.setWaypoint(clipboard[0].getWaypoint());
+                value.pasteTime(clipboard[0].getTime());
                 d.fireTableStructureChanged();
                 d.fireTableDataChanged();
             }
             else
             {
                 throw new IllegalStateException("button should not be "+
-                        "enabled when both time and clipboard are empty");
+                        "enabled when clipboard is empty");
             }
         }
     };
@@ -230,17 +249,16 @@ public class ImageView extends JPanel
         filename.setText(value.getFileName());
         if(value.getTime() != null)
         {
-            copyPaste.setIcon(COPY_ICON);
-            copyPaste.setEnabled(true);
+            copy.setEnabled(true);
             time.setText(TIMESTAMP_FORMAT.print(value.getTime()));
             setTimeDiff(value);
         }
         else
         {
-            copyPaste.setIcon(PASTE_ICON);
-            copyPaste.setEnabled(clipboard!=null);
+            copy.setEnabled(false);
             time.setText(null);
         }
+        paste.setEnabled(clipboard[0]!=null);
         setGpsData(value);
         thumbnail.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());

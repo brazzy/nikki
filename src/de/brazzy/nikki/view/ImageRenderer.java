@@ -1,5 +1,5 @@
 package de.brazzy.nikki.view;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -29,18 +29,18 @@ import de.brazzy.nikki.util.Dialogs;
 /**
  * For rendering/editing {@link Image}s in a JTable.
  * Uses {@link ImageView} to do the actual work.
- * 
+ *
  * @author Michael Borgwardt
  */
 public class ImageRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor
 {
     ImageView view;
 
-    public ImageRenderer(Dialogs dialogs)
+    public ImageRenderer(Dialogs dialogs, Image[] clipboard)
     {
-        view = new ImageView(dialogs);
+        view = new ImageView(dialogs, clipboard);
     }
-    
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column)
@@ -50,12 +50,12 @@ public class ImageRenderer extends AbstractCellEditor implements TableCellRender
     }
 
     @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) 
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column)
     {
         view.setValue((Image)value);
         return view;
     }
-    
+
     @Override
     public Object getCellEditorValue()
     {
