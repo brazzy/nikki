@@ -59,9 +59,6 @@ public class ImageView extends JPanel
     public static final int DIFF_THRESHOLD = 30;
 
     private static final DateTimeFormatter TIMESTAMP_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-    public static final ImageIcon COPY_ICON = new ImageIcon(ImageView.class.getResource("/icons/page_copy.png"));
-    public static final ImageIcon PASTE_ICON = new ImageIcon(ImageView.class.getResource("/icons/paste_plain.png"));
-
     private JTextArea textArea = new JTextArea(2, 40);
     private JLabel thumbnail = new JLabel();
     private JTextField title = new JTextField();
@@ -72,8 +69,10 @@ public class ImageView extends JPanel
     private JTextField longitude = new JTextField();
     private JButton offsetFinder = new JButton(
             new ImageIcon(ImageView.class.getResource("/icons/find.png")));
-    private JButton copy = new JButton(COPY_ICON);
-    private JButton paste = new JButton(PASTE_ICON);
+    private JButton copy = new JButton(
+	    new ImageIcon(ImageView.class.getResource("/icons/page_copy.png")));
+    private JButton paste = new JButton(
+	    new ImageIcon(ImageView.class.getResource("/icons/paste_plain.png")));
     private JCheckBox export = new JCheckBox("export");
 
     private Image[] clipboard;
