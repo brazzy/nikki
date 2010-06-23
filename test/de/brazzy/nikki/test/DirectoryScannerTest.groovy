@@ -147,7 +147,53 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
         assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
     }
-    
+
+    public void testRescanRemove()
+    {
+        copyFile(IMAGE1)
+        copyFile(WAYPOINTS2)
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY2, IMAGE2)
+        WaypointFile file1 = addWaypointFile(DAY1, WAYPOINTS1)
+        WaypointFile file2 = addWaypointFile(DAY2, WAYPOINTS2)
+        Day day1 = tmpDir[0] 
+        Day day2 = tmpDir[1] 
+        
+        assertEquals(2, tmpDir.size())
+        assertEquals(2, tmpDir.images.size())
+        assertEquals(2, tmpDir.waypointFiles.size())
+        assertEquals(1, day1.images.size)
+        assertEquals(3, day1.waypoints.size())
+        assertEquals(1, day2.images.size)
+        assertEquals(3, day2.waypoints.size())
+        
+        scanner.zone = ZONE
+        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+
+        assertEquals(2, tmpDir.size())
+        assertEquals(1, tmpDir.images.size())
+        assertSame(image1, tmpDir.images[0])
+        assertEquals(1, tmpDir.waypointFiles.size())
+        assertSame(file1, tmpDir.waypointFiles[0])
+        assertEquals(1, day1.images.size)
+        assertEquals(1, day1.waypoints.size())
+        assertSame(day1.images[0].waypoint, day1.waypoints[0])
+        assertEquals(0, day2.images.size)
+        assertEquals(2, day2.waypoints.size())
+        assertEquals(day2.waypoints, file2.waypoints)
+        
+        assertTrue(new File(tmpDir.path, image1.fileName).delete())
+        
+        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        assertEquals(1, tmpDir.size())
+        assertEquals(0, tmpDir.images.size())
+        assertEquals(1, tmpDir.waypointFiles.size())
+        day1 = tmpDir[0] 
+        assertEquals(0, day1.images.size)
+        assertEquals(2, day1.waypoints.size())
+        assertEquals(day1.waypoints, file2.waypoints)
+    }
+
     public void testParseWaypointFile()
     {
         scanner.finder.addCall(-24f, 133.2f, TZ_2)

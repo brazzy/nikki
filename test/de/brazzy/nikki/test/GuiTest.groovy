@@ -206,6 +206,17 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(tmpDir.path.name + " (3, 2)", model[0].toString())
         assertEquals(DATE1+" (2, 4)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
+        
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        view.imageTable.editCellAt(0,0)
+        
+        assertTrue(imgFile.delete())
+        view.scanButton.actionListeners[0].actionPerformed()
+        
+        assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
+        assertEquals(DATE1+" (1, 3)", tmpDir[0].toString())
+        assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 
     public void testGeotag()
@@ -262,7 +273,6 @@ class GuiTest extends AbstractNikkiTest {
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         editor.offsetFinder.actionListeners[0].actionPerformed()
