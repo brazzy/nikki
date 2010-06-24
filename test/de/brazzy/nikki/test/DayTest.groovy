@@ -25,6 +25,7 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
@@ -44,19 +45,19 @@ class DayTest extends AbstractNikkiTest{
         assertEquals(DATE1+" (1, 0)", d.toString())
         d.images.add(i2)
         assertEquals(DATE1+" (2, 0)", d.toString())
-        d.waypoints.add(new Waypoint())
+        d.waypoints.add(new Waypoint(timestamp:new DateTime()))
         assertEquals(DATE1+" (2, 1)", d.toString())
         d.images.remove(i2)
-        d.waypoints.remove(0)
+        d.waypoints.remove(d.waypoints.first())
         assertEquals(DATE1+" (1, 0)", d.toString())
         
         d = new Day(directory: tmpDir)
         assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
         d.images.add(i1)
-        d.waypoints.add(new Waypoint())
+        d.waypoints.add(new Waypoint(timestamp:new DateTime()))
         assertEquals(Texts.Main.UNKNOWN_DAY+" (1, 1)", d.toString())
         d.images.remove(i1)
-        d.waypoints.remove(0)
+        d.waypoints.remove(d.waypoints.first())
         assertEquals(Texts.Main.UNKNOWN_DAY+" (0, 0)", d.toString())
     }
 

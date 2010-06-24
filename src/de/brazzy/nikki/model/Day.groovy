@@ -26,7 +26,6 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
 import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.util.WaypointComparator;
 
 import javax.swing.SwingWorker
 
@@ -62,7 +61,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
     private ImageSortField imageSortOrder
                           
     /** Waypoints recorded on this day */
-    final List<Waypoint> waypoints = []
+    final SortedSet<Waypoint> waypoints = new TreeSet()
 
     /** Date represented by this day */
     final LocalDate date
@@ -144,7 +143,6 @@ class Day extends AbstractTableModel implements Comparable<Day>
      */
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
-        waypoints.sort(new WaypointComparator())
         images*.geotag(offset)
     }
 

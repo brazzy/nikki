@@ -25,7 +25,7 @@ import org.joda.time.format.DateTimeFormatter
 /**
  * An entry in a GPS track, with timestamp and GPS coordinates
  */
-class Waypoint implements Serializable{
+class Waypoint implements Serializable, Comparable<Waypoint>{
     public static final long serialVersionUID = 1;
     
     private static final DateTimeFormatter PARSE_FORMAT = DateTimeFormat.forPattern('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
@@ -46,5 +46,9 @@ class Waypoint implements Serializable{
     public String toString()
     {
         return timestamp.toString()
+    }
+    
+    public int compareTo(Waypoint other){
+	return this.timestamp.compareTo(other.timestamp);
     }
 }

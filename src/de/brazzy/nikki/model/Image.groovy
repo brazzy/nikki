@@ -17,7 +17,6 @@ package de.brazzy.nikki.model;
  */
 
 import de.brazzy.nikki.util.ImageReader
-import de.brazzy.nikki.util.WaypointComparator
 import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.Document
 import de.micromata.opengis.kml.v_2_2_0.Coordinate
@@ -153,7 +152,6 @@ class Image implements Serializable{
     {
         if(!waypoint)
         {
-            day.waypoints.sort(new WaypointComparator())
             geotag()
         }
         Kml kml = KmlFactory.createKml()
@@ -193,27 +191,27 @@ class Image implements Serializable{
     public void geotag(ReadablePeriod offset = Seconds.seconds(0))
     {
         def imagetime = this.time.plus(offset)
-        def index = Collections.binarySearch(day.waypoints, 
-                new Waypoint(timestamp: imagetime), 
-                new WaypointComparator())
+        Waypoint imageTimestamp = new Waypoint(timestamp: imagetime)
+        def beforeSet = day.waypoints.headSet(imageTimestamp)
+        def afterSet = day.waypoints.tailSet(imageTimestamp)        
         def result
             
-        if(index>=0) // direct hit
+        if(afterSet.isEmpty()) // after all WPs
         {
-            result = day.waypoints[index]
+            result = beforeSet.last()
         }
-        else if(-index==day.waypoints.size()+1) // after all WPs
+        else if(beforeSet.isEmpty()) // before all WPs
         {
-            result = day.waypoints[day.waypoints.size()-1]
+            result = afterSet.first()
         }
-        else if(index == -1) // before all WPs
-        {
-            result = day.waypoints[0]
+        else if(afterSet.first().compareTo(imageTimestamp) == 0)
+        { // direct hit
+            result = afterSet.first()
         }
         else
         {
-            def before = day.waypoints[-(index+2)]
-            def after = day.waypoints[-(index+1)]
+            def before = beforeSet.last()
+            def after =  afterSet.first()
             def distBefore = Seconds.secondsBetween(before.timestamp, imagetime)
             def distAfter = Seconds.secondsBetween(imagetime, after.timestamp)
                                       

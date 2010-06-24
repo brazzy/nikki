@@ -60,9 +60,11 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(3, day.waypoints.size())
         assertEquals(1, day.images.size())
         assertSame(day.images[0], tmpDir.images[IMAGE1])
-        assertSame(day.waypoints[0], image.waypoint)
-        assertSame(day.waypoints[1], tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
-        assertSame(day.waypoints[2], tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
+        assertSame(day.waypoints.first(), 
+        	tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
+        assertSame(day.waypoints.headSet(day.waypoints.last()).last(), 
+        	tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
+        assertSame(day.waypoints.last(), image.waypoint)
         assertEquals(DAY1, day.date)
         assertEquals(DATE1+" (1, 3)", day.toString())
 
@@ -111,8 +113,8 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(DAY1, day1.date)
         assertSame(day1.directory, tmpDir)
         assertEquals(3, day1.waypoints.size())
-        assertSame(file.waypoints[0], day1.waypoints[1])
-        assertSame(file.waypoints[1], day1.waypoints[2])
+        assertSame(file.waypoints[0], day1.waypoints.first())
+        assertSame(file.waypoints[1], day1.waypoints.headSet(day1.waypoints.last()).last())
 
         assertEquals(1, day1.images.size())
         Image image1 = day1.images[0]
@@ -144,8 +146,8 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertSame(day2, image2.day)
         assertEquals(DAY2, image2.time.toLocalDate())
         assertEquals(ZONE, image2.time.zone)
-        assertTrue(Math.abs(day2.waypoints[1].latitude.value+23) < 1.0)
-        assertEquals(DAY2, day2.waypoints[1].timestamp.toLocalDate())
+        assertTrue(Math.abs(day2.waypoints.last().latitude.value+23) < 1.0)
+        assertEquals(DAY2, day2.waypoints.last().timestamp.toLocalDate())
     }
 
     public void testRescanRemove()
