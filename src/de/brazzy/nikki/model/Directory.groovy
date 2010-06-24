@@ -110,6 +110,28 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
     }
 
     /**
+     * Removes a Waypoint, deletes Day if empty
+     */
+    public void removeWaypoint(Waypoint wp)
+    {
+        def date = wp.timestamp.toLocalDate()
+        def day = getDay(date)
+        if(day)
+        {
+            day.waypoints.remove(wp)
+            wp.day = null
+            if(day.images.size() == 0 && day.waypoints.size() == 0)
+            {
+                remove(day)
+            }
+        }
+        else
+        {
+            throw new IllegalStateException("tried to remove image for unknown day $date")            
+        }
+    }
+
+    /**
      * Returns the Day in this Directory that corresponds to the given date
      */
     public Day getDay(LocalDate date)

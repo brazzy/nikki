@@ -176,13 +176,13 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(1, tmpDir.images.size())
         assertSame(image1, tmpDir.images.values().iterator().next())
         assertEquals(1, tmpDir.waypointFiles.size())
-        assertSame(file1, tmpDir.waypointFiles[0])
+        assertSame(file2, tmpDir.waypointFiles.values().iterator().next())
         assertEquals(1, day1.images.size)
         assertEquals(1, day1.waypoints.size())
-        assertSame(day1.images[0].waypoint, day1.waypoints[0])
+        assertSame(day1.images[0].waypoint, day1.waypoints.first())
         assertEquals(0, day2.images.size)
         assertEquals(2, day2.waypoints.size())
-        assertEquals(day2.waypoints, file2.waypoints)
+        assertEquals(day2.waypoints as Set, file2.waypoints as Set)
         
         assertTrue(new File(tmpDir.path, image1.fileName).delete())
         
@@ -193,7 +193,7 @@ class DirectoryScannerTest extends AbstractNikkiTest
         day1 = tmpDir[0] 
         assertEquals(0, day1.images.size)
         assertEquals(2, day1.waypoints.size())
-        assertEquals(day1.waypoints, file2.waypoints)
+        assertEquals(day1.waypoints as Set, file2.waypoints as Set)
     }
 
     public void testParseWaypointFile()

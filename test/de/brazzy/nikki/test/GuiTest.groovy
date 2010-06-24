@@ -204,7 +204,7 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
         assertEquals(tmpDir.path.name + " (3, 2)", model[0].toString())
-        assertEquals(DATE1+" (2, 4)", tmpDir[0].toString())
+        assertEquals(DATE1+" (2, 3)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
         
         view.dirList.selectedIndex = 0
@@ -213,9 +213,10 @@ class GuiTest extends AbstractNikkiTest {
         
         assertTrue(imgFile.delete())
         view.scanButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
         
         assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
-        assertEquals(DATE1+" (1, 3)", tmpDir[0].toString())
+        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
 

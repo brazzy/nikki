@@ -100,6 +100,19 @@ class DirectoryScanner {
         for(image in toRemove){
             dir.removeImage(image)
         }
+        
+        toRemove = []
+        for(waypointFile in dir.waypointFiles.values()){
+            if(!files.contains(waypointFile.fileName)){
+        	toRemove.add(waypointFile)
+            }
+        }
+        for(waypointFile in toRemove){
+            dir.waypointFiles.remove(waypointFile.fileName)
+            for(waypoint in waypointFile.waypoints){
+        	dir.removeWaypoint(waypoint)
+            }
+        }
     }
     
     private parseWaypointFiles(Directory dir){
