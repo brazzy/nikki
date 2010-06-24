@@ -75,6 +75,9 @@ public class Nikki{
             }
             view.dirList.repaint()
             view.dayList.repaint()
+            if(view.dayList.selectedValue){
+                view.dayList.selectedValue.fireTableDataChanged()        	
+            }
         } as PropertyChangeListener
     
     private copyListener = {
