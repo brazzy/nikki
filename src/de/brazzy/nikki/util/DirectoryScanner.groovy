@@ -25,6 +25,7 @@ import javax.swing.SwingWorker;
 import org.joda.time.DateTimeZone;
 
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.log_parser.LogParser;
 import de.brazzy.nikki.util.log_parser.ParserFactory;
@@ -35,11 +36,11 @@ import de.brazzy.nikki.util.log_parser.ParserFactory;
  * @author Michael Borgwardt
  */
 class DirectoryScanner {
-
+    
     private static final def FILTER_JPG = { dir, name ->
-    name.toUpperCase().endsWith(".JPG")
+        name.toUpperCase().endsWith(".JPG")
     } as FilenameFilter
-
+    
     /** finds time zones for waypoints */
     TimezoneFinder finder;
     
@@ -64,16 +65,14 @@ class DirectoryScanner {
      */
     public ScanResult scan(Directory dir, SwingWorker worker){
         worker?.progress = 0;
-
+        
         int count = 0;
         def imageFiles = dir.path.listFiles(FILTER_JPG)
         
         for(file in imageFiles){
-            if(!dir.images[file.name])
-            {
+            if(!dir.images[file.name]){
                 ImageReader reader = new ImageReader(file, this.zone)
-                if(reader.timeZone==null)
-                {
+                if(reader.timeZone==null){
                     return ScanResult.TIMEZONE_MISSING
                 }
                 dir.addImage(reader.createImage())
@@ -81,21 +80,33 @@ class DirectoryScanner {
             
             worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
         }
-
+        
         parseWaypointFiles(dir)
+        removeMissing(dir)
         
         dir.fireContentsChanged(dir, 0, dir.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
     }
     
-    private parseWaypointFiles(Directory dir)
-    {
+    private removeMissing(Directory dir){
+        def files = dir.path.list() as Set;
+        def toRemove = []
+        for(image in dir.images.values()){
+            if(!files.contains(image.fileName)){
+        	toRemove.add(image)
+            }
+        }
+        for(image in toRemove){
+            dir.removeImage(image)
+        }
+    }
+    
+    private parseWaypointFiles(Directory dir){
         def parserMap = parserFactory.findParsers(dir.path, dir.path.list())
         
         for(entry in parserMap){
-            if(!dir.waypointFiles[entry.key])
-            {
+            if(!dir.waypointFiles[entry.key]){
                 def wf = parseWaypointFile(new File(dir.path, entry.key), entry.value)
                 wf.directory = dir
                 dir.addWaypointFile(wf)
@@ -106,16 +117,13 @@ class DirectoryScanner {
     /**
      * Parses one GPS log file
      */
-    public WaypointFile parseWaypointFile(File file, LogParser parser)
-    {
+    public WaypointFile parseWaypointFile(File file, LogParser parser){
         WaypointFile wf = new WaypointFile(fileName: file.getName())
         def wpIterator = parser.parse(new BufferedInputStream(new FileInputStream(file)))
-        while(wpIterator.hasNext())
-        {
+        while(wpIterator.hasNext()){
             def wp = wpIterator.next()
             def wpZone = finder.find(wp.latitude.value, wp.longitude.value)
-            if(wpZone)
-            {
+            if(wpZone) {
                 wp.timestamp = wp.timestamp.withZone(wpZone)                
             }
             wp.file = wf

@@ -94,8 +94,9 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         if(day)
         {
             day.images.remove(image)
+            day.waypoints.remove(image.waypoint)
             image.day = null
-            if(day.images.size() == 0)
+            if(day.images.size() == 0 && day.waypoints.size() == 0)
             {
                 remove(day)
             }

@@ -172,7 +172,7 @@ class DirectoryScannerTest extends AbstractNikkiTest
 
         assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
-        assertSame(image1, tmpDir.images[0])
+        assertSame(image1, tmpDir.images.values().iterator().next())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertSame(file1, tmpDir.waypointFiles[0])
         assertEquals(1, day1.images.size)
