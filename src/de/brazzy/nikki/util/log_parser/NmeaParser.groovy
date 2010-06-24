@@ -118,6 +118,9 @@ class NmeaIterator implements Iterator<Waypoint>
         {
             nextLine = reader.readLine()
         }
+        if(nextLine == null){
+            reader.close();
+        }
     }
 
     void remove(){ throw new UnsupportedOperationException() }
