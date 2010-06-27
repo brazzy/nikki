@@ -17,6 +17,7 @@ package de.brazzy.nikki.test
  */
 
 import de.brazzy.nikki.Nikki
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory 
 import de.brazzy.nikki.model.NikkiModel
 import de.brazzy.nikki.model.Image
@@ -71,7 +72,7 @@ class GuiTest extends AbstractNikkiTest {
         view.frame.dispose()
         super.tearDown()
     }
-
+    
     public void testAdd()
     {
         assertEquals(0, model.size())
@@ -673,28 +674,32 @@ class GuiTest extends AbstractNikkiTest {
         view.imageTable.editCellAt(2,0)
         def editor = view.imageTable.editorComponent
         assertTrue(editor.export.enabled)
-        assertTrue(editor.export.toolTipText.contains("Exportieren"))
+        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_TOOLTIP)
         editor.copy.actionListeners[0].actionPerformed()
         
         view.imageTable.editCellAt(0,0)
         editor = view.imageTable.editorComponent        
         assertFalse(editor.export.enabled)
-        assertTrue(editor.export.toolTipText.contains("Geotagging"))
+        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_LOCKED_TOOLTIP)
         editor.paste.actionListeners[0].actionPerformed()
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent        
         assertTrue(editor.export.enabled)
-        assertTrue(editor.export.toolTipText.contains("Exportieren"))
+        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_TOOLTIP)
         
         view.imageTable.editCellAt(1,0)
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.enabled)
-        assertTrue(editor.export.toolTipText.contains("Geotagging"))
+        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_LOCKED_TOOLTIP)
         
         dialogs.add(null)
         view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent        
         
         assertTrue(editor.export.enabled)
-        assertTrue(editor.export.toolTipText.contains("Exportieren"))
+        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_TOOLTIP)
     }
 }
 

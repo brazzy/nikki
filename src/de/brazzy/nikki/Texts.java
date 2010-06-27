@@ -57,6 +57,8 @@ public final class Texts
         public static final String COPY_TOOLTIP = bundle.getString("image.copy_tooltip");
         public static final String PASTE_TOOLTIP = bundle.getString("image.paste_tooltip");
 	public static final String OFFSETFINDER_TOOLTIP = bundle.getString("image.offsetfinder_tooltip");
+	public static final String EXPORT_TOOLTIP = bundle.getString("image.export_tooltip");
+	public static final String EXPORT_LOCKED_TOOLTIP = bundle.getString("image.export_locked_tooltip");
     }
 
 

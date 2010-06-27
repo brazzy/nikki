@@ -269,6 +269,13 @@ public class ImageView extends JPanel
         thumbnail.setIcon(new ImageIcon(value.getThumbnail()));
         textArea.setText(value.getDescription());
         export.setSelected(value.getExport());
+        if(value.getWaypoint() == null){
+            export.setEnabled(false);
+            export.setToolTipText(Texts.Image.EXPORT_LOCKED_TOOLTIP);
+        } else {
+            export.setEnabled(true);
+            export.setToolTipText(Texts.Image.EXPORT_TOOLTIP);
+        }
     }
 
     private void setGpsData(Image value)
