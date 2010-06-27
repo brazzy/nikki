@@ -652,6 +652,45 @@ class GuiTest extends AbstractNikkiTest {
         view.exportButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
     }
+    
+    public void testExportLock()
+    {
+        Image image1 = addImage(DAY1, IMAGE2)
+        Image image2 = addImage(DAY1, IMAGE1)
+        Image image3 = addImage(DAY1, "dummy")
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        image1.export = false
+        image1.waypoint = null
+        image2.export = false
+        image2.waypoint = null
+        image3.export = false
+        assertNotNull(image3.waypoint)
+        model.add(tmpDir)
+        
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        
+        view.imageTable.editCellAt(2,0)
+        def editor = view.imageTable.editorComponent
+        assertTrue(editor.export.enabled)
+        editor.copy.actionListeners[0].actionPerformed()
+        
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent        
+        assertFalse(editor.export.enabled)
+        editor.paste.actionListeners[0].actionPerformed()
+        assertTrue(editor.export.enabled)
+        
+        view.imageTable.editCellAt(1,0)
+        editor = view.imageTable.editorComponent
+        assertFalse(editor.export.enabled)
+        
+        dialogs.add(null)
+        view.tagButton.actionListeners[0].actionPerformed()
+        assertTrue(dialogs.isQueueEmpty())
+        
+        assertTrue(editor.export.enabled)
+    }
 }
 
 class ExitException extends SecurityException { }
