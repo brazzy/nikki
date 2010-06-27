@@ -673,23 +673,28 @@ class GuiTest extends AbstractNikkiTest {
         view.imageTable.editCellAt(2,0)
         def editor = view.imageTable.editorComponent
         assertTrue(editor.export.enabled)
+        assertTrue(editor.export.toolTipText.contains("Exportieren"))
         editor.copy.actionListeners[0].actionPerformed()
         
         view.imageTable.editCellAt(0,0)
         editor = view.imageTable.editorComponent        
         assertFalse(editor.export.enabled)
+        assertTrue(editor.export.toolTipText.contains("Geotagging"))
         editor.paste.actionListeners[0].actionPerformed()
         assertTrue(editor.export.enabled)
+        assertTrue(editor.export.toolTipText.contains("Exportieren"))
         
         view.imageTable.editCellAt(1,0)
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.enabled)
+        assertTrue(editor.export.toolTipText.contains("Geotagging"))
         
         dialogs.add(null)
         view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
         
         assertTrue(editor.export.enabled)
+        assertTrue(editor.export.toolTipText.contains("Exportieren"))
     }
 }
 

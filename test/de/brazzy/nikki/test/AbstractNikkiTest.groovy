@@ -65,6 +65,7 @@ class AbstractNikkiTest extends GroovyTestCase
     {
         tmpDir = new Directory(path: new File(
                 System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
+        Locale.setDefault(Locale.GERMAN);
     }
 
     protected void tearDown()
