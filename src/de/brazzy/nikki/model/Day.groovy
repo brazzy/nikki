@@ -3,17 +3,18 @@ package de.brazzy.nikki.model;
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import javax.swing.table.AbstractTableModel
@@ -43,8 +44,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * 
  * @author Michael Borgwardt
  */
-class Day extends AbstractTableModel implements Comparable<Day>
-{
+class Day extends AbstractTableModel implements Comparable<Day> {
     public static final long serialVersionUID = 1
     
     private static final DateTimeFormatter DISPLAY_FORMAT = ISODateTimeFormat.date()
@@ -54,15 +54,15 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * (thus creating a gap) in the exported KML file
      */
     public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
-
+    
     /** Images taken on this day */
     private final ListDataModel<Image> images = new ListDataModel<Image>()
     
     private ImageSortField imageSortOrder
-                          
+    
     /** Waypoints recorded on this day */
     final SortedSet<Waypoint> waypoints = new TreeSet()
-
+    
     /** Date represented by this day */
     final LocalDate date
     
@@ -72,28 +72,25 @@ class Day extends AbstractTableModel implements Comparable<Day>
      *  ignores "private")
      */
     final Directory directory
-
+    
     public Day(Map arguments){
         this.date = arguments?.date
         this.directory = arguments?.directory
         setImageSortOrder(this.date ?
-            ImageSortField.TIME :
-            ImageSortField.FILENAME)
+                ImageSortField.TIME :
+                ImageSortField.FILENAME)
     }
     
-    public String toString()
-    {
+    public String toString() {
         return (date==null? Texts.Main.UNKNOWN_DAY : DISPLAY_FORMAT.print(date)) +
-               " ("+images.size()+", "+waypoints.size()+")"
+        " ("+images.size()+", "+waypoints.size()+")"
     }
-
+    
     public setImageSortOrder(ImageSortField order){
-        if(order == ImageSortField.TIME && !this.date)
-        {
+        if(order == ImageSortField.TIME && !this.date) {
             throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
         }
-        if(imageSortOrder != order)
-        {
+        if(imageSortOrder != order) {
             imageSortOrder = order
             images.comparator = order.comparator
             fireTableStructureChanged();
@@ -105,8 +102,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * From AbstractTableModel
      */
     @Override
-    public int getRowCount()
-    {
+    public int getRowCount() {
         images.size()
     }
     
@@ -114,8 +110,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * From AbstractTableModel
      */
     @Override
-    public int getColumnCount()
-    {
+    public int getColumnCount() {
         1
     }
     
@@ -123,8 +118,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * From AbstractTableModel
      */
     @Override
-    public Object getValueAt(int row, int column)
-    {
+    public Object getValueAt(int row, int column) {
         images[row]
     }
     
@@ -132,20 +126,18 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * From AbstractTableModel
      */
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) 
-    {
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
         true
     }
-
+    
     /**
      * Assigns coordinates to each image on this day, based on the
      * waypoint with the most similar timestamp
      */
-    public void geotag(ReadablePeriod offset = Seconds.seconds(0))
-    {
+    public void geotag(ReadablePeriod offset = Seconds.seconds(0)) {
         images*.geotag(offset)
     }
-
+    
     /**
      * Exports this day's data (Annotated images and GPS tracks)
      * to a KMZ file
@@ -153,15 +145,14 @@ class Day extends AbstractTableModel implements Comparable<Day>
      * @param out stream to write the data to
      * @param worker for updating progress
      */
-    public void export(ZipOutputStream out, SwingWorker worker)
-    {
+    public void export(ZipOutputStream out, SwingWorker worker) {
         worker?.progress = 0;
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
         doc.createAndAddStyle().withId("track")
-            .createAndSetLineStyle()
-            .withWidth(4.0)
-            .withColor("801977FF")
+                .createAndSetLineStyle()
+                .withWidth(4.0)
+                .withColor("801977FF")
         
         int count = 0;
         out.method = ZipOutputStream.STORED        
@@ -173,7 +164,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
             image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))
         }
-
+        
         exportWaypoints(doc)
         
         out.method = ZipOutputStream.DEFLATED
@@ -184,8 +175,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
         worker?.progress = 0
     }
     
-    private static void createDirEntry(ZipOutputStream out, String dirName)
-    {
+    private static void createDirEntry(ZipOutputStream out, String dirName) {
         def entry = new ZipEntry(dirName);
         entry.size = 0;
         entry.crc = 0;
@@ -193,14 +183,12 @@ class Day extends AbstractTableModel implements Comparable<Day>
         out.closeEntry()
     }
     
-    private void exportWaypoints(Document doc)
-    {
+    private void exportWaypoints(Document doc) {
         LineString ls;        
         DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
         for(Waypoint wp : waypoints) {
             def gap = new Duration(previous, wp.timestamp)
-            if(gap.isLongerThan(WAYPOINT_THRESHOLD))
-            {
+            if(gap.isLongerThan(WAYPOINT_THRESHOLD)) {
                 ls = startLineSegment(doc)
             }
             ls.addToCoordinates(wp.longitude.value, wp.latitude.value)
@@ -208,19 +196,17 @@ class Day extends AbstractTableModel implements Comparable<Day>
         }
     }
     
-    private LineString startLineSegment(Document doc)
-    {
+    private LineString startLineSegment(Document doc) {
         return doc.createAndAddPlacemark()
-            .withStyleUrl("#track")
-            .createAndSetLineString()
-            .withTessellate(Boolean.TRUE)
-            .withExtrude(Boolean.TRUE)
-            .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
+        .withStyleUrl("#track")
+        .createAndSetLineString()
+        .withTessellate(Boolean.TRUE)
+        .withExtrude(Boolean.TRUE)
+        .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
     }
-
+    
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((date == null) ? 0 : date.hashCode());
@@ -228,8 +214,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
         return result;
     }
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this.is(obj))
             return true
         if (obj == null)
@@ -237,8 +222,7 @@ class Day extends AbstractTableModel implements Comparable<Day>
         if (!(obj instanceof Day))
             return false
         Day other = (Day) obj
-        if (date == null)
-        {
+        if (date == null) {
             if (other.date != null)
                 return false
         }
@@ -248,10 +232,8 @@ class Day extends AbstractTableModel implements Comparable<Day>
     }
     
     @Override
-    public int compareTo(Day other)
-    {
-        if(date==null)
-        {
+    public int compareTo(Day other) {
+        if(date==null) {
             return other.date==null ? 0 : -1                
         }
         return other.date == null ? 1 : date.compareTo(other.date)

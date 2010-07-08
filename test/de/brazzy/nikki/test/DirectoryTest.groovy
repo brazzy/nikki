@@ -3,17 +3,18 @@ package de.brazzy.nikki.test
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import groovy.mock.interceptor.MockFor;
@@ -31,9 +32,8 @@ import de.brazzy.nikki.model.WaypointFile
  * @author Michael Borgwardt
  */
 public class DirectoryTest extends AbstractNikkiTest {
-
-    public void testDirectoryToString()
-    {
+    
+    public void testDirectoryToString() {
         assertEquals(tmpDir.path.name+" (0, 0)", tmpDir.toString())
         tmpDir.images[IMAGE1] = new Image(fileName: IMAGE1);
         assertEquals(tmpDir.path.name+" (1, 0)", tmpDir.toString())
@@ -45,20 +45,18 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir.waypointFiles.remove(IMAGE1)
         assertEquals(tmpDir.path.name+" (1, 0)", tmpDir.toString())
     }
-
-    public void testEqualsHashCode()
-    {
+    
+    public void testEqualsHashCode() {
         def dir1 = new Directory(path:new File("C:\\tmp"))
         def dir2 = tmpDir
         def dir1a = new Directory(path:new File("C:\\tmp"))
         def dir2a = new Directory(path:tmpDir.path)
-
+        
         checkEqualsHashCode([dir1, dir2], [dir1a, dir2a])
     }
-
     
-    public void testGetDay()
-    {
+    
+    public void testGetDay() {
         Day day1 = new Day(date:DAY1)
         Day day2 = new Day(date:DAY2)
         Day dayX = new Day()
@@ -70,8 +68,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertSame(dayX, tmpDir.getDay(null))
     }
     
-    public void testAdd()
-    {        
+    public void testAdd() {        
         def mock = new MockFor(ListDataListener)
         mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
         mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
@@ -84,14 +81,14 @@ public class DirectoryTest extends AbstractNikkiTest {
         Day day2 = new Day(date:DAY2)
         Day dayX = new Day()
         assert 0 == tmpDir.size
-
+        
         tmpDir.add(day2)
         assert 1 == tmpDir.size
         assertFalse(tmpDir.contains(day1))
         assertTrue(tmpDir.contains(day2))
         assertFalse(tmpDir.contains(dayX))
         assertSame(day2, tmpDir[0])
-
+        
         tmpDir.add(dayX)
         assert 2 == tmpDir.size
         assertFalse(tmpDir.contains(day1))
@@ -109,31 +106,26 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertSame(day2, tmpDir[2])
         assertSame(dayX, tmpDir[0])
         
-        try
-        {
+        try {
             tmpDir.add(null)
             fail("added null")
         }
-        catch(IllegalArgumentException e)
-        {
+        catch(IllegalArgumentException e) {
             assert e.message.contains("must not be null")
         }
         
-        try
-        {
+        try {
             tmpDir.add(day1)
             fail("added already present day")
         }
-        catch(IllegalArgumentException e)
-        {
+        catch(IllegalArgumentException e) {
             assert e.message.contains("Already")
         }
         
         mock.verify(mockListener)
     }
     
-    public void testRemove()
-    {
+    public void testRemove() {
         
         Day day1 = new Day(date:DAY1)
         Day day2 = new Day(date:DAY2)
@@ -165,9 +157,8 @@ public class DirectoryTest extends AbstractNikkiTest {
         
         mock.verify(mockListener)
     }
-
-    public void testIsModified()
-    {
+    
+    public void testIsModified() {
         copyFile(IMAGE1)
         Image image = addImage(DAY1, IMAGE1)
         image.modified = false

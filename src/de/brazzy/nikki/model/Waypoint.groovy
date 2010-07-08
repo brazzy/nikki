@@ -3,17 +3,18 @@ package de.brazzy.nikki.model;
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import org.joda.time.DateTime
@@ -29,10 +30,10 @@ class Waypoint implements Serializable, Comparable<Waypoint>{
     public static final long serialVersionUID = 1;
     
     private static final DateTimeFormatter PARSE_FORMAT = DateTimeFormat.forPattern('ddMMyyHHmmss.SSS').withZone(DateTimeZone.UTC)
-
+    
     /** GPS log file in which the waypoint is recorded */
     WaypointFile file
-
+    
     /** Day to which the waypoint is assigned (based on timezone of nearest town) */
     Day day
     
@@ -43,12 +44,11 @@ class Waypoint implements Serializable, Comparable<Waypoint>{
     
     GeoCoordinate longitude
     
-    public String toString()
-    {
+    public String toString() {
         return timestamp.toString()
     }
     
     public int compareTo(Waypoint other){
-	return this.timestamp.compareTo(other.timestamp);
+        return this.timestamp.compareTo(other.timestamp);
     }
 }

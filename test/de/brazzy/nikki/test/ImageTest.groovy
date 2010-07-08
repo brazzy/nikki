@@ -3,17 +3,18 @@ package de.brazzy.nikki.test
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import de.brazzy.nikki.util.ImageReader
@@ -37,42 +38,39 @@ import org.joda.time.LocalDate;
  * @author Michael Borgwardt
  */
 class ImageTest extends AbstractNikkiTest{
-
+    
     ImageReader reader
-
-    public void setUp()
-    {
+    
+    public void setUp() {
         super.setUp()
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").toURI()),
-            DateTimeZone.UTC)
+                DateTimeZone.UTC)
     }
-
-    public void testTimezone()
-    {
+    
+    public void testTimezone() {
         assertNotNull(reader.nikkiIFD)
         assertEquals(TZ_DARWIN, reader.timeZone)
         assertEquals(new DateTime(2009, 11, 11, 19, 10, 27, 0, DateTimeZone.forID("Australia/Darwin")), 
-                     reader.time)
+                reader.time)
         def image = reader.createImage()
         assertEquals(TZ_DARWIN, image.time.zone)
-
+        
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
                 TZ_BERLIN)
         assertEquals(TZ_BERLIN, reader.timeZone)
         assertEquals(new DateTime(2009, 11, 12, 10, 10, 10, 0, TZ_BERLIN), 
-                     reader.time)
+                reader.time)
         image = reader.createImage()
         assertEquals(TZ_BERLIN, image.time.zone)
-
+        
         reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
-            null)
+                null)
         assertNull(reader.timeZone)
         image = reader.createImage()
         assertNull(image.time)
     }
-
-    public void testThumbnail()
-    {
+    
+    public void testThumbnail() {
         assertNotNull(reader.exifData)
         assertEquals(Rotation.LEFT, reader.rotation)
         assertNull(reader.isThumbnailNew())
@@ -82,9 +80,9 @@ class ImageTest extends AbstractNikkiTest{
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(120, thumb.width)
         assertEquals(160, thumb.height)
-
+        
         reader = new ImageReader(new File(getClass().getResource(IMAGE2).toURI()),
-            TZ_BERLIN)
+                TZ_BERLIN)
         assertEquals(Rotation.NONE, reader.rotation)
         assertNull(reader.thumbnailNew)
         thumb = reader.createImage().thumbnail
@@ -93,7 +91,7 @@ class ImageTest extends AbstractNikkiTest{
         thumb = ImageIO.read(new ByteArrayInputStream(thumb))
         assertEquals(180, thumb.width)
         assertEquals(135, thumb.height)
-
+        
         reader = new ImageReader(new File(getClass().getResource(NO_EXIF).toURI()),
                 TZ_BERLIN)
         assertNull(reader.thumbnailNew)
@@ -105,9 +103,8 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(180, thumb.width)
         assertEquals(180, thumb.height)
     }
-
-    public void testReadExif()
-    {
+    
+    public void testReadExif() {
         assertNotNull(reader.nikkiIFD)
         assertNotNull(reader.gpsIFD)
         assertTrue(reader.export)
@@ -118,9 +115,8 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(45.5f, reader.waypoint.latitude.value)
         assertEquals(-16.5f, reader.waypoint.longitude.value)
     }
-
-    public void testOffsetFinder()
-    {
+    
+    public void testOffsetFinder() {
         def DIFF_SECONDS = 13
         TimezoneFinder tzFinder = new TimezoneFinder();
         Image im = reader.createImage()
@@ -140,7 +136,7 @@ class ImageTest extends AbstractNikkiTest{
         def col = style.color
         assertEquals(Image.OFFSET_FINDER_COLOR, style.color.text())
         assertEquals(String.valueOf(Image.OFFSET_FINDER_SCALE), String.valueOf(style.scale.text()))
-
+        
         def placemarks = finder.Document.Placemark
         assertEquals(3, placemarks.size())
         assertEquals("testTitle", placemarks[0].name.text())
@@ -150,31 +146,30 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(DIFF_SECONDS as String, placemarks[2].name.text())
         assertNotNull(placemarks[2].Point)
     }
-
-    public void testSaveImage()
-    {
+    
+    public void testSaveImage() {
         copyFile(IMAGE2)
         long baseTime = System.currentTimeMillis()-10000000
         File file = new File(tmpDir.path, IMAGE2)
         assertTrue(file.setLastModified(baseTime))
-
+        
         Image image = addImage(DAY2, IMAGE2)
-
+        
         assertTrue(file.lastModified() == baseTime)
         image.save(tmpDir.path)
         assertFalse(file.lastModified() == baseTime)
-
+        
         assertTrue(file.setLastModified(baseTime))
         image.save(tmpDir.path)
         assertTrue(file.lastModified() == baseTime)
-
+        
         image.description = "Ü\nß"
         image.title = "ä#'\n\n<>"
         image.export = false
         byte[] th = image.thumbnail
         image.save(tmpDir.path)
         assertFalse(file.lastModified() == baseTime)
-
+        
         ImageReader reader = new ImageReader(file, null)
         assertEquals(ZONE.ID, reader.timeZone.ID)
         assertEquals("Ü\nß", reader.description)
@@ -207,9 +202,8 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(180, thumb.width)
         assertEquals(180, thumb.height)
     }
-
-    private void checkPropertyModified(def image, def propName, def newValue)
-    {
+    
+    private void checkPropertyModified(def image, def propName, def newValue) {
         assertFalse(image.modified)
         image[propName] = image[propName]
         assertFalse(image.modified)
@@ -217,9 +211,8 @@ class ImageTest extends AbstractNikkiTest{
         assertTrue(image.modified)
         image.modified = false
     }
-
-    public void testModified()
-    {
+    
+    public void testModified() {
         copyFile(IMAGE1)
         Image image = reader.createImage()
         assertFalse(image.modified)
@@ -243,8 +236,7 @@ class ImageTest extends AbstractNikkiTest{
         assertFalse(image.modified)
     }
     
-    public void testCoordinatePrecision()
-    {
+    public void testCoordinatePrecision() {
         double start = 12.38599967956543;
         Entry e = ImageWriter.writeGpsMagnitude(start)
         print e
@@ -252,8 +244,7 @@ class ImageTest extends AbstractNikkiTest{
         assert Math.abs(start-end) < 0.00001d
     }
     
-    public void testCopyPasteTime()
-    {
+    public void testCopyPasteTime() {
         Image imageWithDate = addImage(DAY1, IMAGE1)
         Image imageNoDate1 = addImage(null, NO_EXIF)
         Image imageNoDate2 = addImage(null, IMAGE2)

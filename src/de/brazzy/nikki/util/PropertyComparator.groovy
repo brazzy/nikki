@@ -3,17 +3,18 @@ package de.brazzy.nikki.util
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.io.Serializable
@@ -25,19 +26,16 @@ import java.util.Comparator
  * 
  * @author Michael Borgwardt
  */
-public class PropertyComparator<T> implements Comparator<T>, Serializable
-{
+public class PropertyComparator<T> implements Comparator<T>, Serializable {
     public static final long serialVersionUID = 1L
-
+    
     String propertyName
     String secondary
     
     @Override
-    public int compare(T o1, T o2)
-    {
+    public int compare(T o1, T o2) {
         int result = o1."$propertyName".compareTo(o2."$propertyName")
-        if(result == 0 && secondary)
-        {
+        if(result == 0 && secondary) {
             result = o1."$secondary".compareTo(o2."$secondary")            
         }
         return result
@@ -46,13 +44,12 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
     @Override
     public boolean equals(Object o){
         return o instanceof PropertyComparator && 
-               o.propertyName == this.propertyName &&
-               o.secondary == this.secondary
+        o.propertyName == this.propertyName &&
+        o.secondary == this.secondary
     }
     
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result =propertyName.hashCode() 
         if(secondary){
             result ^= secondary.hashCode()

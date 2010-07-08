@@ -1,19 +1,21 @@
 package de.brazzy.nikki.util;
-/*
+
+/*   
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.io.BufferedInputStream;
@@ -43,20 +45,17 @@ import de.brazzy.nikki.model.Waypoint;
 
 /**
  * Writes image data to EXIF headers, creating new ones if necessary.
- *
+ * 
  * @author Michael Borgwardt
  */
-public class ImageWriter extends ImageDataIO
-{
+public class ImageWriter extends ImageDataIO {
     private static final byte[] EMPTY_EXIF = readEmptyExif();
-    private static byte[] readEmptyExif()
-    {
-        try
-        {
-            return IOUtils.toByteArray(ImageWriter.class.getResourceAsStream("empty_exif.bin"));
-        }
-        catch (IOException e)
-        {
+
+    private static byte[] readEmptyExif() {
+        try {
+            return IOUtils.toByteArray(ImageWriter.class
+                    .getResourceAsStream("empty_exif.bin"));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -64,38 +63,36 @@ public class ImageWriter extends ImageDataIO
     private Image image;
 
     /**
-     * @param img contains the image data
-     * @param directory contains the actual image file
+     * @param img
+     *            contains the image data
+     * @param directory
+     *            contains the actual image file
      */
-    public ImageWriter(Image img, File directory) throws LLJTranException
-    {
-        super(new File(directory.getPath(), img.getFileName()), LLJTran.READ_ALL);
+    public ImageWriter(Image img, File directory) throws LLJTranException {
+        super(new File(directory.getPath(), img.getFileName()),
+                LLJTran.READ_ALL);
 
         this.image = img;
 
-        if(exifData == null)
-        {
+        if (exifData == null) {
             llj.addAppx(EMPTY_EXIF, 0, EMPTY_EXIF.length, true);
-            exifData = (Exif)llj.getImageInfo();
+            exifData = (Exif) llj.getImageInfo();
         }
-        if(mainIFD==null)
-        {
+        if (mainIFD == null) {
             mainIFD = new IFD(0, Exif.UNDEFINED);
             exifData.getIFDs()[0] = mainIFD;
         }
-        if(exifIFD==null)
-        {
+        if (exifIFD == null) {
             exifIFD = new IFD(Exif.EXIFOFFSET, Exif.LONG);
             mainIFD.addIFD(exifIFD);
         }
-        if(nikkiIFD == null)
-        {
+        if (nikkiIFD == null) {
             nikkiIFD = new IFD(Exif.APPLICATIONNOTE, Exif.LONG);
-            nikkiIFD.addEntry(ENTRY_NIKKI_INDEX, new Entry(Exif.ASCII, ENTRY_NIKKI_CONTENT));
+            nikkiIFD.addEntry(ENTRY_NIKKI_INDEX, new Entry(Exif.ASCII,
+                    ENTRY_NIKKI_CONTENT));
             exifIFD.addIFD(nikkiIFD);
         }
-        if(img.getWaypoint() != null && gpsIFD == null)
-        {
+        if (img.getWaypoint() != null && gpsIFD == null) {
             gpsIFD = new IFD(Exif.GPSINFO, Exif.LONG);
             mainIFD.addIFD(gpsIFD);
         }
@@ -104,8 +101,7 @@ public class ImageWriter extends ImageDataIO
     /**
      * causes all image data to be written to the file's EXIF headers.
      */
-    public void saveImage() throws Exception
-    {
+    public void saveImage() throws Exception {
         try {
             writeTitle();
             writeDescription();
@@ -114,31 +110,30 @@ public class ImageWriter extends ImageDataIO
             writeGPS();
             writeThumbnail();
 
-            File tmpFile = File.createTempFile("nikki", "tmp", new File(file.getParent()));
+            File tmpFile = File.createTempFile("nikki", "tmp", new File(file
+                    .getParent()));
             InputStream fip = new BufferedInputStream(new FileInputStream(file));
-            OutputStream out = new BufferedOutputStream(
-                                    new FileOutputStream(tmpFile));
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(
+                    tmpFile));
             llj.refreshAppx();
             llj.xferInfo(fip, out, LLJTran.REPLACE, LLJTran.RETAIN);
             llj.freeMemory();
             fip.close();
             out.close();
-            if(!file.delete())
-            {
+            if (!file.delete()) {
                 throw new IllegalStateException();
             }
-            if(!tmpFile.renameTo(file))
-            {
+            if (!tmpFile.renameTo(file)) {
                 throw new IllegalStateException();
             }
 
         } catch (LLJTranException ex) {
-            Logger.getLogger(ImageWriter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageWriter.class.getName()).log(Level.SEVERE,
+                    null, ex);
         }
     }
 
-    private static Entry utf8Entry(String content)
-    {
+    private static Entry utf8Entry(String content) {
         try {
             Entry entry = new Entry(Exif.UNDEFINED);
             byte[] data = content.getBytes("UTF-8");
@@ -151,26 +146,21 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
-    private void writeTitle()
-    {
-        if(image.getTitle() != null)
-        {
+    private void writeTitle() {
+        if (image.getTitle() != null) {
             nikkiIFD.addEntry(ENTRY_TITLE_INDEX, utf8Entry(image.getTitle()));
         }
     }
 
-    private void writeDescription()
-    {
-        if(image.getDescription() != null)
-        {
-            nikkiIFD.addEntry(ENTRY_DESCRIPTION_INDEX, utf8Entry(image.getDescription()));
+    private void writeDescription() {
+        if (image.getDescription() != null) {
+            nikkiIFD.addEntry(ENTRY_DESCRIPTION_INDEX, utf8Entry(image
+                    .getDescription()));
         }
     }
 
-    private void writeTime()
-    {
-        if(image.getTime() != null)
-        {
+    private void writeTime() {
+        if (image.getTime() != null) {
             String timeString = TIME_FORMAT.print(image.getTime());
             Entry entry = new Entry(Exif.ASCII);
             entry.setValue(0, timeString);
@@ -181,19 +171,16 @@ public class ImageWriter extends ImageDataIO
         }
     }
 
-    private void writeExport()
-    {
+    private void writeExport() {
         Entry entry = new Entry(Exif.BYTE);
         entry.setValue(0, image.getExport() ? 1 : 0);
         nikkiIFD.addEntry(ENTRY_EXPORT_INDEX, entry);
     }
 
-    private void writeGPS()
-    {
+    private void writeGPS() {
         // Set Latitude
         Waypoint wp = image.getWaypoint();
-        if(wp != null)
-        {
+        if (wp != null) {
             Entry entry = new Entry(Exif.ASCII);
             entry.setValue(0, wp.getLatitude().getDirection().getCharacter());
             gpsIFD.setEntry(Integer.valueOf(Exif.GPSLatitudeRef), 0, entry);
@@ -211,30 +198,29 @@ public class ImageWriter extends ImageDataIO
     }
 
     /**
-     * Creates {@link Entry} containing GPS coordinate
-     * as arc degree, minute and second values.
+     * Creates {@link Entry} containing GPS coordinate as arc degree, minute and
+     * second values.
      */
-    public static Entry writeGpsMagnitude(double value)
-    {
+    public static Entry writeGpsMagnitude(double value) {
         Entry entry = new Entry(Exif.RATIONAL);
 
         double magnitude = Math.abs(value);
-        int degrees = (int)magnitude;
+        int degrees = (int) magnitude;
         double minutes = (magnitude - degrees) * 60.0;
-        double seconds = (minutes - (int)minutes) * 60.0;
+        double seconds = (minutes - (int) minutes) * 60.0;
 
         entry.setValue(0, new Rational(degrees, 1));
-        entry.setValue(1, new Rational((int)minutes, 1));
-        entry.setValue(2, new Rational((float)seconds));
+        entry.setValue(1, new Rational((int) minutes, 1));
+        entry.setValue(2, new Rational((float) seconds));
 
         return entry;
     }
-    private void writeThumbnail() throws IOException
-    {
-        if(exifData.getThumbnailBytes() == null &&  image.getThumbnail() != null &&
-           !llj.setThumbnail(image.getThumbnail(), 0, image.getThumbnail().length,
-                             ImageResources.EXT_JPG))
-        {
+
+    private void writeThumbnail() throws IOException {
+        if (exifData.getThumbnailBytes() == null
+                && image.getThumbnail() != null
+                && !llj.setThumbnail(image.getThumbnail(), 0, image
+                        .getThumbnail().length, ImageResources.EXT_JPG)) {
             throw new IllegalStateException();
         }
     }

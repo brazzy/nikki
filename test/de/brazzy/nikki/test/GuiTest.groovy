@@ -3,17 +3,18 @@ package de.brazzy.nikki.test
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import de.brazzy.nikki.Nikki
@@ -45,7 +46,7 @@ import org.joda.time.Seconds
  * @author Michael Borgwardt
  */
 class GuiTest extends AbstractNikkiTest {
-
+    
     TestDialogs dialogs
     NikkiModel model
     NikkiFrame view
@@ -53,8 +54,7 @@ class GuiTest extends AbstractNikkiTest {
     Integer exitStatus = null
     final long baseTime = System.currentTimeMillis()-10000000    
     
-    public void setUp()
-    {
+    public void setUp() {
         super.setUp()
         dialogs = new TestDialogs()
         nikki = new Nikki()
@@ -65,16 +65,14 @@ class GuiTest extends AbstractNikkiTest {
         System.setSecurityManager(new NoExitSecurityManager(testCase:this))
     }
     
-    public void tearDown()
-    {
+    public void tearDown() {
         assertTrue(dialogs.isQueueEmpty())
         System.setSecurityManager(null) // or save and restore original
         view.frame.dispose()
         super.tearDown()
     }
     
-    public void testAdd()
-    {
+    public void testAdd() {
         assertEquals(0, model.size())
         dialogs.add(null)
         view.addButton.actionListeners[0].actionPerformed()
@@ -84,9 +82,8 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(1, model.size())
         assertEquals("tmp (0, 0)", model[0].toString())
     }
-
-    public void testRemove()
-    {
+    
+    public void testRemove() {
         model.add(new Directory(path: new File("C:\\tmp1")))
         model.add(new Directory(path: new File("C:\\tmp2")))
         assertEquals(2, model.size())
@@ -95,16 +92,15 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(1, model.size())
         assertEquals("tmp2 (0, 0)", model[0].toString())
     }
-
-    public void testButtons()
-    {
+    
+    public void testButtons() {
         assertTrue(view.addButton.enabled)
         assertFalse(view.deleteButton.enabled)
         assertFalse(view.scanButton.enabled)
         assertFalse(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
-
+        
         model.add(tmpDir)
         assertTrue(view.addButton.enabled)
         assertFalse(view.deleteButton.enabled)
@@ -112,7 +108,7 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
-
+        
         view.dirList.selectedIndex = 0
         assertTrue(view.addButton.enabled)
         assertTrue(view.deleteButton.enabled)
@@ -120,7 +116,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
-
+        
         addImage(DAY1, IMAGE1)
         assertTrue(view.addButton.enabled)
         assertTrue(view.deleteButton.enabled)
@@ -128,7 +124,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
-
+        
         view.dayList.selectedIndex = 0
         assertTrue(view.addButton.enabled)
         assertTrue(view.deleteButton.enabled)
@@ -136,11 +132,11 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertTrue(view.tagButton.enabled)
         assertTrue(view.exportButton.enabled)
-
+        
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         assertTrue(editor.offsetFinder.enabled)
-
+        
         view.dayList.clearSelection()
         assertTrue(view.addButton.enabled)
         assertTrue(view.deleteButton.enabled)
@@ -148,7 +144,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
-
+        
         view.dirList.clearSelection()
         assertTrue(view.addButton.enabled)
         assertFalse(view.deleteButton.enabled)
@@ -157,9 +153,8 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
     }
-
-    public void testScanSaveRescan()
-    {
+    
+    public void testScanSaveRescan() {
         model.add(tmpDir)
         assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
         view.dirList.selectedIndex = 0
@@ -167,7 +162,7 @@ class GuiTest extends AbstractNikkiTest {
         copyFile(WAYPOINTS1)
         def imgFile = new File(tmpDir.path, IMAGE1)
         def timestamp = imgFile.lastModified()
-
+        
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
@@ -182,7 +177,7 @@ class GuiTest extends AbstractNikkiTest {
         dialogs.registerWorker(null)
         assertTrue(imgFile.lastModified() > timestamp)
         assertEquals(2, tmpDir.path.list().length)
-
+        
         model.remove(tmpDir)
         tmpDir = new Directory(path: tmpDir.path);
         model.add(tmpDir)
@@ -190,7 +185,7 @@ class GuiTest extends AbstractNikkiTest {
         FileUtils.copyFile(imgFile, new File(tmpDir.path, "other.JPG"))
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
-
+        
         dialogs.add(null)
         view.scanButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
@@ -220,9 +215,8 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
-
-    public void testGeotag()
-    {
+    
+    public void testGeotag() {
         Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
@@ -230,12 +224,12 @@ class GuiTest extends AbstractNikkiTest {
         assertNull(model[0].images[IMAGE1].waypoint)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-
+        
         dialogs.add(null)
         view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
         assertNull(model[0].images[IMAGE1].waypoint)
-
+        
         dialogs.add(Seconds.seconds(-5 * 60 * 60))
         view.tagButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
@@ -243,33 +237,31 @@ class GuiTest extends AbstractNikkiTest {
         assertNotNull(wp)
         assertEquals(new DateTime(2009, 11, 11, 1, 0, 0, 0, TZ_DARWIN), wp.timestamp)
     }
-
-    public void testExport()
-    {
+    
+    public void testExport() {
         copyFile(IMAGE1)
         Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-
-
+        
+        
         assertEquals(1, tmpDir.path.list().length)
         dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.path.list().length)
-
+        
         dialogs.add(new File(tmpDir.path, "export.kmz"))
         view.exportButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(2, tmpDir.path.list().length)
     }
-
-    public void testOffsetFinder()
-    {
+    
+    public void testOffsetFinder() {
         Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
@@ -282,19 +274,18 @@ class GuiTest extends AbstractNikkiTest {
         assertNotNull(file)
         assertTrue(file.name.endsWith(".kml"))
     }
-
-    public void testImageView()
-    {
+    
+    public void testImageView() {
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, "a"+IMAGE2)
         Image image3 = addImage(DAY1, "b"+IMAGE2)
         Image image4 = addImage(DAY1, "c"+IMAGE2)
         image1.modified = false
         model.add(tmpDir)
-
+        
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-
+        
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         assertEquals("testTitle", editor.title.text)
@@ -305,24 +296,24 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals(image1.waypoint.latitude.toString(), editor.latitude.text)
         assertEquals(image1.waypoint.longitude.toString(), editor.longitude.text)
         assertTrue(editor.export.selected)
-
+        
         editor.title.text = "changedTitle"
         editor.textArea.text = "changedDescription"
         editor.export.selected = false
-
+        
         image2.title = "otherTitle"
         image2.description = "otherDescription"
         image2.time = null
         image2.waypoint = null
-
+        
         assertFalse(image1.modified)
         view.imageTable.editCellAt(1,0)
         assertTrue(image1.modified)
-
+        
         assertEquals("changedTitle", image1.title)
         assertEquals("changedDescription", image1.description)
         assertFalse(image1.export)
-
+        
         editor = view.imageTable.editorComponent
         assertEquals("otherTitle", editor.title.text)
         assertEquals("otherDescription", editor.textArea.text)
@@ -332,26 +323,25 @@ class GuiTest extends AbstractNikkiTest {
         assertEquals("?", editor.latitude.text)
         assertEquals("?", editor.longitude.text)
         assertTrue(editor.export.selected)
-
+        
         image3.waypoint = null
         view.imageTable.editCellAt(2,0)
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("", editor.timeDiff.text)
-
+        
         image4.waypoint.timestamp = new DateTime(image4.waypoint.timestamp.millis+2000)
         view.imageTable.editCellAt(3,0)
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
         assertEquals("-2", editor.timeDiff.text)
     }
-
-    public void testImageSort()
-    {
+    
+    public void testImageSort() {
         Image image1_c7 = addImage(DAY1, "c",7)
         Image image1_b9 = addImage(DAY1, "b",9)
         Image image1_a8 = addImage(DAY1, "a",8)
-
+        
         Image image2_f4 = addImage(DAY2, "f",4)
         Image image2_e6 = addImage(DAY2, "e",6)
         Image image2_d5 = addImage(DAY2, "d",5)
@@ -361,7 +351,7 @@ class GuiTest extends AbstractNikkiTest {
         
         assertNull(view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
-
+        
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
@@ -423,17 +413,16 @@ class GuiTest extends AbstractNikkiTest {
         def editor = view.imageTable.editorComponent
         assertEquals(name, editor.filename.text)        
     }
-
-    public void testAutoCommit()
-    {
+    
+    public void testAutoCommit() {
         copyFile(IMAGE1)
         Image image = addImage(DAY1, IMAGE1)
         addWaypointFile(DAY1, WAYPOINTS1)
         model.add(tmpDir)
-
+        
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
-
+        
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         editor.title.text = "changedTitle"
@@ -441,15 +430,14 @@ class GuiTest extends AbstractNikkiTest {
         dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
         assertEquals("changedTitle", image.title)
-
+        
         editor.title.text = "otherTitle"
         view.saveButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertEquals("otherTitle", image.title)
     }
-
-    public void testCopyPaste()
-    {
+    
+    public void testCopyPaste() {
         Image imageWithDate = addImage(DAY1, IMAGE1)
         Image imageNoDate = addImage(null, NO_EXIF)
         model.add(tmpDir)
@@ -496,36 +484,32 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(editor.paste.enabled)
     }
     
-    public void testHelp()
-    {
+    public void testHelp() {
         dialogs.add(null)
         view.helpButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
     }
-
-    public void testAboutBox()
-    {
+    
+    public void testAboutBox() {
         AboutBox box = new AboutBox();
         assertTrue(box.content.text.contains("Nikki GPS"))
         assertTrue(box.content.text.contains("Michael Borgwardt"))
     }
-
-    public void testScanOptions()
-    {
+    
+    public void testScanOptions() {
         String[] zones = DateTimeZone.getAvailableIDs().toArray()
         Arrays.sort(zones);
-
+        
         ScanOptions op = new ScanOptions(DateTimeZone.UTC)
         assertEquals("UTC", op.getTimezone().getID())
         op.combobox.selectedIndex = 1;
         assertEquals(zones[1], op.getTimezone().getID())
-
+        
         op = new ScanOptions(null)
         assertNull(op.getTimezone())
     }
-
-    public void testGeotagOptions()
-    {
+    
+    public void testGeotagOptions() {
         GeotagOptions op = new GeotagOptions()
         assertEquals(0, op.getOffset())
         op.spinner.value = op.spinner.nextValue;
@@ -538,16 +522,14 @@ class GuiTest extends AbstractNikkiTest {
      * Using the same instance as table editor and renderer causes
      * UI defects when a table cell is removed.
      */
-    public void testSeparateRendererAndEditor()
-    {
+    public void testSeparateRendererAndEditor() {
         def editor = view.imageTable.getDefaultEditor(Object.class)
         def renderer = view.imageTable.getDefaultRenderer(Object.class)
         assertSame(editor.getClass(), renderer.getClass())
         assertNotSame(editor, renderer)
     }
-
-    private File prepareTestModified()
-    {
+    
+    private File prepareTestModified() {
         model.add(tmpDir)
         copyFile(IMAGE1)
         addImage(DAY1, IMAGE1)
@@ -556,25 +538,21 @@ class GuiTest extends AbstractNikkiTest {
         return file
     }
     
-    public void testNotModified()
-    {
+    public void testNotModified() {
         def file = prepareTestModified()
         tmpDir.images[IMAGE1].modified = false
-        try
-        {
+        try {
             view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
             fail("did not exit!");
         }
-        catch(ExitException e)
-        {
+        catch(ExitException e) {
             assertEquals(Nikki.EXIT_CODE_NO_MODIFICATIONS, exitStatus)
             assertTrue(dialogs.isQueueEmpty())
             assertEquals(baseTime, file.lastModified())
         }
     }
     
-    public void testModifiedSave()
-    {
+    public void testModifiedSave() {
         def file = prepareTestModified()
         dialogs.add(ConfirmResult.YES)
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
@@ -584,25 +562,21 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(baseTime == file.lastModified())
     }
     
-    public void testModifiedExit()
-    {
+    public void testModifiedExit() {
         def file = prepareTestModified()
         dialogs.add(ConfirmResult.NO)
-        try
-        {
+        try {
             view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
             fail("did not exit!");
         }
-        catch(ExitException e)
-        {
+        catch(ExitException e) {
             assertEquals(Nikki.EXIT_CODE_UNSAVED_MODIFICATIONS, exitStatus)
             assertTrue(dialogs.isQueueEmpty())
             assertEquals(baseTime, file.lastModified())
         }
     }    
     
-    public void testModifiedCancel()
-    {
+    public void testModifiedCancel() {
         def file = prepareTestModified()
         
         dialogs.add(ConfirmResult.CANCEL)
@@ -611,9 +585,8 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(baseTime, file.lastModified())
     }
-
-    public void testExportNoWaypoints()
-    {
+    
+    public void testExportNoWaypoints() {
         Image image = addImage(DAY1, IMAGE1)
         assertTrue(image.export)
         model.add(tmpDir)
@@ -630,8 +603,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
     }
     
-    public void testExportNoImage()
-    {
+    public void testExportNoImage() {
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
         image1.export = false
@@ -654,8 +626,7 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(dialogs.isQueueEmpty())
     }
     
-    public void testExportLock()
-    {
+    public void testExportLock() {
         Image image1 = addImage(DAY1, IMAGE2)
         Image image2 = addImage(DAY1, IMAGE1)
         Image image3 = addImage(DAY1, "dummy")
@@ -703,20 +674,21 @@ class GuiTest extends AbstractNikkiTest {
     }
 }
 
-class ExitException extends SecurityException { }
+class ExitException extends SecurityException {
+}
 
-class NoExitSecurityManager extends SecurityManager 
-{
+class NoExitSecurityManager extends SecurityManager {
     def GuiTest testCase
     
     // allow anything.
     @Override
-    public void checkPermission(Permission perm) {}
-    public void checkPermission(Permission perm, Object context) {}
+    public void checkPermission(Permission perm) {
+    }
+    public void checkPermission(Permission perm, Object context) {
+    }
     
     @Override
-    public void checkExit(int status) 
-    {
+    public void checkExit(int status) {
         testCase.exitStatus = Integer.valueOf(status)
         throw new ExitException()
     }

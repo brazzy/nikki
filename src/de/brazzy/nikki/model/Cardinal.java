@@ -1,19 +1,21 @@
 package de.brazzy.nikki.model;
+
 /*   
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -21,19 +23,14 @@ package de.brazzy.nikki.model;
  * 
  * @author Michael Borgwardt
  */
-public enum Cardinal
-{
-    NORTH('N',1),
-    SOUTH('S', -1),
-    EAST('E', 1),
-    WEST('W', -1);
-    
+public enum Cardinal {
+    NORTH('N', 1), SOUTH('S', -1), EAST('E', 1), WEST('W', -1);
+
     public static final long serialVersionUID = 1;
     private char character;
     private int sign;
 
-    private Cardinal(char character, int sign)
-    {
+    private Cardinal(char character, int sign) {
         this.character = character;
         this.sign = sign;
     }
@@ -41,39 +38,39 @@ public enum Cardinal
     /**
      * Parses a letter (NSEW) into the corresponding Cardinal
      */
-    public static Cardinal parse(String c)
-    {
-        switch(c.charAt(0))
-        {
-            case 'N': return NORTH;
-            case 'S': return SOUTH;
-            case 'E': return EAST;
-            case 'W': return WEST;
-            default: throw new IllegalArgumentException("Unknown cardinal: "+c);
+    public static Cardinal parse(String c) {
+        switch (c.charAt(0)) {
+        case 'N':
+            return NORTH;
+        case 'S':
+            return SOUTH;
+        case 'E':
+            return EAST;
+        case 'W':
+            return WEST;
+        default:
+            throw new IllegalArgumentException("Unknown cardinal: " + c);
         }
     }
 
     /**
-     * @return the character corresponding to the first 
-     * letter in the Cardinal's name
+     * @return the character corresponding to the first letter in the Cardinal's
+     *         name
      */
-    public char getCharacter()
-    {
+    public char getCharacter() {
         return character;
     }
 
     /**
-     * @return 1 or -1, depending on whether this cardinal direction has a positive or
-     * negative sign in GPS coordinates
+     * @return 1 or -1, depending on whether this cardinal direction has a
+     *         positive or negative sign in GPS coordinates
      */
-    public int getSign()
-    {
+    public int getSign() {
         return sign;
     }
-    
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         return String.valueOf(character);
     }
 }

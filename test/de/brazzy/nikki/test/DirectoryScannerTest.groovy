@@ -3,17 +3,18 @@ package de.brazzy.nikki.test;
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import static org.junit.Assert.*;
@@ -34,40 +35,38 @@ import org.joda.time.DateTimeZone;
  * @author Michael Borgwardt
  *
  */
-class DirectoryScannerTest extends AbstractNikkiTest
-{
+class DirectoryScannerTest extends AbstractNikkiTest {
     DirectoryScanner scanner = new DirectoryScanner(
-            finder:new MockTimezoneFinder(),
-            parserFactory:new ParserFactory(parsers:[new NmeaParser()]))
+    finder:new MockTimezoneFinder(),
+    parserFactory:new ParserFactory(parsers:[new NmeaParser()]))
     
-    public void testScan()
-    {
+    public void testScan() {
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
-
+        
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
-
+        
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
-
+        
         Day day = tmpDir[0]
         Image image = day.images[0]
-                         
+        
         assertSame(tmpDir, day.directory)
         assertEquals(3, day.waypoints.size())
         assertEquals(1, day.images.size())
         assertSame(day.images[0], tmpDir.images[IMAGE1])
         assertSame(day.waypoints.first(), 
-        	tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
+                tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
         assertSame(day.waypoints.headSet(day.waypoints.last()).last(), 
-        	tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
+                tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
         assertSame(day.waypoints.last(), image.waypoint)
         assertEquals(DAY1, day.date)
         assertEquals(DATE1+" (1, 3)", day.toString())
-
+        
         assertEquals(IMAGE1, image.fileName)
         assertEquals("Überschrift", image.title)
         assertEquals(TZ_DARWIN, image.time.zone)
@@ -76,9 +75,8 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(DAY1, image.time.toLocalDate())
         assertFalse(image.modified)
     }
-
-    public void testRescan()
-    {
+    
+    public void testRescan() {
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
         
@@ -93,29 +91,29 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size())
         assertEquals(3, day1.waypoints.size())
-
+        
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
-
+        
         assertEquals(ScanResult.TIMEZONE_MISSING, scanner.scan(tmpDir, null))
         assertEquals(1, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size())
         assertEquals(3, day1.waypoints.size())
-
+        
         scanner.zone = ZONE
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
         assertEquals(2, tmpDir.size())
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
-
+        
         assertEquals(DAY1, day1.date)
         assertSame(day1.directory, tmpDir)
         assertEquals(3, day1.waypoints.size())
         assertSame(file.waypoints[0], day1.waypoints.first())
         assertSame(file.waypoints[1], day1.waypoints.headSet(day1.waypoints.last()).last())
-
+        
         assertEquals(1, day1.images.size())
         Image image1 = day1.images[0]
         assertSame(image1, tmpDir.images[IMAGE1])
@@ -131,9 +129,9 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(TIME1, wp.timestamp)
         assertEquals(-5d, wp.latitude.value, 0.001)
         assertEquals(25d, wp.longitude.value, 0.001)
-
+        
         Day day2 = tmpDir[1]
-
+        
         assertEquals(2, day2.waypoints.size())
         assertEquals(1, day2.images.size())
         Image image2 = day2.images[0]
@@ -149,9 +147,8 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertTrue(Math.abs(day2.waypoints.last().latitude.value+23) < 1.0)
         assertEquals(DAY2, day2.waypoints.last().timestamp.toLocalDate())
     }
-
-    public void testRescanRemove()
-    {
+    
+    public void testRescanRemove() {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS2)
         Image image1 = addImage(DAY1, IMAGE1)
@@ -171,7 +168,7 @@ class DirectoryScannerTest extends AbstractNikkiTest
         
         scanner.zone = ZONE
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
-
+        
         assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
         assertSame(image1, tmpDir.images.values().iterator().next())
@@ -195,21 +192,20 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertEquals(2, day1.waypoints.size())
         assertEquals(day1.waypoints as Set, file2.waypoints as Set)
     }
-
-    public void testParseWaypointFile()
-    {
+    
+    public void testParseWaypointFile() {
         scanner.finder.addCall(-24f, 133.2f, TZ_2)
         scanner.finder.addCall(-23.7f, 133.8f, null)
-
-
+        
+        
         WaypointFile f = scanner.parseWaypointFile(
                 new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()),
                 new NmeaParser())
         scanner.finder.finished()
-
+        
         assertEquals(AbstractNikkiTest.WAYPOINTS1, f.fileName)
         assertEquals(2, f.waypoints.size())
-
+        
         Waypoint wp1 = f.waypoints[0]
         assertEquals(TZ_2, wp1.timestamp.zone)
         assertSame(f, wp1.file)
@@ -218,7 +214,7 @@ class DirectoryScannerTest extends AbstractNikkiTest
         assertTrue(wp1.longitude.value < 134)
         assertTrue(-24 < wp1.latitude.value)
         assertTrue(wp1.latitude.value < -23)
-
+        
         Waypoint wp2 = f.waypoints[1]
         assertEquals(DateTimeZone.UTC, wp2.timestamp.zone)
         assertSame(f, wp2.file)
@@ -228,44 +224,37 @@ class DirectoryScannerTest extends AbstractNikkiTest
     }
     
     private static final DateTimeZone TZ_2 = DateTimeZone.forID("Etc/GMT-2")
-
+    
     /**
      * Tests understanding of illogical timezone names
      * ("Etc/GMT-2" has offset of +2)
      */
-    public void testTimezoneShift()
-    {
+    public void testTimezoneShift() {
         assertEquals(1000*60*60*2, TZ_2.getStandardOffset(0))
         assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC).toInstant(),
                 new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2).toInstant())  
     }
 }
 
-private class MockTimezoneFinder extends TimezoneFinder
-{
+private class MockTimezoneFinder extends TimezoneFinder {
     def queue = []
     
-    public addCall(float lat, float lng, DateTimeZone result)
-    {
+    public addCall(float lat, float lng, DateTimeZone result) {
         queue.add([lat, lng, result])
     }
     
-    public DateTimeZone find(float latitude, float longitude)
-    {
+    public DateTimeZone find(float latitude, float longitude) {
         def entry = queue.remove(0)
-        if(!Float.isNaN(entry[0]))
-        {
+        if(!Float.isNaN(entry[0])) {
             assert Math.abs(entry[0] - latitude) < 0.1, "error: $latitude"            
         }
-        if(!Float.isNaN(entry[1]))
-        {
+        if(!Float.isNaN(entry[1])) {
             assert Math.abs(entry[1] - longitude) < 0.1, "error: $longitude"
         }
         return entry[2]
     }
     
-    public void finished()
-    {
+    public void finished() {
         assert queue.size() == 0
     }
 }

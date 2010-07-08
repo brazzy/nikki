@@ -3,17 +3,18 @@ package de.brazzy.nikki.test
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import de.brazzy.nikki.model.Directory
@@ -38,8 +39,7 @@ import org.joda.time.format.ISODateTimeFormat
  *
  * @author Michael Borgwardt
  */
-class AbstractNikkiTest extends GroovyTestCase
-{
+class AbstractNikkiTest extends GroovyTestCase {
     public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
     public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")
     public static final DateTimeZone TZ_BRISBANE = DateTimeZone.forID("Australia/Brisbane")
@@ -58,39 +58,34 @@ class AbstractNikkiTest extends GroovyTestCase
     protected static final byte[] THUMB = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z".decodeBase64()
     protected static final DateTimeFormatter FORMAT = ISODateTimeFormat.date().withZone(ZONE)
     protected static final DateTimeFormatter FORMAT_TIME = ISODateTimeFormat.dateTimeNoMillis().withZone(ZONE)
-
+    
     protected Directory tmpDir;
-
-    protected void setUp()
-    {
+    
+    protected void setUp() {
         tmpDir = new Directory(path: new File(
-                System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
+        System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
         Locale.setDefault(Locale.GERMAN);
     }
-
-    protected void tearDown()
-    {
+    
+    protected void tearDown() {
         Preferences p = Preferences.userNodeForPackage(getClass())
         p.removeNode()
         p.flush()
     }
-
-    protected void copyFile(String name)
-    {
+    
+    protected void copyFile(String name) {
         ensureTmpDir()
         
         File f = new File(tmpDir.path, name)
         def stream = new FileOutputStream(f)
         IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
-            stream)
+                stream)
         stream.close()
         f.deleteOnExit()
     }
     
-    protected void ensureTmpDir()
-    {
-        if(!tmpDir.path.exists())
-        {
+    protected void ensureTmpDir() {
+        if(!tmpDir.path.exists()) {
             File tmpFile = File.createTempFile("nikkitest",null)
             tmpFile.delete()
             tmpFile.mkdir()
@@ -98,12 +93,10 @@ class AbstractNikkiTest extends GroovyTestCase
             tmpDir.path = tmpFile
         }        
     }
-
-    protected WaypointFile addWaypointFile(LocalDate date, String fileName)
-    {
+    
+    protected WaypointFile addWaypointFile(LocalDate date, String fileName) {
         Day day = tmpDir.find{ it.date.equals(date)}
-        if(!day)
-        {
+        if(!day) {
             day = new Day(date: date, directory:tmpDir)
             tmpDir.add(day);
         }
@@ -113,41 +106,34 @@ class AbstractNikkiTest extends GroovyTestCase
         tmpDir.waypointFiles.put(fileName, file)
         return file
     }
-
-    protected static Waypoint constructWaypoint(Day day, int index)
-    {
+    
+    protected static Waypoint constructWaypoint(Day day, int index) {
         Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0), ZONE),
-            latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
-            longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
+        latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
+        longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
         day.waypoints << wp
         return wp
     }
-
-    protected Image addImage(LocalDate date, String fileName, int index=5)
-    {
+    
+    protected Image addImage(LocalDate date, String fileName, int index=5) {
         Day day = tmpDir.find{ it.date.equals(date)}
-        if(!day)
-        {
+        if(!day) {
             day = new Day(date: date, directory:tmpDir)
             tmpDir.add(day);
         }
         Waypoint wp = date == null ? null : constructWaypoint(day, index)
         Image image = new Image(fileName: fileName, title:"testTitle",
-            description:"testDescription", day: day, thumbnail: THUMB,
-            export: true, time: wp?.timestamp, waypoint: wp, modified: true)
+                description:"testDescription", day: day, thumbnail: THUMB,
+                export: true, time: wp?.timestamp, waypoint: wp, modified: true)
         day.images.add(image)
         tmpDir.images.put(fileName, image)
         return image
     }
-
-    public void checkEqualsHashCode(List a, List b)
-    {
-        for(int i=0; i<a.size(); i++)
-        {
-            for(int j=0; j<b.size(); j++)
-            {
-                if(i==j)
-                {
+    
+    public void checkEqualsHashCode(List a, List b) {
+        for(int i=0; i<a.size(); i++) {
+            for(int j=0; j<b.size(); j++) {
+                if(i==j) {
                     assert a[i].hashCode() == b[i].hashCode()
                     assert a[i].hashCode() == a[i].hashCode()
                     assert b[i].hashCode() == b[i].hashCode()
@@ -155,8 +141,7 @@ class AbstractNikkiTest extends GroovyTestCase
                     assert a[i] == b[i]
                     assert !a[i].is(b[i])
                 }
-                else
-                {
+                else {
                     assert !a[i].is(b[i]), "$i, $j"
                     assert a[i] != a[j]  , "$i, $j"                  
                     assert a[i] != b[j]  , "$i, $j"

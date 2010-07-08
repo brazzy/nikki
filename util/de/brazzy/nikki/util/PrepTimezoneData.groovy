@@ -3,17 +3,18 @@ package de.brazzy.nikki.util
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -21,16 +22,13 @@ import com.infomatiq.jsi.Rectangle;
 
 import java.util.zip.ZipInputStream;
 
-import gnu.trove.TIntObjectHashMap;
 
 import com.infomatiq.jsi.IntProcedure;
 import com.infomatiq.jsi.Point;
 import com.infomatiq.jsi.rtree.RTree;
 
-import de.brazzy.nikki.model.GeoCoordinate;
 
-class PrepTimezoneData
-{
+class PrepTimezoneData {
     /**
      * Converts location data from geonames.org to a compact, quickly parseable
      * binary format:
@@ -46,22 +44,20 @@ class PrepTimezoneData
      * 
      * @author Michael Borgwardt
      */
-    public static void main(args)
-    {
+    public static void main(args) {
         def zip = new ZipInputStream(new FileInputStream(args[0]))
         def entry = zip.getNextEntry()
         assert entry.name == "cities1000.txt"
         def zones = []
         def entries = []
-
+        
         zip.eachLine("UTF-8"){ String line ->
             def data = line.split("\t")
             def lat = data[4] as float
             def lng = data[5] as float
             def zone = data[17] 
             def index = zones.indexOf(zone)
-            if(index==-1)
-            {
+            if(index==-1) {
                 zones.add(zone)
                 index = zones.size()-1
             }
@@ -69,12 +65,10 @@ class PrepTimezoneData
         }
         def out = new ObjectOutputStream(new FileOutputStream(args[1]))
         zones.each{
-            if(it == "Asia/Kathmandu")
-            {
+            if(it == "Asia/Kathmandu") {
                 out.writeUTF("Asia/Katmandu")                
             }
-            else
-            {
+            else {
                 out.writeUTF(it)
             }
         }
@@ -90,23 +84,19 @@ class PrepTimezoneData
         testRTree(args[1])
     }
     
-    public static void testRTree(String file)
-    {
+    public static void testRTree(String file) {
         RTree tree = new RTree()
         tree.init(new Properties())
         
         ObjectInputStream data = new ObjectInputStream(new FileInputStream(file))
         def zones = []
-        for(def zone=data.readUTF();zone != "";zone=data.readUTF())
-        {
+        for(def zone=data.readUTF();zone != "";zone=data.readUTF()) {
             zones.add(zone)
         }
         
-        while(true)
-        {
+        while(true) {
             def lat=data.readFloat()
-            if(Float.isNaN(lat))
-            {
+            if(Float.isNaN(lat)) {
                 break
             }
             def lng=data.readFloat()

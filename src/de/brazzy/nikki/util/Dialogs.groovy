@@ -3,17 +3,18 @@ package de.brazzy.nikki.util
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.awt.Desktop
@@ -35,12 +36,10 @@ import org.joda.time.Seconds
 /**
  * Encapsulates user interaction via modal dialogs for testability
  */
-class Dialogs
-{
+class Dialogs {
     def parentComponent
-
-    public void showAboutBox()
-    {
+    
+    public void showAboutBox() {
         def box = new AboutBox()
         JOptionPane.showOptionDialog(parentComponent, box, Texts.Dialogs.About.TITLE, 
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
@@ -51,49 +50,45 @@ class Dialogs
      * 
      * @param startDir default starting dir
      */
-    public File askDirectory(File startDir)
-    {
+    public File askDirectory(File startDir) {
         def fc = new JFileChooser(startDir)
         fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
         return fc.showOpenDialog(parentComponent) == JFileChooser.APPROVE_OPTION ?
-            fc.getSelectedFile() :
-            null;
+        fc.getSelectedFile() :
+        null;
     }
-
+    
     /**
      * Opens a JFileChooser to return a file
      * 
      * @param startDir default starting dir
      * @param defaultFileName
      */
-    public File askFile(File dir, String defaultFileName)
-    {
+    public File askFile(File dir, String defaultFileName) {
         def fc = new JFileChooser(dir);
         fc.fileSelectionMode = JFileChooser.FILES_ONLY
         fc.selectedFile = new File(dir, defaultFileName);
         return (fc.showSaveDialog(parentComponent) == JFileChooser.APPROVE_OPTION) ?
-            fc.getSelectedFile() :
-            null;
+        fc.getSelectedFile() :
+        null;
     }
-
+    
     /**
      * Asks user for an offset to adjust for wrong camera time before geotagging
      */
-    public ReadablePeriod askOffset()
-    {
+    public ReadablePeriod askOffset() {
         def opt = new GeotagOptions()
         int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
                 Texts.Dialogs.GeotagOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : null
     }
-
+    
     /**
      * Asks user for time zone used to set camera clock
      * 
      * @param defaultZone
      */
-    public DateTimeZone askTimeZone(DateTimeZone defaultZone)
-    {
+    public DateTimeZone askTimeZone(DateTimeZone defaultZone) {
         ScanOptions opt = new ScanOptions(defaultZone)
         int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
                 Texts.Dialogs.ScanOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
@@ -106,47 +101,42 @@ class Dialogs
      * @param message Text shown to user
      * @param optionType which buttons to show (see constants in JOptionPane)
      */
-    public ConfirmResult confirm(String message, int optionType)
-    {
+    public ConfirmResult confirm(String message, int optionType) {
         int pressed = JOptionPane.showConfirmDialog(parentComponent, message, 
-                Texts.Dialogs.CONFIRM_TITLE, optionType)
+        Texts.Dialogs.CONFIRM_TITLE, optionType)
         return (pressed == JOptionPane.YES_OPTION ? ConfirmResult.YES :
-                pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
-                pressed == JOptionPane.CANCEL_OPTION ? ConfirmResult.CANCEL : null);
+        pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
+        pressed == JOptionPane.CANCEL_OPTION ? ConfirmResult.CANCEL : null);
     }
-
+    
     /**
      * Show error message to user
      * 
      * @param message Text shown to user
      */
-    public void error(String message)
-    {
+    public void error(String message) {
         JOptionPane.showMessageDialog(parentComponent, message, 
-                Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
+        Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
     }
-
+    
     /**
      * Opens file via OS
      */
-    public void open(File f)
-    {
+    public void open(File f) {
         Desktop.getDesktop().open(f);
     }
-
+    
     /**
      * Allows waiting for background actions to be completed during tests
      */
-    public void registerWorker(SwingWorker worker)
-    {
-
+    public void registerWorker(SwingWorker worker) {
+        
     }
     
     /**
      * used when testing for system exit
      */
-    public UncaughtExceptionHandler getExceptionHandler()
-    {
+    public UncaughtExceptionHandler getExceptionHandler() {
         return null;
     }
 }

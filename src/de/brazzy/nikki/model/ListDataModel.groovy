@@ -3,17 +3,18 @@ package de.brazzy.nikki.model
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.util.Collections
@@ -28,14 +29,14 @@ import javax.swing.AbstractListModel
  *        no comparator is supplied during construction
  */
 public class ListDataModel<T> 
-extends AbstractListModel implements Iterable<T>
-{
+extends AbstractListModel implements Iterable<T> {
     public static final long serialVersionUID = 1
-    private static DEFAULT_COMPARATOR = {o1, o2 -> o1.compareTo(o2)} as Comparator
-
+    private static DEFAULT_COMPARATOR = {o1, o2 -> o1.compareTo(o2)
+    } as Comparator
+    
     /** Contains the elements, kept sorted automatically */
     protected List<T> dataList = new ArrayList<T>()
-
+    
     /** Used to implement the list ordering */
     def comparator = DEFAULT_COMPARATOR
     public void setComparator(Comparator comp){
@@ -48,40 +49,33 @@ extends AbstractListModel implements Iterable<T>
             dataList.sort(this.comparator)            
         }
     }
-
+    
     /**
      * Adds new element at the appropriate place in the sort order
      */
-    public void add(T d)
-    {
-        if(!d)
-        {
+    public void add(T d) {
+        if(!d) {
             throw new IllegalArgumentException("must not be null!")
         }
         int index = Collections.binarySearch(dataList, d, this.comparator)
         def size = dataList.size()
         
-        if(index >= 0)
-        {
+        if(index >= 0) {
             throw new IllegalArgumentException("Already present!")
         }
-        else if(-index-1 == size)
-        {
+        else if(-index-1 == size) {
             dataList.add(d)
             fireIntervalAdded(this, size, size)
         }
-        else
-        {
+        else {
             dataList.add(-index-1, d)
             fireIntervalAdded(this, -index-1, -index-1)
         }
     }
     
-    public boolean remove(T d)
-    {
+    public boolean remove(T d) {
         def index = dataList.indexOf(d)
-        if(index >= 0)
-        {
+        if(index >= 0) {
             dataList.remove(d)
             fireIntervalRemoved(this, index, index)
             return true
@@ -89,8 +83,7 @@ extends AbstractListModel implements Iterable<T>
         return false
     }
     
-    public boolean contains(T d)
-    {
+    public boolean contains(T d) {
         dataList.contains(d)
     }
     
@@ -99,26 +92,22 @@ extends AbstractListModel implements Iterable<T>
     }
     
     @Override
-    public Iterator<T> iterator()
-    {
+    public Iterator<T> iterator() {
         return dataList.iterator()
     }
     
-
+    
     @Override
-    int getSize()
-    {
+    int getSize() {
         dataList.size()
     }    
     
     @Override
-    T getElementAt(int index)
-    {
+    T getElementAt(int index) {
         getAt(index)
     }
-    T getAt(int index)
-    {
+    T getAt(int index) {
         dataList[index]
     }
-
+    
 }

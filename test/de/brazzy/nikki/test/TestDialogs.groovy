@@ -3,17 +3,18 @@ package de.brazzy.nikki.test
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -33,90 +34,75 @@ class TestDialogs extends Dialogs{
     def queue = []
     def worker
     def opened
-
+    
     @Override
-    public File askDirectory(File startDir)
-    {
+    public File askDirectory(File startDir) {
         return queue.remove(0)
     }
-
+    
     @Override
-    public File askFile(File dir, String defaultFileName)
-    {
+    public File askFile(File dir, String defaultFileName) {
         return queue.remove(0)
     }
-
+    
     @Override
-    public ReadablePeriod askOffset()
-    {
+    public ReadablePeriod askOffset() {
         return queue.remove(0)
     }
-
+    
     @Override
-    public DateTimeZone askTimeZone(DateTimeZone defaultZone)
-    {
+    public DateTimeZone askTimeZone(DateTimeZone defaultZone) {
         return queue.remove(0)
     }
-
+    
     @Override
-    public void open(File f)
-    {
-        if(opened)
-        {
+    public void open(File f) {
+        if(opened) {
             throw new IllegalStateException("Already present: "+opened)
         }
         opened = f
     }
-
+    
     @Override
-    public void registerWorker(SwingWorker worker)
-    {
-        if(this.worker)
-        {
+    public void registerWorker(SwingWorker worker) {
+        if(this.worker) {
             this.worker.get()
         }
         this.worker = worker
     }
-
-    public boolean isQueueEmpty()
-    {
+    
+    public boolean isQueueEmpty() {
         return queue.isEmpty()
     }
-
-    public void add(stuff)
-    {
+    
+    public void add(stuff) {
         queue.add(stuff)
     }
-
-    public File getOpened()
-    {
+    
+    public File getOpened() {
         def result = opened
         opened = null
         return result
     }
-
+    
     @Override
-    public void showAboutBox()
-    {
+    public void showAboutBox() {
         queue.remove(0)
     }
     
     @Override
-    public ConfirmResult confirm(String message, int optionType)
-    {
+    public ConfirmResult confirm(String message, int optionType) {
         assert queue[0] != null
         queue.remove(0)
     }
     
     @Override
-    public void error(String message)
-    {
+    public void error(String message) {
         assert queue.remove(0) != null
     }    
     
     @Override
-    public UncaughtExceptionHandler getExceptionHandler()
-    {
+    public UncaughtExceptionHandler getExceptionHandler() {
         return {} as UncaughtExceptionHandler
     }
 }

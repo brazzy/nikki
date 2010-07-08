@@ -3,17 +3,18 @@ package de.brazzy.nikki.model;
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *  Nikki is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *  Nikki is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -26,8 +27,7 @@ import org.joda.time.LocalDate;
  * 
  * @author Michael Borgwardt
  */
-class Directory extends ListDataModel<Day> implements Comparable<Directory>
-{
+class Directory extends ListDataModel<Day> implements Comparable<Directory> {
     public static final long serialVersionUID = 1;
     
     /**
@@ -47,30 +47,25 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
      */
     File path
     
-    public String toString()
-    {
+    public String toString() {
         path.name+" ("+images.size()+", "+waypointFiles.size()+")"
     }
-
+    
     /**
      * Adds an Image, creates a Day as well if necessary
      */
-    public void addImage(Image image)
-    {
+    public void addImage(Image image) {
         this.images[image.fileName] = image
         def date = image.time?.toLocalDate()
         def day = getDay(date)
-        if(day)
-        {
+        if(day) {
         }
-        else
-        {
+        else {
             day = new Day(date:date, directory: this)
             this.add(day)
         } 
         day.images.add(image)
-        if(image.waypoint)
-        {
+        if(image.waypoint) {
             day.waypoints.add(image.waypoint)
         }
         
@@ -78,126 +73,104 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         image.day = day
         image.modified = modified
     }
-
+    
     /**
      * Removes an Image, deletes Day if empty
      */
-    public void removeImage(Image image)
-    {
-        if(!this.images.remove(image.fileName))
-        {
+    public void removeImage(Image image) {
+        if(!this.images.remove(image.fileName)) {
             throw new IllegalStateException("tried to remove non-present image ${image.fileName}")
         }
         
         def date = image.time?.toLocalDate()
         def day = getDay(date)
-        if(day)
-        {
+        if(day) {
             day.images.remove(image)
             if(image.waypoint){
                 day.waypoints.remove(image.waypoint)        	
             }
             image.day = null
-            if(day.images.size() == 0 && day.waypoints.size() == 0)
-            {
+            if(day.images.size() == 0 && day.waypoints.size() == 0) {
                 remove(day)
             }
         }
-        else
-        {
+        else {
             throw new IllegalStateException("tried to remove image for unknown day $date")            
         }
     }
-
+    
     /**
      * Removes a Waypoint, deletes Day if empty
      */
-    public void removeWaypoint(Waypoint wp)
-    {
+    public void removeWaypoint(Waypoint wp) {
         def date = wp.timestamp.toLocalDate()
         def day = getDay(date)
-        if(day)
-        {
+        if(day) {
             day.waypoints.remove(wp)
             wp.day = null
-            if(day.images.size() == 0 && day.waypoints.size() == 0)
-            {
+            if(day.images.size() == 0 && day.waypoints.size() == 0) {
                 remove(day)
             }
         }
-        else
-        {
+        else {
             throw new IllegalStateException("tried to remove image for unknown day $date")            
         }
     }
-
+    
     /**
      * Returns the Day in this Directory that corresponds to the given date
      */
-    public Day getDay(LocalDate date)
-    {
+    public Day getDay(LocalDate date) {
         int index = Collections.binarySearch(dataList, new Day(date:date))
-        if(index >= 0)
-        {
+        if(index >= 0) {
             return getAt(index)
         }
-        else
-        {
+        else {
             return null
         }
     }
-
+    
     /**
      * Saves all changed image data to the EXIF headers
      * 
      * @param worker to update progress
      */
-    public void save(SwingWorker worker)
-    {
+    public void save(SwingWorker worker) {
         worker?.progress = 0;
         def count = 0;
         for(image in images.values()){
-            if(new File(this.path, image.fileName).exists())
-            {
-                try
-                {
+            if(new File(this.path, image.fileName).exists()) {
+                try {
                     image.save(this.path)
                 }
-                catch(Exception ex)
-                {
+                catch(Exception ex) {
                     ex.printStackTrace()
                 }
             }
             worker?.progress = new Integer((int)(++count/images.size() * 100));
         }
-
+        
         worker?.progress = 0;
     }
     
-    public boolean isModified()
-    {
-        for(entry in images.values())
-        {
-            if(entry.modified)
-            {
+    public boolean isModified() {
+        for(entry in images.values()) {
+            if(entry.modified) {
                 return true
             }
         }
         return false
     }
-
+    
     /**
      * Adds waypoint file and all waypoints therein
      * to correct Day, creating new Day if necessary
      */
-    private addWaypointFile(WaypointFile wf)
-    {
-        for(Waypoint wp in wf.waypoints)
-        {
+    private addWaypointFile(WaypointFile wf) {
+        for(Waypoint wp in wf.waypoints) {
             def date = wp.timestamp.toLocalDate()
             Day d = getDay(date)
-            if(!d)
-            {
+            if(!d) {
                 d = new Day(directory: this, date: date)
                 add(d)
             }
@@ -206,15 +179,13 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         }
         waypointFiles[wf.fileName] = wf
     }
-
+    
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return path.hashCode()
     }
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this.is(obj))
             return true;
         if (obj == null)
@@ -225,8 +196,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory>
         return path.equals(other.path)
     }
     @Override
-    public int compareTo(Directory other)
-    {
+    public int compareTo(Directory other) {
         return path.name.compareTo(other.path.name)
     }
 }
