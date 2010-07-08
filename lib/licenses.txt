@@ -11,7 +11,8 @@ Libraries/licenses:
 - Jakarta ORO: Apache
 - Trove: LGPL
 - Log4J: apache
-- JAXB: Dual license consisting of the  CDDL v1.0 and GPL v2. 
+- JAXB: Dual license consisting of the  CDDL v1.0 and GPL v2.
+- RouteConverter GPL v2+ 
 
 http://mediachest.sourceforge.net/mediautil/
 http://joda-time.sourceforge.net/
