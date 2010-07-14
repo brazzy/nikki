@@ -18,6 +18,7 @@ package de.brazzy.nikki.test;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
 
 /**
@@ -31,6 +32,7 @@ public class IntegrationTest extends TestSuite {
         s.addTestSuite(GuiTest.class);
         s.addTestSuite(PrefsTest.class);
         s.addTestSuite(ParserFactoryTest.class);
+        s.addTest(new JUnit4TestAdapter(RouteConverterNmeaTest.class));
         return s;
     }
 }

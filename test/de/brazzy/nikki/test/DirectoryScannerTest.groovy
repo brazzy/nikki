@@ -40,11 +40,6 @@ class DirectoryScannerTest extends AbstractNikkiTest {
     finder:new MockTimezoneFinder(),
     parserFactory:new ParserFactory())
     
-    public void setUp(){
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT"))
-        super.setUp()
-    }
-    
     public void testScan() {
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
