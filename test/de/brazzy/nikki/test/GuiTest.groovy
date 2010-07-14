@@ -26,8 +26,7 @@ import de.brazzy.nikki.model.ImageSortField
 import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.util.ConfirmResult 
 import de.brazzy.nikki.util.TimezoneFinder;
-import de.brazzy.nikki.util.log_parser.NmeaParser;
-import de.brazzy.nikki.util.log_parser.ParserFactory;
+import de.brazzy.nikki.util.ParserFactory;
 import de.brazzy.nikki.view.AboutBox 
 import de.brazzy.nikki.view.GeotagOptions;
 import de.brazzy.nikki.view.ImageView;
@@ -58,7 +57,7 @@ class GuiTest extends AbstractNikkiTest {
         super.setUp()
         dialogs = new TestDialogs()
         nikki = new Nikki()
-        ParserFactory pf = new ParserFactory(parsers:[new NmeaParser()]);
+        ParserFactory pf = new ParserFactory();
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
         view = nikki.view

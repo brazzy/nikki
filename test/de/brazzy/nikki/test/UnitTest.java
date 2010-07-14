@@ -1,4 +1,5 @@
 package de.brazzy.nikki.test;
+
 /*   
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
@@ -19,21 +20,15 @@ package de.brazzy.nikki.test;
 
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
-import de.brazzy.nikki.test.log_parser.NmeaParserTest;
-import de.brazzy.nikki.test.log_parser.ParserFactoryTest;
 
 /**
  * @author Michael Borgwardt
  */
-public class UnitTest extends TestSuite{
-    public static TestSuite suite()
-    {
-        TestSuite s=new UnitTest();
+public class UnitTest extends TestSuite {
+    public static TestSuite suite() {
+        TestSuite s = new UnitTest();
 
         s.addTest(new JUnit4TestAdapter(ComparatorTest.class));
-        s.addTest(new JUnit4TestAdapter(ParserFactoryTest.class));
-        s.addTest(new JUnit4TestAdapter(NmeaParserTest.class));
-        s.addTest(new JUnit4TestAdapter(ExtensionFilterTest.class));
         s.addTest(new JUnit4TestAdapter(CoverageTest.class));
         s.addTestSuite(ImageTest.class);
         s.addTestSuite(GeoCoordinateTest.class);

@@ -27,7 +27,6 @@ import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ListDataModel;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.util.PropertyComparator;
-import de.brazzy.nikki.util.log_parser.ParserException;
 
 
 /**
@@ -46,14 +45,7 @@ class CoverageTest {
         dummy = new Texts.Dialogs.ScanOptions() 
         dummy = new Texts.Image()
         dummy = new Texts.Main()
-    }
-    
-    @Test
-    public void parserException(){
-        def dummy 
-        dummy = new ParserException(new Exception())
-        dummy = new ParserException("test")
-    }    
+    }   
     
     @Test
     public void propertyComparator(){

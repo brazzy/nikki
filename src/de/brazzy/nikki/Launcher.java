@@ -22,9 +22,8 @@ import javax.swing.UIManager;
 
 import de.brazzy.nikki.model.NikkiModel;
 import de.brazzy.nikki.util.Dialogs;
+import de.brazzy.nikki.util.ParserFactory;
 import de.brazzy.nikki.util.TimezoneFinder;
-import de.brazzy.nikki.util.log_parser.NmeaParser;
-import de.brazzy.nikki.util.log_parser.ParserFactory;
 import de.brazzy.nikki.view.NikkiFrame;
 
 /**
@@ -42,7 +41,6 @@ public class Launcher {
         Dialogs d = new Dialogs();
         Nikki n = new Nikki();
         ParserFactory pf = new ParserFactory();
-        pf.getParsers().add(new NmeaParser());
         n.build(NikkiModel.class, d, finder, pf);
         d.setParentComponent(((NikkiFrame) n.getView()).getFrame());
         n.start();

@@ -1,4 +1,5 @@
-package de.brazzy.nikki.test;
+package de.brazzy.nikki.util
+
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -18,19 +19,23 @@ package de.brazzy.nikki.test;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import junit.framework.TestSuite;
+import slash.navigation.base.BaseRoute;
+import slash.navigation.base.NavigationFileParser;
+import slash.navigation.base.NavigationFileParserListener;
+import slash.navigation.base.NavigationFormat;
 
 /**
+ * Finds parsers for GPS log files using RouteConverter API
+ * 
  * @author Michael Borgwardt
  */
-public class IntegrationTest extends TestSuite {
-
-    public static TestSuite suite() {
-        TestSuite s = new IntegrationTest();
-        s.addTestSuite(DirectoryScannerTest.class);
-        s.addTestSuite(GuiTest.class);
-        s.addTestSuite(PrefsTest.class);
-        s.addTestSuite(ParserFactoryTest.class);
-        return s;
+class ParserFactory {
+    
+    public NavigationFormat findParser(File file) {
+        def factory = new NavigationFileParser();
+        def result
+        factory.addNavigationFileParserListener({ result = it } as NavigationFileParserListener)
+        factory.read(file)
+        return result
     }
 }

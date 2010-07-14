@@ -23,13 +23,19 @@ import java.io.FileInputStream;
 
 import javax.swing.SwingWorker;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import slash.navigation.base.BaseNavigationPosition;
+import slash.navigation.base.NavigationFormat;
+
+import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
-import de.brazzy.nikki.util.log_parser.LogParser;
-import de.brazzy.nikki.util.log_parser.ParserFactory;
+import de.brazzy.nikki.util.ParserFactory;
 
 /**
  * Populates Directory instances with image and GPS data
@@ -68,30 +74,35 @@ class DirectoryScanner {
         worker?.progress = 0;
         
         int count = 0;
-        def imageFiles = dir.path.listFiles(FILTER_JPG)
+        def allFiles = dir.path.list() as Set;
+        def imageFiles = allFiles.findAll{
+            it.toUpperCase().endsWith(".JPG") ||
+            it.toUpperCase().endsWith(".JPEG")
+        }
+        def otherFiles = new HashSet(allFiles)
+        otherFiles.removeAll(imageFiles)
         
-        for(file in imageFiles){
-            if(!dir.images[file.name]){
-                ImageReader reader = new ImageReader(file, this.zone)
+        for(fileName in imageFiles){
+            if(!dir.images[fileName]){
+                ImageReader reader = new ImageReader(new File(dir.path, fileName), this.zone)
                 if(reader.timeZone==null){
                     return ScanResult.TIMEZONE_MISSING
                 }
                 dir.addImage(reader.createImage())
             }
             
-            worker?.progress = new Integer((int)(++count / imageFiles.length * 100))
+            worker?.progress = new Integer((int)(++count / imageFiles.size() * 100))
         }
         
-        parseWaypointFiles(dir)
-        removeMissing(dir)
+        parseWaypointFiles(dir, otherFiles)
+        removeMissing(dir, allFiles)
         
         dir.fireContentsChanged(dir, 0, dir.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
     }
     
-    private removeMissing(Directory dir){
-        def files = dir.path.list() as Set;
+    private removeMissing(Directory dir, Set<String> files){
         def toRemove = []
         for(image in dir.images.values()){
             if(!files.contains(image.fileName)){
@@ -116,12 +127,10 @@ class DirectoryScanner {
         }
     }
     
-    private parseWaypointFiles(Directory dir){
-        def parserMap = parserFactory.findParsers(dir.path, dir.path.list())
-        
-        for(entry in parserMap){
-            if(!dir.waypointFiles[entry.key]){
-                def wf = parseWaypointFile(new File(dir.path, entry.key), entry.value)
+    private parseWaypointFiles(Directory dir, Set<String> files){
+        for(fileName in files){
+            if(!dir.waypointFiles[fileName]){
+                def wf = parseWaypointFile(new File(dir.path, fileName))
                 wf.directory = dir
                 dir.addWaypointFile(wf)
             }
@@ -131,15 +140,24 @@ class DirectoryScanner {
     /**
      * Parses one GPS log file
      */
-    public WaypointFile parseWaypointFile(File file, LogParser parser){
+    public WaypointFile parseWaypointFile(File file){
         WaypointFile wf = new WaypointFile(fileName: file.getName())
-        def wpIterator = parser.parse(new BufferedInputStream(new FileInputStream(file)))
-        while(wpIterator.hasNext()){
-            def wp = wpIterator.next()
-            def wpZone = finder.find(wp.latitude.value, wp.longitude.value)
-            if(wpZone) {
-                wp.timestamp = wp.timestamp.withZone(wpZone)                
+        NavigationFormat format = parserFactory.findParser(file)
+        def routes = format.read(new BufferedInputStream(new FileInputStream(file)))
+        def positions = routes*.positions.flatten()
+        
+        for(BaseNavigationPosition pos in positions){
+            def lat = new GeoCoordinate(magnitude: Math.abs(pos.latitude), 
+                    direction: pos.latitude > 0 ? Cardinal.NORTH : Cardinal.SOUTH)
+            def lon = new GeoCoordinate(magnitude: Math.abs(pos.longitude), 
+                    direction: pos.longitude > 0 ? Cardinal.EAST : Cardinal.WEST)
+            def ts =  new DateTime(pos.time.timeInMillis, DateTimeZone.UTC)
+            def zone  = finder.find(lat.value, lon.value)                
+            if(zone){
+                ts = ts.withZone(zone)
             }
+            
+            def wp = new Waypoint(latitude: lat, longitude: lon, timestamp: ts)
             wp.file = wf
             wf.waypoints.add(wp)
         }

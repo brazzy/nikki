@@ -25,8 +25,8 @@ import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.TimezoneFinder;
-import de.brazzy.nikki.util.log_parser.NmeaParser;
-import de.brazzy.nikki.util.log_parser.ParserFactory;
+import de.brazzy.nikki.util.ParserFactory;
+import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,7 +38,12 @@ import org.joda.time.DateTimeZone;
 class DirectoryScannerTest extends AbstractNikkiTest {
     DirectoryScanner scanner = new DirectoryScanner(
     finder:new MockTimezoneFinder(),
-    parserFactory:new ParserFactory(parsers:[new NmeaParser()]))
+    parserFactory:new ParserFactory())
+    
+    public void setUp(){
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"))
+        super.setUp()
+    }
     
     public void testScan() {
         scanner.finder.addCall(Float.NaN,Float.NaN, DateTimeZone.UTC)
@@ -199,8 +204,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         
         
         WaypointFile f = scanner.parseWaypointFile(
-                new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()),
-                new NmeaParser())
+                new File(getClass().getResource(AbstractNikkiTest.WAYPOINTS1).toURI()),)
         scanner.finder.finished()
         
         assertEquals(AbstractNikkiTest.WAYPOINTS1, f.fileName)

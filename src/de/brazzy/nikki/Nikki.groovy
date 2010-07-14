@@ -41,7 +41,7 @@ import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.SaveExitWorker;
 import de.brazzy.nikki.util.SaveWorker
 import de.brazzy.nikki.util.TimezoneFinder
-import de.brazzy.nikki.util.log_parser.ParserFactory;
+import de.brazzy.nikki.util.ParserFactory;
 
 /**
  * Controller that builds the view and the model, connects them
