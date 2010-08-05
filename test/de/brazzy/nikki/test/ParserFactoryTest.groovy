@@ -33,7 +33,6 @@ class ParserFactoryTest extends AbstractNikkiTest {
     
     ParserFactory factory = new ParserFactory()
     
-    
     void testNmea() {
         copyFile(WAYPOINTS1)
         def f = new File(tmpDir.path, WAYPOINTS1)
@@ -42,11 +41,11 @@ class ParserFactoryTest extends AbstractNikkiTest {
         assertTrue(parser instanceof NmeaFormat)
     }    
     
-    void testNoGps() {
-        copyFile(IMAGE1)
-        def parser = factory.findParser(new File(tmpDir.path, IMAGE1))
-        assertNull(parser)
-    }        
+    //    void testNoGps() {
+    //        copyFile(IMAGE1)
+    //        def parser = factory.findParser(new File(tmpDir.path, IMAGE1))
+    //        assertNull(parser)
+    //    }        
     
 }
 
