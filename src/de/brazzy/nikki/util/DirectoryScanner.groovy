@@ -135,12 +135,17 @@ class DirectoryScanner {
     private parseWaypointFiles(Directory dir, Set<String> files){
         for(fileName in files){
             if(!dir.waypointFiles[fileName]){
-                def wf = parseWaypointFile(new File(dir.path, fileName))
-                wf.directory = dir
-                dir.addWaypointFile(wf)
+                try{
+                    def wf = parseWaypointFile(new File(dir.path, fileName))
+                    wf.directory = dir
+                    dir.addWaypointFile(wf)
+                }catch(Exception e){
+                    e.printStackTrace()
+                }
             }
         }
     }
+    
     
     /**
      * Parses one GPS log file
@@ -152,19 +157,21 @@ class DirectoryScanner {
         def positions = routes*.positions.flatten()
         
         for(BaseNavigationPosition pos in positions){
-            def lat = new GeoCoordinate(magnitude: Math.abs(pos.latitude), 
-                    direction: pos.latitude > 0 ? Cardinal.NORTH : Cardinal.SOUTH)
-            def lon = new GeoCoordinate(magnitude: Math.abs(pos.longitude), 
-                    direction: pos.longitude > 0 ? Cardinal.EAST : Cardinal.WEST)
-            def ts =  new DateTime(pos.time.timeInMillis, DateTimeZone.UTC)
-            def zone  = finder.find(lat.value, lon.value)                
-            if(zone){
-                ts = ts.withZone(zone)
+            if(pos.latitude && pos.longitude && pos.time){
+                def lat = new GeoCoordinate(magnitude: Math.abs(pos.latitude), 
+                        direction: pos.latitude > 0 ? Cardinal.NORTH : Cardinal.SOUTH)
+                def lon = new GeoCoordinate(magnitude: Math.abs(pos.longitude), 
+                        direction: pos.longitude > 0 ? Cardinal.EAST : Cardinal.WEST)
+                def ts =  new DateTime(pos.time.timeInMillis, DateTimeZone.UTC)
+                def zone  = finder.find(lat.value, lon.value)                
+                if(zone){
+                    ts = ts.withZone(zone)
+                }
+                
+                def wp = new Waypoint(latitude: lat, longitude: lon, timestamp: ts)
+                wp.file = wf
+                wf.waypoints.add(wp)                
             }
-            
-            def wp = new Waypoint(latitude: lat, longitude: lon, timestamp: ts)
-            wp.file = wf
-            wf.waypoints.add(wp)
         }
         return wf
     }
