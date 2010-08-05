@@ -5,3 +5,5 @@ with your friends and family. It is a standalone (Java) application that
  * Allows you to annotate each photo with a title and description text
  * Exports annotated images and GPS tracks for each day to a single, 
    compact KMZ file that can be viewed in Google Earth
+
+Nikki is published under the GNU General Public License v3 or later.
