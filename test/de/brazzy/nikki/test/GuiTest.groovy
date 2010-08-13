@@ -707,9 +707,10 @@ class GuiTest extends AbstractNikkiTest {
     public void testMassSelectExport() {
         Image image1 = addImage(DAY1, IMAGE2)
         Image image2 = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY2, "dummy")
         image1.export = false
         image2.export = false
-        model.add(tmpDir)        
+        model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         
@@ -736,6 +737,12 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(editor.export.selected)
         assertFalse(image1.export)
         assertFalse(image2.export)
+        
+        view.dayList.selectedIndex = 2
+        view.exportAllButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        view.exportNoneButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
     }
 }
 
