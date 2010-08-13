@@ -99,6 +99,8 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
         
         model.add(tmpDir)
         assertTrue(view.addButton.enabled)
@@ -107,6 +109,8 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
         
         view.dirList.selectedIndex = 0
         assertTrue(view.addButton.enabled)
@@ -115,6 +119,8 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
         
         addImage(DAY1, IMAGE1)
         assertTrue(view.addButton.enabled)
@@ -123,6 +129,8 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
         
         view.dayList.selectedIndex = 0
         assertTrue(view.addButton.enabled)
@@ -131,6 +139,8 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertTrue(view.tagButton.enabled)
         assertTrue(view.exportButton.enabled)
+        assertTrue(view.exportAllButton.enabled)
+        assertTrue(view.exportNoneButton.enabled)
         
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
@@ -143,6 +153,8 @@ class GuiTest extends AbstractNikkiTest {
         assertTrue(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
         
         view.dirList.clearSelection()
         assertTrue(view.addButton.enabled)
@@ -151,6 +163,8 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(view.saveButton.enabled)
         assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
+        assertFalse(view.exportAllButton.enabled)
+        assertFalse(view.exportNoneButton.enabled)
     }
     
     public void testScanSaveRescan() {
@@ -670,6 +684,58 @@ class GuiTest extends AbstractNikkiTest {
         
         assertTrue(editor.export.enabled)
         assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_TOOLTIP)
+    }
+    
+    public void testAutoSelectExport() {
+        Image image1 = addImage(DAY1, IMAGE2)
+        image1.export = false
+        image1.title = null
+        model.add(tmpDir)        
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        assertFalse(editor.export.selected)
+        assertFalse(image1.export)
+        editor.title.text = "changedTitle"
+        assertTrue(editor.export.selected)
+        view.dayList.selectedIndex = -1
+        assertTrue(image1.export)
+    }
+    
+    public void testMassSelectExport() {
+        Image image1 = addImage(DAY1, IMAGE2)
+        Image image2 = addImage(DAY1, IMAGE1)
+        image1.export = false
+        image2.export = false
+        model.add(tmpDir)        
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        assertFalse(image1.export)
+        assertFalse(image2.export)
+        assertFalse(editor.export.selected)
+        
+        view.exportAllButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        
+        assertTrue(editor.export.selected)
+        assertTrue(image1.export)
+        assertTrue(image2.export)
+        
+        view.imageTable.editCellAt(1,0)
+        editor = view.imageTable.editorComponent
+        assertTrue(editor.export.selected)
+        
+        view.exportNoneButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        
+        assertFalse(editor.export.selected)
+        assertFalse(image1.export)
+        assertFalse(image2.export)
     }
 }
 
