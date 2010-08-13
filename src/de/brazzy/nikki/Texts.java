@@ -73,6 +73,12 @@ public final class Texts {
                 .getString("mainwindow.export_tooltip");
         public static final String HELP_TOOLTIP = bundle
                 .getString("mainwindow.help_tooltip");
+        public static final String EXPORT_ALL_BUTTON = bundle
+                .getString("mainwindow.export_all_button");
+        public static final String EXPORT_NONE_BUTTON = bundle
+                .getString("mainwindow.export_none_button");
+        public static final String EXPORT_TEXT = bundle
+                .getString("mainwindow.export_text");
 
     }
 

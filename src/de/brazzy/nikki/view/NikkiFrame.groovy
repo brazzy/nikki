@@ -18,6 +18,7 @@ package de.brazzy.nikki.view
  */
 
 import java.awt.BorderLayout
+import java.awt.FlowLayout;
 
 import groovy.swing.SwingBuilder
 
@@ -46,6 +47,8 @@ public class NikkiFrame{
     def tagButton
     def saveButton
     def exportButton
+    def exportAllButton
+    def exportNoneButton
     def dayList
     def imageSortOrder
     def imageTable
@@ -101,11 +104,17 @@ public class NikkiFrame{
                     borderLayout()
                     panel(constraints: BorderLayout.NORTH){
                         borderLayout()
-                        label(constraints: BorderLayout.WEST, text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,5))
-                        panel(constraints: BorderLayout.CENTER){
-                            borderLayout()
-                            result.imageSortOrder = comboBox(constraints: BorderLayout.WEST, enabled: false,
+                        panel(constraints: BorderLayout.WEST){
+                            flowLayout(alignment:FlowLayout.LEFT, vgap:0)
+                            label(text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,5))
+                            result.imageSortOrder = comboBox(enabled: false,
                                     items: [ImageSortField.FILENAME, ImageSortField.TIME], selectedIndex:-1)
+                        }
+                        panel(constraints: BorderLayout.CENTER){
+                            flowLayout(alignment:FlowLayout.RIGHT, vgap:0)
+                            label(text:Texts.Main.EXPORT_TEXT)
+                            result.exportAllButton = button(enabled:false, border:new EmptyBorder(2,5,2,5), text:Texts.Main.EXPORT_ALL_BUTTON)
+                            result.exportNoneButton = button(enabled:false, border:new EmptyBorder(2,5,2,5), text:Texts.Main.EXPORT_NONE_BUTTON)
                         }
                         result.helpButton = button(constraints: BorderLayout.EAST, enabled:true, border:null,
                                 toolTipText:Texts.Main.HELP_TOOLTIP,
