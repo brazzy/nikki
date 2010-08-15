@@ -186,6 +186,26 @@ public class Nikki{
         }
     }
     
+    private exportAllAction = {
+        def current = view.imageTable.editorComponent?.getValue()    
+        def day = view.dayList.selectedValue
+        for(Image img in day.images){
+            img.export = true
+        }
+        view.imageTable.editorComponent?.setValue(current)    
+        view.imageTable.repaint()
+    }
+    
+    private exportNoneAction = {
+        def current = view.imageTable.editorComponent?.getValue()    
+        def day = view.dayList.selectedValue
+        for(Image img in day.images){
+            img.export = false
+        }
+        view.imageTable.editorComponent?.setValue(current)    
+        view.imageTable.repaint()
+    }
+    
     private aboutAction = {
         dialogs.showAboutBox()
     }
@@ -239,6 +259,8 @@ public class Nikki{
         view.imageSortOrder.addActionListener(sortOrderAction)
         view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
+        view.exportAllButton.actionPerformed = exportAllAction
+        view.exportNoneButton.actionPerformed = exportNoneAction
         view.helpButton.actionPerformed = aboutAction
         view.frame.addWindowListener(closeListener)
         
