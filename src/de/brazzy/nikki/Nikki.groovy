@@ -110,6 +110,8 @@ public class Nikki{
         view.imageSortOrder.selectedItem = sel?.imageSortOrder                    
         view.imageSortOrder.enabled = sel?.date != null
         view.exportButton.enabled = (sel != null)
+        view.exportAllButton.enabled = (sel != null)
+        view.exportNoneButton.enabled = (sel != null)
         view.tagButton.enabled = (sel != null)
     } as ListSelectionListener 
     

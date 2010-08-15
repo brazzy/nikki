@@ -18,11 +18,15 @@ package de.brazzy.nikki.view;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import groovyjarjarantlr.StringUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -38,6 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import net.sourceforge.cobertura.util.StringUtil;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -81,6 +90,7 @@ public class ImageView extends JPanel {
     private Image value;
     private Dialogs dialogs;
     private ActionListener copyListener;
+    private boolean empty = true;
 
     /**
      * @param dialogs
@@ -195,6 +205,8 @@ public class ImageView extends JPanel {
         latitude.setEditable(false);
         longitude.setEditable(false);
         offsetFinder.setEnabled(true);
+        title.getDocument().addDocumentListener(autoExportListener);
+        textArea.getDocument().addDocumentListener(autoExportListener);
     }
 
     private transient ActionListener offsetFinderAction = new ActionListener() {
@@ -218,6 +230,30 @@ public class ImageView extends JPanel {
                     e1.printStackTrace();
                 }
             }
+        }
+    };
+
+    private transient DocumentListener autoExportListener = new DocumentListener() {
+        private void update(DocumentEvent e) {
+            if (empty && e.getLength() > 0) {
+                export.setSelected(true);
+                empty = false;
+            }
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            update(e);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            update(e);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            update(e);
         }
     };
 
@@ -277,6 +313,8 @@ public class ImageView extends JPanel {
             export.setEnabled(true);
             export.setToolTipText(Texts.Image.EXPORT_TOOLTIP);
         }
+        empty = ((value.getTitle() == null || value.getTitle().length() == 0) && (value
+                .getDescription() == null || value.getDescription().length() == 0));
     }
 
     private void setGpsData(Image value) {

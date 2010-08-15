@@ -688,8 +688,10 @@ class GuiTest extends AbstractNikkiTest {
     
     public void testAutoSelectExport() {
         Image image1 = addImage(DAY1, IMAGE2)
+        Image image2 = addImage(DAY2, IMAGE1)
         image1.export = false
         image1.title = null
+        image1.description=null
         model.add(tmpDir)        
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
@@ -700,7 +702,29 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(image1.export)
         editor.title.text = "changedTitle"
         assertTrue(editor.export.selected)
-        view.dayList.selectedIndex = -1
+        editor.export.selected = false
+        editor.title.text = "changedTitle2"
+        assertFalse(editor.export.selected)
+        editor.title.text = ""
+        editor.title.text = "changedTitle"
+        assertFalse(editor.export.selected)
+        editor.textArea.text = "changedDescription"
+        assertFalse(editor.export.selected)
+        
+        view.imageTable.editCellAt(1,0)
+        dialogs.registerWorker(null)
+        assertFalse(image1.export)
+        image1.title = null
+        image1.description=null        
+        
+        view.imageTable.editCellAt(0,0)
+        editor = view.imageTable.editorComponent
+        assertFalse(editor.export.selected)
+        editor.textArea.text = "changedDescription"
+        assertTrue(editor.export.selected)
+        
+        view.imageTable.editCellAt(1,0)
+        dialogs.registerWorker(null)
         assertTrue(image1.export)
     }
     

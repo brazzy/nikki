@@ -293,20 +293,5 @@ class ImageTest extends AbstractNikkiTest{
         assertSame(imageNoDate2, tmpDir[0].images[1])
         assertEquals(TIME1.plusMinutes(10), imageWithDate.time)
     }
-    
-    public void testAutoExport(){
-        Image i = new Image(export: false)
-        assertFalse(i.export)        
-        i.title = "dummy"
-        assertTrue(i.export)
-        i.export = false
-        i.title = "dummy2"
-        assertFalse(i.export)        
-        i.description = "sth"
-        assertTrue(i.export)
-        i.export = false
-        i.description = "sth2"
-        assertFalse(i.export)        
-    }
 }
 
