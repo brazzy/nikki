@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="nikki">
 	<taskdef name="groovyc"
 	         classname="org.codehaus.groovy.ant.Groovyc"
@@ -6,11 +5,12 @@
 	<taskdef name="groovydoc"
 	         classname="org.codehaus.groovy.ant.Groovydoc"
 	         classpath="lib/groovy-all-1.7.0.jar"/>
-    <taskdef classpath="lib/cobertura.jar;lib/log4j-1.2.9.jar;lib/asm-3.0.jar;lib/asm-tree-3.0.jar;lib/jakarta-oro-2.0.8.jar" 
+    <taskdef classpath="util/cobertura.jar;util/asm-3.0.jar;util/asm-tree-3.0.jar;util/jakarta-oro-2.0.8.jar;lib/RouteConverterCmdLine.jar" 
     	     resource="tasks.properties"/>
 	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
-	         classpath="lib/findbugs-ant.jar"/>
-
+	         classpath="util/findbugs-ant.jar"/>
+    <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
+        classpath="util/one-jar-ant-task-0.97.jar"/>
 
     <property environment="env"/>
 	<property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
@@ -35,22 +35,22 @@
         <pathelement location="lib/groovy-all-1.7.0.jar"/>
     </path>
     <path id="nikki.classpath.libraries">
-        <pathelement location="lib/asm-3.0.jar"/>
-        <pathelement location="lib/asm-tree-3.0.jar"/>
-        <pathelement location="lib/cobertura.jar"/>
+        <pathelement location="tuil/asm-3.0.jar"/>
+        <pathelement location="util/asm-tree-3.0.jar"/>
+        <pathelement location="util/cobertura.jar"/>
+        <pathelement location="util/jakarta-oro-2.0.8.jar"/>
         <pathelement location="lib/commons-io-1.4.jar"/>
         <pathelement location="lib/java-image-scaling-0.8.4.jar"/>
-        <pathelement location="lib/jakarta-oro-2.0.8.jar"/>
         <pathelement location="lib/JavaAPIforKml.jar"/>
         <pathelement location="lib/jaxb-api.jar"/>
         <pathelement location="lib/jaxb-impl.jar"/>
         <pathelement location="lib/joda-time-1.6.jar"/>
-        <pathelement location="lib/log4j-1.2.9.jar"/>
         <pathelement location="lib/mediautil-1.0_patched.jar"/>
         <path refid="JUnit 4.libraryclasspath"/>
         <path refid="Groovy Libraries.libraryclasspath"/>
         <pathelement location="lib/jsi-1.0b2p1.jar"/>
         <pathelement location="lib/trove-0.1.8.jar"/>
+        <pathelement location="lib/RouteConverterCmdLine.jar"/>
     </path>
     <path id="nikki.classpath.build">
         <pathelement location="${build.dir}"/>
@@ -204,28 +204,18 @@
     	<replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
     		<include name="about*.html"/>
     	</replace>
-        <jar destfile="build/Nikki.jar" filesetmanifest="mergewithoutmain">
+        <one-jar destfile="build/Nikki.jar">
             <manifest>
-                <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
-                <attribute name="Class-Path" value="."/>
+                <attribute name="One-Jar-Main-Class" value="de.brazzy.nikki.Launcher"/>
                 <attribute name="Implementation-Version" value="${build.id}"/>
             </manifest>
-            <fileset dir="${build.dir}"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/groovy-all-1.7.0.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/asm-3.0.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/asm-tree-3.0.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/commons-io-1.4.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/java-image-scaling-0.8.4.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jakarta-oro-2.0.8.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/JavaAPIforKml.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jaxb-api.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jaxb-impl.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/joda-time-1.6.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/log4j-1.2.9.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/mediautil-1.0_patched.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/trove-0.1.8.jar"/>
-            <zipfileset excludesfile="util/create-jar-exclude.txt" src="lib/jsi-1.0b2p1.jar"/>
-        </jar>
+        	<main>
+        	    <fileset dir="${build.dir}"/>
+    		</main>
+        	<lib>
+                <fileset dir="lib" includes="*.jar"/>
+        	</lib>
+        </one-jar>
     </target>
 
     <target name="findbugs" depends="build">
