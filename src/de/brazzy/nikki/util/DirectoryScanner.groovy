@@ -82,6 +82,7 @@ class DirectoryScanner {
         def otherFiles = new HashSet(allFiles)
         otherFiles.removeAll(imageFiles)
         otherFiles = otherFiles.findAll{
+            !new File(dir.path, it).isDirectory() &&
             !it.toUpperCase().endsWith(".AVI") &&
             !it.toUpperCase().endsWith(".THM") &&            
             !it.toUpperCase().endsWith(".DB")

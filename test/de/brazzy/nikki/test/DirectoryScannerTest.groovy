@@ -193,6 +193,28 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(day1.waypoints as Set, file2.waypoints as Set)
     }
     
+    public void testEmptyDir() {
+        tmpDir.path.mkdirs()
+        scanner.scan(tmpDir, null)
+        assertNotNull(tmpDir.path.list())
+        assertEquals(0, tmpDir.size);
+        
+    }
+    
+    public void testSubdirectory() {
+        scanner.finder.addCall(-24f, 133.2f, TZ_2)
+        scanner.finder.addCall(-23.7f, 133.8f, null)
+        
+        copyFile(WAYPOINTS1)
+        assertTrue(new File(tmpDir.path, "a_subdir").mkdirs());
+        copyFile(IMAGE1)
+        
+        scanner.scan(tmpDir, null)
+        assertEquals(3, tmpDir.path.list().length)
+        assertEquals(1, tmpDir.size);
+        
+    }
+    
     public void testParseWaypointFile() {
         scanner.finder.addCall(-24f, 133.2f, TZ_2)
         scanner.finder.addCall(-23.7f, 133.8f, null)
