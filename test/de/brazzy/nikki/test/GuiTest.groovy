@@ -687,11 +687,15 @@ class GuiTest extends AbstractNikkiTest {
     }
     
     public void testAutoSelectExport() {
-        Image image1 = addImage(DAY1, IMAGE2)
-        Image image2 = addImage(DAY2, IMAGE1)
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY1, IMAGE2)
         image1.export = false
         image1.title = null
         image1.description=null
+        image2.export = false
+        image2.title = null
+        image2.description=null
+        image2.waypoint=null
         model.add(tmpDir)        
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
@@ -716,24 +720,37 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(image1.export)
         image1.title = null
         image1.description=null        
+        editor = view.imageTable.editorComponent
+        assertFalse(editor.export.selected)
+        editor.title.text = "changedTitle"
+        assertFalse(editor.export.selected)
         
         view.imageTable.editCellAt(0,0)
+        dialogs.registerWorker(null)
+        assertFalse(image2.export)
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.selected)
         editor.textArea.text = "changedDescription"
         assertTrue(editor.export.selected)
+        image2.title = null
+        image2.waypoint = constructWaypoint(image2.day, 2)
         
         view.imageTable.editCellAt(1,0)
         dialogs.registerWorker(null)
         assertTrue(image1.export)
+        editor = view.imageTable.editorComponent
+        assertFalse(editor.export.selected)
+        editor.title.text = "changedTitle"
+        assertTrue(editor.export.selected)
     }
     
     public void testMassSelectExport() {
-        Image image1 = addImage(DAY1, IMAGE2)
-        Image image2 = addImage(DAY1, IMAGE1)
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY1, IMAGE2)
         WaypointFile wpf = addWaypointFile(DAY2, "dummy")
         image1.export = false
         image2.export = false
+        image2.waypoint = null
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
@@ -743,6 +760,17 @@ class GuiTest extends AbstractNikkiTest {
         assertFalse(image1.export)
         assertFalse(image2.export)
         assertFalse(editor.export.selected)
+        editor.title.text = "changedTitle"
+        
+        view.exportAllButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        
+        assertTrue(editor.export.selected)
+        assertTrue(image1.export)
+        assertFalse(image2.export)
+        assertEquals(image1.title, "changedTitle")
+        
+        image2.waypoint = constructWaypoint(image2.day, 2)
         
         view.exportAllButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)

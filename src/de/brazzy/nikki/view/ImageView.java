@@ -18,15 +18,11 @@ package de.brazzy.nikki.view;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import groovyjarjarantlr.StringUtils;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -42,11 +38,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import net.sourceforge.cobertura.util.StringUtil;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -235,7 +228,7 @@ public class ImageView extends JPanel {
 
     private transient DocumentListener autoExportListener = new DocumentListener() {
         private void update(DocumentEvent e) {
-            if (empty && e.getLength() > 0) {
+            if (empty && value.getWaypoint() != null && e.getLength() > 0) {
                 export.setSelected(true);
                 empty = false;
             }

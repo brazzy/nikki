@@ -155,6 +155,9 @@ public class Nikki{
         def offset = dialogs.askOffset();
         if(offset != null) {
             view.dayList.selectedValue.geotag(offset)
+            
+            def current = view.imageTable.editorComponent?.getValue()    
+            view.imageTable.editorComponent?.setValue(current)    
             view.imageTable.repaint()
         }
     }
@@ -190,7 +193,9 @@ public class Nikki{
         def current = view.imageTable.editorComponent?.getValue()    
         def day = view.dayList.selectedValue
         for(Image img in day.images){
-            img.export = true
+            if(img.waypoint){
+                img.export = true                
+            }
         }
         view.imageTable.editorComponent?.setValue(current)    
         view.imageTable.repaint()
