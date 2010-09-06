@@ -9,13 +9,15 @@
     	     resource="tasks.properties"/>
 	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
 	         classpath="util/findbugs-ant.jar"/>
-    <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
-        classpath="util/one-jar-ant-task-0.97.jar"/>
+	<taskdef name="p200ant"
+	    classname="de.matthiasmann.p200ant.P200AntTask"
+	    classpath="util/p200ant.jar"/>
 
     <property environment="env"/>
 	<property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="build.dir" value="build/classes"/>
+    <property name="jws.dir" value="build/jws"/>
     <property name="aux.dir" value="build/classes_aux"/>
     <property name="junit.output.dir" value="build/junit"/>
     <property name="javadoc.output.dir" value="build/javadoc"/>
@@ -204,20 +206,52 @@
     	<replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
     		<include name="about*.html"/>
     	</replace>
-        <one-jar destfile="build/Nikki.jar">
+        <jar destfile="build/Nikki.jar">
             <manifest>
-                <attribute name="One-Jar-Main-Class" value="de.brazzy.nikki.Launcher"/>
+                <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
+                <attribute name="Class-Path" value="
+                	JavaAPIforKml.jar 
+                	RouteConverterCmdLine.jar 
+                	commons-io-1.4.jar 
+                	groovy-all-1.7.0.jar 
+                	java-image-scaling-0.8.4.jar 
+                	jaxb-api.jar lib/jaxb-impl.jar 
+                	joda-time-1.6.jar 
+                	jsi-1.0b2p1.jar 
+                	mediautil-1.0_patched.jar 
+                	trove-0.1.8.jar
+                "/>
                 <attribute name="Implementation-Version" value="${build.id}"/>
             </manifest>
-        	<main>
-        	    <fileset dir="${build.dir}"/>
-    		</main>
-        	<lib>
-                <fileset dir="lib" includes="*.jar"/>
-        	</lib>
-        </one-jar>
+    	    <fileset dir="${build.dir}"/>
+        </jar>
     </target>
 
+	<target name="prepare_jws">
+        <mkdir dir="${jws.dir}"/>
+        <copy todir="${jws.dir}">
+            <fileset file="build/Nikki.jar" />
+            <fileset file="util/Nikki.jnlp" />
+            <fileset dir="lib" includes="*.jar"/>
+        </copy>
+
+	    <p200ant repack="true">
+            <fileset dir="${jws.dir}" includes="*.jar"/>
+	    </p200ant>
+	            
+        <input message="keyPass" addproperty="keypass"/>
+        <input message="storePass" addproperty="storepass"
+            defaultvalue="${keypass}"/>
+        
+	    <signjar alias="brazzy" keypass="${keypass}" storepass="${storepass}">
+            <fileset dir="${jws.dir}" includes="*.jar"/>
+	    </signjar>
+	        
+	    <p200ant>
+            <fileset dir="${jws.dir}" includes="*.jar"/>
+	    </p200ant>
+	</target>
+	
     <target name="findbugs" depends="build">
 	    <findbugs home="${findbugs.home}"
 		          jvmargs="-Xmx128m"
