@@ -1,20 +1,19 @@
 <project basedir="." default="build" name="nikki">
-	<taskdef name="groovyc"
-	         classname="org.codehaus.groovy.ant.Groovyc"
-	         classpath="lib/groovy-all-1.7.0.jar"/>
-	<taskdef name="groovydoc"
-	         classname="org.codehaus.groovy.ant.Groovydoc"
-	         classpath="lib/groovy-all-1.7.0.jar"/>
+    <taskdef name="groovyc"
+             classname="org.codehaus.groovy.ant.Groovyc"
+             classpath="lib/groovy-all-1.7.0.jar"/>
+    <taskdef name="groovydoc"
+             classname="org.codehaus.groovy.ant.Groovydoc"
+             classpath="lib/groovy-all-1.7.0.jar"/>
     <taskdef classpath="util/cobertura.jar;util/asm-3.0.jar;util/asm-tree-3.0.jar;util/jakarta-oro-2.0.8.jar;lib/RouteConverterCmdLine.jar" 
-    	     resource="tasks.properties"/>
-	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
-	         classpath="util/findbugs-ant.jar"/>
-	<taskdef name="p200ant"
-	    classname="de.matthiasmann.p200ant.P200AntTask"
-	    classpath="util/p200ant.jar"/>
+             resource="tasks.properties"/>
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+             classpath="util/findbugs-ant.jar"/>
+    <typedef resource="org/jdesktop/deployment/ant/pack200/antlib.xml"
+             classpath="util/deployment-ant-pack200-1.0-rc1.jar"/>
 
     <property environment="env"/>
-	<property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
+    <property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
     <property name="ECLIPSE_HOME" value="C:/Programme/Java/eclipse_3.5"/>
     <property name="build.dir" value="build/classes"/>
     <property name="jws.dir" value="build/jws"/>
@@ -24,11 +23,11 @@
     <property name="cobertura.instrument.dir" value="build/cobertura/instrument"/>
     <property name="cobertura.output.dir" value="build/cobertura/report"/>
     <property name="cobertura.datafile" value="build/cobertura/cobertura.ser"/>
-	
+    
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-	
+    
     <path id="JUnit 4.libraryclasspath">
         <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
@@ -65,7 +64,7 @@
         <path refid="nikki.classpath.libraries"/>
     </path>
     
-	<target name="init">
+    <target name="init">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${aux.dir}"/>
         <copy includeemptydirs="false" todir="${build.dir}">
@@ -91,42 +90,42 @@
         </copy>
     </target>
     
-	<target name="clean">
+    <target name="clean">
         <delete dir="build"/>
     </target>
     
-	<target depends="init" name="build">
+    <target depends="init" name="build">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <groovyc destdir="${build.dir}" encoding="UTF-8">
             <src path="src"/>
             <classpath refid="nikki.classpath.libraries"/>
-        	<javac source="${source}" target="${target}" debug="on" />
-        </groovyc>		
+            <javac source="${source}" target="${target}" debug="on" />
+        </groovyc>      
         <groovyc destdir="${aux.dir}" encoding="UTF-8">
             <src path="test"/>
             <classpath refid="nikki.classpath.build"/>
-        	<javac source="${source}" target="${target}" debug="on" />
+            <javac source="${source}" target="${target}" debug="on" />
         </groovyc>
         <groovyc destdir="${aux.dir}" encoding="UTF-8">
             <src path="util"/>
             <classpath refid="nikki.classpath.build"/>
-        	<javac source="${source}" target="${target}" debug="on" />
+            <javac source="${source}" target="${target}" debug="on" />
         </groovyc>
     </target>
 
-	<target depends="build" name="coverage-instrument">
-		<mkdir dir="${cobertura.instrument.dir}" />
+    <target depends="build" name="coverage-instrument">
+        <mkdir dir="${cobertura.instrument.dir}" />
         <mkdir dir="${cobertura.output.dir}" />
         <copy todir="${cobertura.instrument.dir}">
             <fileset dir="${build.dir}" />
         </copy>
-		
+        
         <cobertura-instrument
-        	datafile="${cobertura.datafile}">
+            datafile="${cobertura.datafile}">
             <fileset dir="${cobertura.instrument.dir}">
                 <include name="**/*.class"/>
-	            <exclude name="**/Dialogs.class"/>
-	            <exclude name="**/Launcher.class"/>
+                <exclude name="**/Dialogs.class"/>
+                <exclude name="**/Launcher.class"/>
             </fileset>
         </cobertura-instrument>
         <copy todir="${cobertura.instrument.dir}">
@@ -146,23 +145,23 @@
     </target>
 
     <target name="junit" depends="coverage-instrument">
-    	<echo message="Test classpath: ${toString:nikki.classpath.test}"/>
+        <echo message="Test classpath: ${toString:nikki.classpath.test}"/>
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
-        	<sysproperty key="file.encoding" value="US-ASCII"/>
-        	<sysproperty key="net.sourceforge.cobertura.datafile" value="${cobertura.datafile}"/>
+            <sysproperty key="file.encoding" value="US-ASCII"/>
+            <sysproperty key="net.sourceforge.cobertura.datafile" value="${cobertura.datafile}"/>
             <formatter type="xml"/>
             <test name="de.brazzy.nikki.test.Suite" todir="${junit.output.dir}"/>
             <classpath refid="nikki.classpath.test"/>
         </junit>
     </target>
-	
-	<target depends="junit" name="coverage-report">
+    
+    <target depends="junit" name="coverage-report">
         <cobertura-report format="xml" srcdir="src" 
-        	datafile="${cobertura.datafile}"
-        	destdir="${cobertura.output.dir}"/>
+            datafile="${cobertura.datafile}"
+            destdir="${cobertura.output.dir}"/>
     </target>
-	
+    
     <target name="html-reports" depends="junit">
         <junitreport todir="${junit.output.dir}">
             <fileset dir="${junit.output.dir}">
@@ -171,101 +170,99 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
         <cobertura-report format="html" srcdir="src" 
-        	datafile="${cobertura.datafile}"
-        	destdir="${cobertura.output.dir}"/>
+            datafile="${cobertura.datafile}"
+            destdir="${cobertura.output.dir}"/>
     </target>
-	
+    
     <target name="javadoc">
         <mkdir dir="${javadoc.output.dir}"/>
-    	<groovydoc destdir="${javadoc.output.dir}" sourcepath="src">
-    		<link packages="java.,javax." href="http://java.sun.com/javase/6/docs/api/"/>
-    		<link packages="org.joda.time." href="http://joda-time.sourceforge.net/api-release/"/>
-    		<link packages="com.infomatiq.jsi." href="http://jsi.sourceforge.net/javadoc/1.0b1/"/>
-		</groovydoc>
+        <groovydoc destdir="${javadoc.output.dir}" sourcepath="src">
+            <link packages="java.,javax." href="http://java.sun.com/javase/6/docs/api/"/>
+            <link packages="org.joda.time." href="http://joda-time.sourceforge.net/api-release/"/>
+            <link packages="com.infomatiq.jsi." href="http://jsi.sourceforge.net/javadoc/1.0b1/"/>
+        </groovydoc>
     </target>
 
     <target name="jdepend">
-    	<jdepend outputfile="build/jdepend.xml" format="xml">
-    	    <exclude name="java.*"/>
-    	    <exclude name="javax.*"/>
-    	    <exclude name="com.joda.time.*"/>
-    	    <exclude name="com.infomatiq.jsi.*"/>
-    	    <classespath>
-    	        <pathelement location="${build.dir}"/>
-    	    </classespath>
-    	</jdepend>
+        <jdepend outputfile="build/jdepend.xml" format="xml">
+            <exclude name="java.*"/>
+            <exclude name="javax.*"/>
+            <exclude name="com.joda.time.*"/>
+            <exclude name="com.infomatiq.jsi.*"/>
+            <classespath>
+                <pathelement location="${build.dir}"/>
+            </classespath>
+        </jdepend>
     </target>
 
     <target name="create_build_id">
-    	<tstamp/>
-    	<property name="build.id" value="${DSTAMP}_${env.BUILD_NUMBER}"/>
-    	<echo message="Build ID: ${build.id}"/>
+        <tstamp/>
+        <property name="build.id" value="${DSTAMP}_${env.BUILD_NUMBER}"/>
+        <echo message="Build ID: ${build.id}"/>
     </target>
-	
+    
     <target name="create_run_jar" depends="create_build_id">
-    	<replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
-    		<include name="about*.html"/>
-    	</replace>
+        <replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
+            <include name="about*.html"/>
+        </replace>
         <jar destfile="build/Nikki.jar">
             <manifest>
                 <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
                 <attribute name="Class-Path" value="
-                	JavaAPIforKml.jar 
-                	RouteConverterCmdLine.jar 
-                	commons-io-1.4.jar 
-                	groovy-all-1.7.0.jar 
-                	java-image-scaling-0.8.4.jar 
-                	jaxb-api.jar lib/jaxb-impl.jar 
-                	joda-time-1.6.jar 
-                	jsi-1.0b2p1.jar 
-                	mediautil-1.0_patched.jar 
-                	trove-0.1.8.jar
+                    JavaAPIforKml.jar 
+                    RouteConverterCmdLine.jar 
+                    commons-io-1.4.jar 
+                    groovy-all-1.7.0.jar 
+                    java-image-scaling-0.8.4.jar 
+                    jaxb-api.jar lib/jaxb-impl.jar 
+                    joda-time-1.6.jar 
+                    jsi-1.0b2p1.jar 
+                    mediautil-1.0_patched.jar 
+                    trove-0.1.8.jar
                 "/>
                 <attribute name="Implementation-Version" value="${build.id}"/>
             </manifest>
-    	    <fileset dir="${build.dir}"/>
+            <fileset dir="${build.dir}"/>
         </jar>
     </target>
 
-	<target name="prepare_jws">
+    <target name="prepare_jws">
         <mkdir dir="${jws.dir}"/>
 
-	    <p200ant repack="true">
-            <fileset file="build/Nikki.jar" />
-            <fileset dir="lib" includes="*.jar"/>
-	    </p200ant>
-
         <copy todir="${jws.dir}">
-            <fileset file="util/Nikki.jnlp" />
-            <fileset file="build/Nikki.jar" />
-            <fileset dir="lib" includes="*.jar"/>
+            <fileset file="Nikki.jnlp" />
         </copy>
 
+        <pack200 todir="${jws.dir}" repack="true">
+            <fileset dir="lib" includes="*.jar"/>
+            <fileset file="build/Nikki.jar" />
+        </pack200 >
+        
         <input message="keyPass" addproperty="keypass"/>
         <input message="storePass" addproperty="storepass"
             defaultvalue="${keypass}"/>
-        
-	    <signjar alias="brazzy" keypass="${keypass}" storepass="${storepass}">
+        <signjar alias="brazzy" keypass="${keyPass}" storepass="${storePass}">
             <fileset dir="${jws.dir}" includes="*.jar"/>
-	    </signjar>
-	        
-	    <p200ant>
+        </signjar>
+            
+        <pack200 todir="${jws.dir}">
             <fileset dir="${jws.dir}" includes="*.jar"/>
-	    </p200ant>
-	</target>
-	
+        	<mapper type="glob" from="*.jar" to="*.jar.pack.gz"/>
+        </pack200 >
+    </target>
+    
     <target name="findbugs" depends="build">
-	    <findbugs home="${findbugs.home}"
-		          jvmargs="-Xmx128m"
-	              output="xml"
-	              outputFile="build/findbugs.xml" 
-	    	      effort="min"
-	    	      excludeFilter="util/findbugs-exclude.xml" debug="true">
-	      <auxClasspath refid="nikki.classpath.libraries" />
-	      <sourcePath path="src" />
-	      <class location="${build.dir}" />
-	    </findbugs>
-	</target>
+        <findbugs home="${findbugs.home}"
+                  jvmargs="-Xmx128m"
+                  output="xml"
+                  outputFile="build/findbugs.xml" 
+                  effort="min"
+                  excludeFilter="util/findbugs-exclude.xml" debug="true">
+          <auxClasspath refid="nikki.classpath.libraries" />
+          <sourcePath path="src" />
+          <class location="${build.dir}" />
+        </findbugs>
+    </target>
 
     <target name="integration" depends="clean,junit,coverage-report,javadoc,findbugs,create_run_jar" />
 
