@@ -229,16 +229,18 @@
 
 	<target name="prepare_jws">
         <mkdir dir="${jws.dir}"/>
-        <copy todir="${jws.dir}">
+
+	    <p200ant repack="true">
             <fileset file="build/Nikki.jar" />
+            <fileset dir="lib" includes="*.jar"/>
+	    </p200ant>
+
+        <copy todir="${jws.dir}">
             <fileset file="util/Nikki.jnlp" />
+            <fileset file="build/Nikki.jar" />
             <fileset dir="lib" includes="*.jar"/>
         </copy>
 
-	    <p200ant repack="true">
-            <fileset dir="${jws.dir}" includes="*.jar"/>
-	    </p200ant>
-	            
         <input message="keyPass" addproperty="keypass"/>
         <input message="storePass" addproperty="storepass"
             defaultvalue="${keypass}"/>
