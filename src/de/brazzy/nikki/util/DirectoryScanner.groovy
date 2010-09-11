@@ -44,10 +44,6 @@ import de.brazzy.nikki.util.ParserFactory;
  */
 class DirectoryScanner {
     
-    private static final def FILTER_JPG = { dir, name ->
-        name.toUpperCase().endsWith(".JPG")
-    } as FilenameFilter
-    
     /** finds time zones for waypoints */
     TimezoneFinder finder;
     
