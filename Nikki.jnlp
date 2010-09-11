@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
   spec="1.5+"
-  codebase="http://localhost"
-  href="Nikki.jnlp">
+  codebase="http://github.com/downloads/brazzy/nikki/"
+  href="Nikki_@@RELEASE_ID@@.jnlp">
   <information>
     <title>Nikki</title>
     <vendor>Michael Borgwardt</vendor>
@@ -20,7 +20,7 @@
 	  </security>
   <resources>
     <j2se version="1.5+" java-vm-args="-Xmx128m"/>
-    <jar href="Nikki_0.9.3.jar"/>
+    <jar href="Nikki_@@RELEASE_ID@@.jar"/>
     <jar href="http://github.com/downloads/brazzy/nikki_libs/groovy-all-1.7.0.jar"/>
 	<jar href="http://github.com/downloads/brazzy/nikki_libs/commons-io-1.4.jar"/>
 	<jar href="http://github.com/downloads/brazzy/nikki_libs/java-image-scaling-0.8.4.jar"/>
