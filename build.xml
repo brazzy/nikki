@@ -9,6 +9,7 @@
              resource="tasks.properties"/>
     <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
              classpath="util/findbugs-ant.jar"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="util/ant-contrib-1.0b3.jar"/>
     <typedef resource="org/jdesktop/deployment/ant/pack200/antlib.xml"
              classpath="util/deployment-ant-pack200-1.0-rc1.jar"/>
 
@@ -201,6 +202,19 @@
         <echo message="Build ID: ${build.id}"/>
     </target>
     
+    <target name="create_release_id">
+    	  <exec executable="git" outputproperty="release.tags">
+            <arg value="for-each-ref"/>
+            <arg value="--sort=taggerdate"/>
+            <arg value="refs/tags/release_*"/>
+    	  </exec>
+        <propertyregex property="release.id"
+                  input="${release.tags}"
+                  regexp=".*release_(.*)$"
+                  select="\1" />
+        <echo message="Release ID: ${release.id}"/>
+    </target>
+    
     <target name="create_run_jar" depends="create_build_id">
         <replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@BUILD_ID@@" value="${build.id}">
             <include name="about*.html"/>
@@ -238,10 +252,10 @@
             <fileset file="build/Nikki.jar" />
         </pack200 >
         
-        <input message="keyPass" addproperty="keypass"/>
-        <input message="storePass" addproperty="storepass"
+        <input message="Password for signing key" addproperty="keypass"/>
+        <input message="Password for keystore" addproperty="storepass"
             defaultvalue="${keypass}"/>
-        <signjar alias="brazzy" keypass="${keyPass}" storepass="${storePass}">
+        <signjar alias="brazzy" keypass="${keypass}" storepass="${storepass}">
             <fileset dir="${jws.dir}" includes="*.jar"/>
         </signjar>
             
