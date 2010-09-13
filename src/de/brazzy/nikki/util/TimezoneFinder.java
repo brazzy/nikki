@@ -62,7 +62,10 @@ public class TimezoneFinder {
     public TimezoneFinder() {
         this.zones = new ArrayList<DateTimeZone>();
         this.tree = new RTree();
-        tree.init(new Properties());
+        Properties props = new Properties();
+        props.put("MaxNodeEntries", "50");
+        props.put("MinNodeEntries", "20");
+        tree.init(props);
     }
 
     /**

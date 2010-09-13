@@ -68,4 +68,9 @@ class TimezoneFinderTest extends GroovyTestCase {
         assertEquals(obj.find(1000.0f, 22.0f), AbstractNikkiTest.TZ_BRISBANE)
         
     }    
+    
+    public void testLogging() {
+        def obj = new TimezoneFinder()
+        assertFalse(new File("test-results").exists())
+    }
 }

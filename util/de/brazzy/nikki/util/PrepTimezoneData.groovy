@@ -85,8 +85,14 @@ class PrepTimezoneData {
     }
     
     public static void testRTree(String file) {
+        System.out.println("Start test")
+        def start = System.nanoTime()
+        def props = new Properties()
+        props["MaxNodeEntries"]="50"
+        props["MinNodeEntries"]="20"
+        System.out.println(props)
         RTree tree = new RTree()
-        tree.init(new Properties())
+        tree.init(props)
         
         ObjectInputStream data = new ObjectInputStream(new FileInputStream(file))
         def zones = []
@@ -105,11 +111,16 @@ class PrepTimezoneData {
         }
         
         def result;
-        tree.nearest(new Point(-24.95867f, 146.138763f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)
-        assert result == "Australia/Brisbane"
-        tree.nearest(new Point(48.110383f, 11.567788f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)
-        assert result == "Europe/Berlin"
-        tree.nearest(new Point(35.543658f, 139.508954f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)            
-        assert result == "Asia/Tokyo"        
+        
+        50000.times{
+            tree.nearest(new Point(-24.95867f, 146.138763f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)
+            assert result == "Australia/Brisbane"
+            tree.nearest(new Point(48.110383f, 11.567788f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)
+            assert result == "Europe/Berlin"
+            tree.nearest(new Point(35.543658f, 139.508954f), { result = zones[it]; return false } as IntProcedure, Float.POSITIVE_INFINITY)            
+            assert result == "Asia/Tokyo"        
+        }
+        
+        System.out.println("Total time: " + (System.nanoTime()-start)/(1000.0*1000*1000));
     }
 }
