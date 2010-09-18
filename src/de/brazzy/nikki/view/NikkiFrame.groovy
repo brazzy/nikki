@@ -58,8 +58,13 @@ public class NikkiFrame{
     public static NikkiFrame create(){
         def swing = new SwingBuilder()
         def result = new NikkiFrame()
+        def icons = [
+                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_64.gif")).image,
+                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_32.gif")).image,
+                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_16.gif")).image
+                ]
         
-        result.frame = swing.frame(title:Texts.Main.TITLE) {
+        result.frame = swing.frame(title:Texts.Main.TITLE, iconImages:icons) {
             borderLayout()
             splitPane(orientation: JSplitPane.HORIZONTAL_SPLIT, constraints: BorderLayout.CENTER){
                 splitPane(orientation: JSplitPane.VERTICAL_SPLIT){
