@@ -42,7 +42,7 @@ public class AboutBox extends JPanel {
     public AboutBox() throws Exception {
         setLayout(new BorderLayout());
         JLabel img = new JLabel(new ImageIcon(getClass().getResource(
-                "/icons/logo.png")));
+                "/icons/logo_splash.png")));
         add(img, BorderLayout.NORTH);
 
         content = new JEditorPane();
