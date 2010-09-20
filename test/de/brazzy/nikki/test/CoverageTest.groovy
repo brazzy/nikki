@@ -27,6 +27,7 @@ import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ListDataModel;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.util.PropertyComparator;
+import de.brazzy.nikki.view.AboutBox;
 
 
 /**
@@ -95,4 +96,13 @@ class CoverageTest {
         assertEquals("b", itr.next())
         assertFalse(itr.hasNext())
     }    
+    
+    @Test
+    public void aboutBox() {
+        AboutBox box = new AboutBox();
+        assertTrue(box.content.text.contains("Nikki GPS"))
+        assertTrue(box.content.text.contains("Michael Borgwardt"))
+    }
+    
+    
 }

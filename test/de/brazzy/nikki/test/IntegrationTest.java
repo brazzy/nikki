@@ -29,10 +29,12 @@ public class IntegrationTest extends TestSuite {
     public static TestSuite suite() {
         TestSuite s = new IntegrationTest();
         s.addTestSuite(DirectoryScannerTest.class);
-        s.addTestSuite(GuiTest.class);
         s.addTestSuite(PrefsTest.class);
         s.addTestSuite(ParserFactoryTest.class);
         s.addTest(new JUnit4TestAdapter(RouteConverterNmeaTest.class));
+        s.addTestSuite(GuiDirDayTest.class);
+        s.addTestSuite(GuiImageTest.class);
+        s.addTestSuite(GuiModifiedTest.class);
         return s;
     }
 }
