@@ -41,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -212,10 +213,9 @@ public class ImageView extends JPanel {
                 value.offsetFinder(tmpOut);
                 dialogs.open(tmpFile);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(ImageView.this, ex,
-                        Texts.Image.OFFSET_ERROR_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
+                dialogs.error(ex.getMessage());
+                Logger.getLogger(ImageView.class).warn(
+                        "Failed to create offset finder", ex);
             } finally {
                 try {
                     tmpOut.close();

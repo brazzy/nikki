@@ -33,6 +33,7 @@ abstract class GuiTest extends AbstractNikkiTest {
     NikkiModel model
     NikkiFrame view
     Nikki nikki
+    File logFile = new File(System.getProperty("user.home")+"/nikki.log")
     final long baseTime = System.currentTimeMillis()-10000000    
     
     public void setUp() {
@@ -43,6 +44,7 @@ abstract class GuiTest extends AbstractNikkiTest {
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
         view = nikki.view
+        logFile.delete()
     }
     
     public void tearDown() {

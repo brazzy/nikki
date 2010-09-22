@@ -73,9 +73,30 @@ class GuiImageTest extends GuiTest {
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         editor.offsetFinder.actionListeners[0].actionPerformed()
-        def file = dialogs.getOpened()
+        def file = dialogs.opened
         assertNotNull(file)
         assertTrue(file.name.endsWith(".kml"))
+    }
+    
+    public void testOffsetFinderError() {
+        def logFound = false;
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        view.imageTable.editCellAt(0,0)
+        def editor = view.imageTable.editorComponent
+        def dummyFile = new File("testOffsetFinderError")
+        dialogs.opened = dummyFile
+        dialogs.add("error message expected")
+        logFile.eachLine{ if(it.contains("testOffsetFinderError")) logFound = true }
+        assertFalse(logFound)
+        editor.offsetFinder.actionListeners[0].actionPerformed()
+        assertSame(dummyFile, dialogs.opened)
+        assertTrue(dialogs.queueEmpty)
+        logFile.eachLine{ if(it.contains("testOffsetFinderError")) logFound = true }
+        assertTrue(logFound)
     }
     
     public void testImageView() {
