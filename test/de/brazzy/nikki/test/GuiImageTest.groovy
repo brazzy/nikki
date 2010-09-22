@@ -79,7 +79,6 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testOffsetFinderError() {
-        def logFound = false;
         Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         model.add(tmpDir)
@@ -90,13 +89,11 @@ class GuiImageTest extends GuiTest {
         def dummyFile = new File("testOffsetFinderError")
         dialogs.opened = dummyFile
         dialogs.add("error message expected")
-        logFile.eachLine{ if(it.contains("testOffsetFinderError")) logFound = true }
-        assertFalse(logFound)
+        assertFalse(logContains("testOffsetFinderError"))
         editor.offsetFinder.actionListeners[0].actionPerformed()
         assertSame(dummyFile, dialogs.opened)
         assertTrue(dialogs.queueEmpty)
-        logFile.eachLine{ if(it.contains("testOffsetFinderError")) logFound = true }
-        assertTrue(logFound)
+        assertTrue(logContains("testOffsetFinderError"))
     }
     
     public void testImageView() {

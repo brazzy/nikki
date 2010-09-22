@@ -18,6 +18,8 @@ package de.brazzy.nikki.test
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.apache.log4j.Logger;
+
 import de.brazzy.nikki.Nikki;
 import de.brazzy.nikki.model.NikkiModel;
 import de.brazzy.nikki.util.ParserFactory;
@@ -44,7 +46,7 @@ abstract class GuiTest extends AbstractNikkiTest {
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
         view = nikki.view
-        logFile.delete()
+        Logger.getRootLogger().getAppender("A1").rollOver()
     }
     
     public void tearDown() {
@@ -52,6 +54,12 @@ abstract class GuiTest extends AbstractNikkiTest {
         view.frame.dispose()
         super.tearDown()
     }   
+    
+    protected boolean logContains(String needle){
+        def needleFound = false
+        logFile.eachLine{ if(it.contains(needle)) needleFound = true }
+        return needleFound
+    }
 }
 
 
