@@ -39,6 +39,7 @@ import mediautil.image.jpeg.LLJTran;
 import mediautil.image.jpeg.LLJTranException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -65,8 +66,8 @@ public class ImageReader extends ImageDataIO {
         try {
             errorIcon = IOUtils.toByteArray(ImageReader.class
                     .getResourceAsStream("noimage.jpg"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -105,7 +106,8 @@ public class ImageReader extends ImageDataIO {
             image.setModified(thumbnailNew.booleanValue());
             llj.freeMemory();
         } catch (Throwable e) {
-            e.printStackTrace();
+            Logger.getLogger(getClass()).error( // TODO: test
+                    "Error reading image " + file.getName(), e);
             image.setDescription(Texts.ERROR_PREFIX + e.getMessage());
             image.setThumbnail(errorIcon);
         }
@@ -120,7 +122,7 @@ public class ImageReader extends ImageDataIO {
         if (exifData != null) {
             int orientation = exifData.getOrientation();
             if (orientation > 0) { // see
-                                   // http://sylvana.net/jpegcrop/exif_orientation.html
+                // http://sylvana.net/jpegcrop/exif_orientation.html
                 if (orientation == 8) {
                     return Rotation.LEFT;
                 }

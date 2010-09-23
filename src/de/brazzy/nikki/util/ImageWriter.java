@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mediautil.gen.Rational;
 import mediautil.image.ImageResources;
@@ -102,34 +100,28 @@ public class ImageWriter extends ImageDataIO {
      * causes all image data to be written to the file's EXIF headers.
      */
     public void saveImage() throws Exception {
-        try {
-            writeTitle();
-            writeDescription();
-            writeTime();
-            writeExport();
-            writeGPS();
-            writeThumbnail();
+        writeTitle();
+        writeDescription();
+        writeTime();
+        writeExport();
+        writeGPS();
+        writeThumbnail();
 
-            File tmpFile = File.createTempFile("nikki", "tmp", new File(file
-                    .getParent()));
-            InputStream fip = new BufferedInputStream(new FileInputStream(file));
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(
-                    tmpFile));
-            llj.refreshAppx();
-            llj.xferInfo(fip, out, LLJTran.REPLACE, LLJTran.RETAIN);
-            llj.freeMemory();
-            fip.close();
-            out.close();
-            if (!file.delete()) {
-                throw new IllegalStateException();
-            }
-            if (!tmpFile.renameTo(file)) {
-                throw new IllegalStateException();
-            }
-
-        } catch (LLJTranException ex) {
-            Logger.getLogger(ImageWriter.class.getName()).log(Level.SEVERE,
-                    null, ex);
+        File tmpFile = File.createTempFile("nikki", "tmp", new File(file
+                .getParent()));
+        InputStream fip = new BufferedInputStream(new FileInputStream(file));
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(
+                tmpFile));
+        llj.refreshAppx();
+        llj.xferInfo(fip, out, LLJTran.REPLACE, LLJTran.RETAIN);
+        llj.freeMemory();
+        fip.close();
+        out.close();
+        if (!file.delete()) {
+            throw new IllegalStateException();
+        }
+        if (!tmpFile.renameTo(file)) {
+            throw new IllegalStateException();
         }
     }
 
@@ -142,7 +134,7 @@ public class ImageWriter extends ImageDataIO {
             }
             return entry;
         } catch (UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex); // can't happen
+            throw new IllegalStateException("Can't happen", ex);
         }
     }
 

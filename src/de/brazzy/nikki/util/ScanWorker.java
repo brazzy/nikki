@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTimeZone;
 
 import de.brazzy.nikki.model.Directory;
@@ -69,7 +70,9 @@ public class ScanWorker extends SwingWorker<Void, Void> {
                 scanner.setZone(zone);
                 scanner.scan(dir, this);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.getLogger(getClass()).error("Interrupted", e); // TODO:
+                                                                      // show
+                                                                      // error
             } finally {
                 scanner.setZone(null);
             }

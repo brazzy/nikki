@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
 import de.brazzy.nikki.Nikki;
 import de.brazzy.nikki.model.Directory;
 
@@ -51,7 +53,7 @@ public class SaveExitWorker extends SwingWorker<Void, Void> {
             System.exit(Nikki.EXIT_CODE_SAVED_MODIFICATIONS);
         } catch (SecurityException e) {
             // Happens only during tests
-            e.printStackTrace();
+            Logger.getLogger(getClass()).error("Exit", e);
         }
         return null;
     }

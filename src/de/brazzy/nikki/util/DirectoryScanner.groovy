@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -137,7 +138,9 @@ class DirectoryScanner {
                     wf.directory = dir
                     dir.addWaypointFile(wf)
                 }catch(Exception e){
-                    e.printStackTrace()
+                    // TODO: test / display / don't abort
+                    Logger.getLogger(getClass()).error(
+                            "Error reading waypoint file " + fileName, e);
                 }
             }
         }

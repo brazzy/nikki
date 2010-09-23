@@ -29,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.apache.log4j.Logger;
+
 import de.brazzy.nikki.Texts;
 
 /**
@@ -58,7 +60,8 @@ public class AboutBox extends JPanel {
                     try {
                         Desktop.getDesktop().browse(e.getURL().toURI());
                     } catch (Exception e1) {
-                        e1.printStackTrace();
+                        Logger.getLogger(getClass()).error(
+                                "Error opening link " + e.getURL(), e1);
                     }
                 }
             }

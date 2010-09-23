@@ -19,7 +19,11 @@ package de.brazzy.nikki.model;
 
 
 import javax.swing.SwingWorker
+
+import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
+
+import de.brazzy.nikki.model.Image;
 
 /**
  * Represents on filesystem directory containing images and GPS tracks
@@ -144,7 +148,8 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
                     image.save(this.path)
                 }
                 catch(Exception ex) {
-                    ex.printStackTrace()
+                    Logger.getLogger(getClass()).error( // TODO: test / display
+                            "Error saving data in image " + image.fileName, ex);
                 }
             }
             worker?.progress = new Integer((int)(++count/images.size() * 100));

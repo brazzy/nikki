@@ -214,13 +214,14 @@ public class ImageView extends JPanel {
                 dialogs.open(tmpFile);
             } catch (Exception ex) {
                 dialogs.error(ex.getMessage());
-                Logger.getLogger(ImageView.class).warn(
+                Logger.getLogger(ImageView.class).error(
                         "Failed to create offset finder", ex);
             } finally {
                 try {
                     tmpOut.close();
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    Logger.getLogger(ImageView.class).error(
+                            "Error closing tmp file", e1);
                 }
             }
         }
