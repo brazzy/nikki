@@ -35,7 +35,6 @@ abstract class GuiTest extends AbstractNikkiTest {
     NikkiModel model
     NikkiFrame view
     Nikki nikki
-    File logFile = new File(System.getProperty("user.home")+"/nikki.log")
     final long baseTime = System.currentTimeMillis()-10000000    
     
     public void setUp() {
@@ -55,7 +54,8 @@ abstract class GuiTest extends AbstractNikkiTest {
         super.tearDown()
     }   
     
-    protected boolean logContains(String needle){
+    public static boolean logContains(String needle){
+        File logFile = new File(System.getProperty("user.home")+"/nikki.log")
         def needleFound = false
         logFile.eachLine{ if(it.contains(needle)) needleFound = true }
         return needleFound

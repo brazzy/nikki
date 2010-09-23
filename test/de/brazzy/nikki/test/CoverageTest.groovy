@@ -19,6 +19,12 @@ package de.brazzy.nikki.test;
  */
 
 import static org.junit.Assert.*;
+import java.io.File;
+import java.net.URL;
+
+import javax.swing.event.HyperlinkEvent;
+
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -99,9 +105,14 @@ class CoverageTest {
     
     @Test
     public void aboutBox() {
+        Logger.getRootLogger().getAppender("A1").rollOver()
         AboutBox box = new AboutBox();
         assertTrue(box.content.text.contains("Nikki GPS"))
         assertTrue(box.content.text.contains("Michael Borgwardt"))
+        box.content.fireHyperlinkUpdate(
+                new HyperlinkEvent(this, HyperlinkEvent.EventType.ACTIVATED, new URL("http://ßß&about???")));
+        File logFile = new File(System.getProperty("user.home")+"/nikki.log")
+        assertTrue(GuiTest.logContains("about???"));
     }
     
     
