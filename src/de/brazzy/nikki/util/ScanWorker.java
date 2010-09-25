@@ -70,9 +70,7 @@ public class ScanWorker extends SwingWorker<Void, Void> {
                 scanner.setZone(zone);
                 scanner.scan(dir, this);
             } catch (InterruptedException e) {
-                Logger.getLogger(getClass()).error("Interrupted", e); // TODO:
-                                                                      // show
-                                                                      // error
+                // intentional - happens when time zone dialog was aborted
             } finally {
                 scanner.setZone(null);
             }
