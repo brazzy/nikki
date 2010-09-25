@@ -25,6 +25,7 @@ import de.brazzy.nikki.model.WaypointFile
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.prefs.Preferences
@@ -65,6 +66,7 @@ class AbstractNikkiTest extends GroovyTestCase {
         tmpDir = new Directory(path: new File(
         System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
         Locale.setDefault(Locale.GERMAN);
+        Logger.getRootLogger().getAppender("A1").rollOver()
     }
     
     protected void tearDown() {
@@ -148,6 +150,14 @@ class AbstractNikkiTest extends GroovyTestCase {
                 }                                 
             }
         }
+    }
+    
+    
+    public static boolean logContains(String needle){
+        File logFile = new File(System.getProperty("user.home")+"/nikki.log")
+        def needleFound = false
+        logFile.eachLine{ if(it.contains(needle)) needleFound = true }
+        return needleFound
     }
 }
 

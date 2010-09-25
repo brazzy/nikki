@@ -45,7 +45,6 @@ abstract class GuiTest extends AbstractNikkiTest {
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
         view = nikki.view
-        Logger.getRootLogger().getAppender("A1").rollOver()
     }
     
     public void tearDown() {
@@ -53,13 +52,6 @@ abstract class GuiTest extends AbstractNikkiTest {
         view.frame.dispose()
         super.tearDown()
     }   
-    
-    public static boolean logContains(String needle){
-        File logFile = new File(System.getProperty("user.home")+"/nikki.log")
-        def needleFound = false
-        logFile.eachLine{ if(it.contains(needle)) needleFound = true }
-        return needleFound
-    }
 }
 
 
