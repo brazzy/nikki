@@ -17,22 +17,24 @@ package de.brazzy.nikki.test
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import de.brazzy.nikki.util.ImageReader
-import de.brazzy.nikki.util.ImageWriter;
-import de.brazzy.nikki.util.TimezoneFinder;
-import de.brazzy.nikki.model.Rotation
-import de.brazzy.nikki.model.Image
-import de.brazzy.nikki.model.Day
-import de.brazzy.nikki.model.Waypoint
-import javax.imageio.ImageIO
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
 
 import mediautil.image.jpeg.Entry;
 
-import java.util.Arrays
-
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+
+import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.model.Day;
+import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.Rotation;
+import de.brazzy.nikki.model.Waypoint;
+import de.brazzy.nikki.util.ImageReader;
+import de.brazzy.nikki.util.ImageWriter;
+import de.brazzy.nikki.util.TimezoneFinder;
 
 /**
  * @author Michael Borgwardt
@@ -43,19 +45,19 @@ class ImageTest extends AbstractNikkiTest{
     
     public void setUp() {
         super.setUp()
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-11.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource(IMAGE1).toURI()),
                 DateTimeZone.UTC)
     }
     
     public void testTimezone() {
         assertNotNull(reader.nikkiIFD)
         assertEquals(TZ_DARWIN, reader.timeZone)
-        assertEquals(new DateTime(2009, 11, 11, 19, 10, 27, 0, DateTimeZone.forID("Australia/Darwin")), 
+        assertEquals(new DateTime(2009, 11, 11, 19, 10, 27, 0, TZ_DARWIN), 
                 reader.time)
         def image = reader.createImage()
         assertEquals(TZ_DARWIN, image.time.zone)
         
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource(IMAGE2).toURI()),
                 TZ_BERLIN)
         assertEquals(TZ_BERLIN, reader.timeZone)
         assertEquals(new DateTime(2009, 11, 12, 10, 10, 10, 0, TZ_BERLIN), 
@@ -63,7 +65,7 @@ class ImageTest extends AbstractNikkiTest{
         image = reader.createImage()
         assertEquals(TZ_BERLIN, image.time.zone)
         
-        reader = new ImageReader(new File(getClass().getResource("IMG2009-11-12.JPG").toURI()),
+        reader = new ImageReader(new File(getClass().getResource(IMAGE2).toURI()),
                 null)
         assertNull(reader.timeZone)
         image = reader.createImage()
@@ -239,7 +241,6 @@ class ImageTest extends AbstractNikkiTest{
     public void testCoordinatePrecision() {
         double start = 12.38599967956543;
         Entry e = ImageWriter.writeGpsMagnitude(start)
-        print e
         double end = ImageReader.readGpsMagnitude(e)
         assert Math.abs(start-end) < 0.00001d
     }
@@ -292,6 +293,16 @@ class ImageTest extends AbstractNikkiTest{
         assertSame(imageWithDate, tmpDir[0].images[0])
         assertSame(imageNoDate2, tmpDir[0].images[1])
         assertEquals(TIME1.plusMinutes(10), imageWithDate.time)
+    }
+    
+    public void testReadError() {
+        reader = new ImageReader(new File(getClass().getResource(WAYPOINTS1).toURI()),
+        DateTimeZone.UTC)
+        assertFalse(logContains(WAYPOINTS1));
+        Image image = reader.createImage()
+        assertTrue(image.description.startsWith(Texts.ERROR_PREFIX))
+        assertTrue(Arrays.equals(image.thumbnail, ImageReader.errorIcon))
+        assertTrue(logContains(WAYPOINTS1));
     }
 }
 

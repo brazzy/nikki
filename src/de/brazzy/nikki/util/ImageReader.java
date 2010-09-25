@@ -83,7 +83,7 @@ public class ImageReader extends ImageDataIO {
      *            to use when image does not contain time zone in EXIF
      * @throws LLJTranException
      */
-    public ImageReader(File file, DateTimeZone zone) throws LLJTranException {
+    public ImageReader(File file, DateTimeZone zone) {
         super(file, LLJTran.READ_INFO);
         this.file = file;
         this.scanZone = zone;
@@ -97,6 +97,9 @@ public class ImageReader extends ImageDataIO {
         image.setFileName(file.getName());
 
         try {
+            if (createException != null) {
+                throw createException;
+            }
             image.setThumbnail(getThumbnail());
             image.setWaypoint(getWaypoint());
             image.setTitle(getTitle());
@@ -106,7 +109,7 @@ public class ImageReader extends ImageDataIO {
             image.setModified(thumbnailNew.booleanValue());
             llj.freeMemory();
         } catch (Throwable e) {
-            Logger.getLogger(getClass()).error( // TODO: test
+            Logger.getLogger(getClass()).error(
                     "Error reading image " + file.getName(), e);
             image.setDescription(Texts.ERROR_PREFIX + e.getMessage());
             image.setThumbnail(errorIcon);

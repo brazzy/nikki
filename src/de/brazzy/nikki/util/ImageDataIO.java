@@ -26,7 +26,6 @@ import org.joda.time.format.DateTimeFormatter;
 import mediautil.image.jpeg.Exif;
 import mediautil.image.jpeg.IFD;
 import mediautil.image.jpeg.LLJTran;
-import mediautil.image.jpeg.LLJTranException;
 
 /**
  * Base class for dealing with EXIF headers
@@ -67,6 +66,9 @@ public abstract class ImageDataIO {
     /** App-specific EXIF IFD */
     protected IFD nikkiIFD;
 
+    /** Thrown while reading headers */
+    protected Exception createException;
+
     /**
      * Read EXIF headers
      * 
@@ -75,32 +77,36 @@ public abstract class ImageDataIO {
      * @param readUpto
      *            see {@link LLJTran#read(int, boolean)}
      */
-    public ImageDataIO(File file, int readUpto) throws LLJTranException {
-        this.file = file;
-        this.llj = new LLJTran(file);
-        llj.read(readUpto, true);
-        if (llj.getImageInfo() instanceof Exif) {
-            this.exifData = (Exif) llj.getImageInfo();
-        }
-        if (exifData != null && exifData.getIFDs() != null
-                && exifData.getIFDs().length > 0
-                && exifData.getIFDs()[0] != null) {
-            mainIFD = exifData.getIFDs()[0];
+    public ImageDataIO(File file, int readUpto) {
+        try {
+            this.file = file;
+            this.llj = new LLJTran(file);
+            llj.read(readUpto, true);
+            if (llj.getImageInfo() instanceof Exif) {
+                this.exifData = (Exif) llj.getImageInfo();
+            }
+            if (exifData != null && exifData.getIFDs() != null
+                    && exifData.getIFDs().length > 0
+                    && exifData.getIFDs()[0] != null) {
+                mainIFD = exifData.getIFDs()[0];
 
-            if (mainIFD != null && mainIFD.getIFDs() != null) {
-                gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
-                exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
-                if (exifIFD != null && exifIFD.getIFDs() != null) {
-                    this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
-                    if (this.nikkiIFD != null
-                            && !ENTRY_NIKKI_CONTENT
-                                    .equals(this.nikkiIFD.getEntry(
-                                            ENTRY_NIKKI_INDEX, 0).getValue(0))) {
-                        throw new IllegalArgumentException(
-                                "Foreign Appnote IFD present");
+                if (mainIFD != null && mainIFD.getIFDs() != null) {
+                    gpsIFD = mainIFD.getIFD(Exif.GPSINFO);
+                    exifIFD = mainIFD.getIFD(Exif.EXIFOFFSET);
+                    if (exifIFD != null && exifIFD.getIFDs() != null) {
+                        this.nikkiIFD = exifIFD.getIFD(Exif.APPLICATIONNOTE);
+                        if (this.nikkiIFD != null
+                                && !ENTRY_NIKKI_CONTENT.equals(this.nikkiIFD
+                                        .getEntry(ENTRY_NIKKI_INDEX, 0)
+                                        .getValue(0))) {
+                            throw new IllegalArgumentException(
+                                    "Foreign Appnote IFD present");
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            createException = e;
         }
     }
 
