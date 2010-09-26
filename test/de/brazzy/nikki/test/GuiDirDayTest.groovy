@@ -319,6 +319,7 @@ class GuiDirDayTest extends GuiTest {
         
         assertFalse(logContains("_doesnt_exist"));
         dialogs.add(new File(tmpDir.path.absolutePath+"_doesnt_exist", "export.kmz"))
+        dialogs.add("error");
         view.exportButton.actionListeners[0].actionPerformed()
         dialogs.registerWorker(null)
         assertTrue(logContains("_doesnt_exist"));

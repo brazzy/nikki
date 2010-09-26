@@ -117,10 +117,15 @@ public final class Texts {
                 .getString("dialogs.error_title");
         public static final String UNSAVED_MESSAGE = bundle
                 .getString("dialogs.unsaved_message");
-        public static final String EXPORT_NODATA_MESSAGE = bundle
-                .getString("dialogs.export_nodata_message");
-        public static final String EXPORT_NOIMAGE_MESSAGE = bundle
-                .getString("dialogs.export_noimage_message");
+
+        public static class Export {
+            public static final String NODATA_MESSAGE = bundle
+                    .getString("dialogs.export.nodata_message");
+            public static final String NOIMAGE_MESSAGE = bundle
+                    .getString("dialogs.export.noimage_message");
+            public static final String ERROR_PREFIX = bundle
+                    .getString("dialogs.export.error_prefix");
+        }
 
         public static class About {
 

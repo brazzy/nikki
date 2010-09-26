@@ -67,6 +67,7 @@ class TestDialogs extends Dialogs{
     public void registerWorker(SwingWorker worker) {
         if(this.worker) {
             this.worker.get()
+            this.worker.done()
         }
         this.worker = worker
     }

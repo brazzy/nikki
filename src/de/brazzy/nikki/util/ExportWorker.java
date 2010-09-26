@@ -18,10 +18,15 @@ package de.brazzy.nikki.util;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
 
 /**
@@ -31,18 +36,37 @@ import de.brazzy.nikki.model.Day;
  */
 public class ExportWorker extends SwingWorker<Void, Void> {
     private Day day;
-    private ZipOutputStream out;
+    private File file;
+    private Dialogs dialogs;
+    private Exception exception;
 
-    public ExportWorker(Day day, ZipOutputStream out) {
+    public ExportWorker(Day day, File file, Dialogs dialogs) {
         super();
         this.day = day;
-        this.out = out;
+        this.file = file;
+        this.dialogs = dialogs;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        day.export(out, this); // TODO: handle errors
+        try {
+            ZipOutputStream out = new ZipOutputStream(
+                    new FileOutputStream(file));
+            day.export(out, this);
+        } catch (Exception e) {
+            Logger.getLogger(getClass()).error(
+                    "Error during export to " + file.getAbsolutePath(), e);
+            this.exception = e;
+        }
         return null;
+    }
+
+    @Override
+    protected void done() {
+        if (exception != null) {
+            dialogs.error(Texts.Dialogs.Export.ERROR_PREFIX
+                    + exception.getMessage());
+        }
     }
 
 }

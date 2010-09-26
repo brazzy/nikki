@@ -166,12 +166,12 @@ public class Nikki{
         view.imageTable.editorComponent?.getValue()
         def day = view.dayList.selectedValue
         if(day.waypoints.empty) {
-            dialogs.error(Texts.Dialogs.EXPORT_NODATA_MESSAGE)
+            dialogs.error(Texts.Dialogs.Export.NODATA_MESSAGE)
             return
         }
         def exportFlags = day.images.asList().export
         if(!exportFlags.contains(true)) {
-            ConfirmResult c = dialogs.confirm(Texts.Dialogs.EXPORT_NOIMAGE_MESSAGE, JOptionPane.OK_CANCEL_OPTION)
+            ConfirmResult c = dialogs.confirm(Texts.Dialogs.Export.NOIMAGE_MESSAGE, JOptionPane.OK_CANCEL_OPTION)
             if(c == ConfirmResult.CANCEL) {
                 return                    
             }
@@ -181,8 +181,7 @@ public class Nikki{
         
         if(selectedFile){
             model.exportDir = selectedFile.getParentFile()
-            ExportWorker worker = new ExportWorker(
-            day, new ZipOutputStream(new FileOutputStream(selectedFile)))
+            ExportWorker worker = new ExportWorker(day, selectedFile, dialogs)
             worker.addPropertyChangeListener(progressListener)
             worker.execute()
             dialogs.registerWorker(worker)
