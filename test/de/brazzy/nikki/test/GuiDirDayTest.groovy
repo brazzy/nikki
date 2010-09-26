@@ -308,4 +308,21 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(logContains(WAYPOINTS1));
         assertTrue(dialogs.isQueueEmpty())
     }
+    
+    public void testExportError() {
+        copyFile(IMAGE1)
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        view.dayList.selectedIndex = 0
+        
+        assertFalse(logContains("_doesnt_exist"));
+        dialogs.add(new File(tmpDir.path.absolutePath+"_doesnt_exist", "export.kmz"))
+        view.exportButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        assertTrue(logContains("_doesnt_exist"));
+        assertTrue(dialogs.isQueueEmpty())
+    }
+    
 }

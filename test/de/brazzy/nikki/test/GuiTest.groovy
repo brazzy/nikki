@@ -21,6 +21,7 @@ package de.brazzy.nikki.test
 import org.apache.log4j.Logger;
 
 import de.brazzy.nikki.Nikki;
+import de.brazzy.nikki.model.Directory;
 import de.brazzy.nikki.model.NikkiModel;
 import de.brazzy.nikki.util.ParserFactory;
 import de.brazzy.nikki.util.TimezoneFinder;
@@ -44,6 +45,9 @@ abstract class GuiTest extends AbstractNikkiTest {
         ParserFactory pf = new ParserFactory();
         nikki.build(GuiTest.class, dialogs, new TimezoneFinder(), pf)
         model = nikki.model
+        for(Directory d in model){
+            model.remove(d)            
+        }
         view = nikki.view
     }
     

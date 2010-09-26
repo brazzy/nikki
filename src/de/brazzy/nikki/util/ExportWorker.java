@@ -41,7 +41,7 @@ public class ExportWorker extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        day.export(out, this);
+        day.export(out, this); // TODO: handle errors
         return null;
     }
 
