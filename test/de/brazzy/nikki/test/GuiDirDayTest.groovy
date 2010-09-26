@@ -282,4 +282,30 @@ class GuiDirDayTest extends GuiTest {
         view.exportButton.actionListeners[0].actionPerformed()
         assertTrue(dialogs.isQueueEmpty())
     }
+    
+    public void testSaveError() {
+        model.add(tmpDir)
+        addImage(DAY1, IMAGE1)
+        tmpDir.images[IMAGE1].title = "changedTitle"
+        view.dirList.selectedIndex = 0
+        assertFalse(logContains(IMAGE1));
+        dialogs.add("error");
+        view.saveButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        assertTrue(logContains(IMAGE1));
+        assertTrue(dialogs.isQueueEmpty())
+    }
+    
+    public void testScanError() {
+        model.add(tmpDir)
+        ensureTmpDir()
+        new File(tmpDir.path, WAYPOINTS1).write("Erroneous data")
+        view.dirList.selectedIndex = 0
+        assertFalse(logContains(WAYPOINTS1));
+        dialogs.add("error");
+        view.scanButton.actionListeners[0].actionPerformed()
+        dialogs.registerWorker(null)
+        assertTrue(logContains(WAYPOINTS1));
+        assertTrue(dialogs.isQueueEmpty())
+    }
 }

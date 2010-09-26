@@ -143,14 +143,12 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         worker?.progress = 0;
         def count = 0;
         for(image in images.values()){
-            if(new File(this.path, image.fileName).exists()) {
-                try {
-                    image.save(this.path)
-                }
-                catch(Exception ex) {
-                    Logger.getLogger(getClass()).error( // TODO: test / display
-                            "Error saving data in image " + image.fileName, ex);
-                }
+            try {
+                image.save(this.path)
+            }
+            catch(Exception ex) {
+                Logger.getLogger(getClass()).error( // TODO: test / display
+                        "Error saving data in image " + image.fileName, ex);
             }
             worker?.progress = new Integer((int)(++count/images.size() * 100));
         }

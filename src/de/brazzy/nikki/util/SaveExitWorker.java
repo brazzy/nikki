@@ -47,7 +47,7 @@ public class SaveExitWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         Thread.currentThread().setUncaughtExceptionHandler(handler);
         for (Directory dir : dirs) {
-            dir.save(this);
+            dir.save(this); // TODO: Handle errors
         }
         try {
             System.exit(Nikki.EXIT_CODE_SAVED_MODIFICATIONS);

@@ -100,6 +100,9 @@ public class ImageWriter extends ImageDataIO {
      * causes all image data to be written to the file's EXIF headers.
      */
     public void saveImage() throws Exception {
+        if (createException != null) {
+            throw createException;
+        }
         writeTitle();
         writeDescription();
         writeTime();
