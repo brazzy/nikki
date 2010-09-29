@@ -18,7 +18,11 @@ package de.brazzy.nikki.util;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Map;
+
 import javax.swing.SwingWorker;
+
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
 
 /**
@@ -28,16 +32,27 @@ import de.brazzy.nikki.model.Directory;
  */
 public class SaveWorker extends SwingWorker<Void, Void> {
     private Directory dir;
+    private Dialogs dialogs;
+    private Map<String, Exception> exceptions;
 
-    public SaveWorker(Directory dir) {
+    public SaveWorker(Directory dir, Dialogs dialogs) {
         super();
         this.dir = dir;
+        this.dialogs = dialogs;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        dir.save(this);
+        exceptions = dir.save(this);
         return null;
+    }
+
+    @Override
+    protected void done() {
+        for (Map.Entry<String, Exception> e : exceptions.entrySet()) {
+            dialogs.error(Texts.Dialogs.Save.ERROR_PREFIX + e.getKey() + ": "
+                    + e.getValue().getMessage());
+        }
     }
 
 }

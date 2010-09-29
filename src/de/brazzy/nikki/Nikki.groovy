@@ -145,7 +145,7 @@ public class Nikki{
     
     private saveAction = {
         view.imageTable.editorComponent?.getValue()
-        SaveWorker worker = new SaveWorker(view.dirList.selectedValue)
+        SaveWorker worker = new SaveWorker(view.dirList.selectedValue, dialogs)
         worker.addPropertyChangeListener(progressListener)
         worker.execute()
         dialogs.registerWorker(worker)

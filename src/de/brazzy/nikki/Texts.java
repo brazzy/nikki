@@ -127,6 +127,11 @@ public final class Texts {
                     .getString("dialogs.export.error_prefix");
         }
 
+        public static class Save {
+            public static final String ERROR_PREFIX = bundle
+                    .getString("dialogs.save.error_prefix");
+        }
+
         public static class About {
 
             public static final String TITLE = bundle

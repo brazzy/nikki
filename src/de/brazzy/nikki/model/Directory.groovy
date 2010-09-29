@@ -138,10 +138,12 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
      * Saves all changed image data to the EXIF headers
      * 
      * @param worker to update progress
+     * @return any exceptions encountered during the operation, keyed on file name
      */
-    public void save(SwingWorker worker) {
+    public Map<String, Exception> save(SwingWorker worker) {
         worker?.progress = 0;
         def count = 0;
+        def exceptions = [:]
         for(image in images.values()){
             try {
                 image.save(this.path)
@@ -149,11 +151,12 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
             catch(Exception ex) {
                 Logger.getLogger(getClass()).error( // TODO: test / display
                         "Error saving data in image " + image.fileName, ex);
+                exceptions.put(image.fileName, ex)
             }
             worker?.progress = new Integer((int)(++count/images.size() * 100));
         }
-        
         worker?.progress = 0;
+        return exceptions;
     }
     
     public boolean isModified() {
