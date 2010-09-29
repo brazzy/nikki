@@ -19,12 +19,13 @@ package de.brazzy.nikki.util;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingWorker;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTimeZone;
 
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
 
 /**
@@ -89,4 +90,14 @@ public class ScanWorker extends SwingWorker<Void, Void> {
             }
         }
     }
+
+    @Override
+    protected void done() {
+        for (Map.Entry<String, Exception> e : scanner.getExceptions()
+                .entrySet()) {
+            dialogs.error(Texts.Dialogs.Scan.ERROR_PREFIX + e.getKey() + ": "
+                    + e.getValue().getMessage());
+        }
+    }
+
 }

@@ -20,6 +20,7 @@ package de.brazzy.nikki.util
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.util.Map;
 
 import javax.swing.SwingWorker;
 
@@ -46,17 +47,22 @@ import de.brazzy.nikki.util.ParserFactory;
 class DirectoryScanner {
     
     /** finds time zones for waypoints */
-    TimezoneFinder finder;
+    TimezoneFinder finder
     
     /** Yields parsers for parsing GPS logs */
-    ParserFactory parserFactory;
+    ParserFactory parserFactory
     
     /**
      * time zone to which the camera time was set when the images were taken. 
      * Can be null, which assumes that all images already have time zone
      * set in their EXIF data
      */
-    DateTimeZone zone;
+    DateTimeZone zone
+    
+    /**
+     * Any exceptions encountered during scanning, keyed on file name
+     */
+    Map<String, Exception> exceptions = [:]
     
     /**
      * Scans a directory for image and GPS files and populates it with 
@@ -68,7 +74,7 @@ class DirectoryScanner {
      *         have no time zone in their EXIF data
      */
     public ScanResult scan(Directory dir, SwingWorker worker){
-        worker?.progress = 0;
+        worker?.progress = 0
         
         int count = 0;
         def allFiles = dir.path.list() as Set;
@@ -140,7 +146,8 @@ class DirectoryScanner {
                 }catch(Exception e){
                     // TODO: test / display / don't abort
                     Logger.getLogger(getClass()).error(
-                            "Error reading waypoint file " + fileName, e);
+                            "Error reading waypoint file " + fileName, e)
+                    exceptions[fileName] = e
                 }
             }
         }

@@ -132,6 +132,11 @@ public final class Texts {
                     .getString("dialogs.save.error_prefix");
         }
 
+        public static class Scan {
+            public static final String ERROR_PREFIX = bundle
+                    .getString("dialogs.scan.error_prefix");
+        }
+
         public static class About {
 
             public static final String TITLE = bundle
