@@ -144,7 +144,6 @@ class DirectoryScanner {
                     wf.directory = dir
                     dir.addWaypointFile(wf)
                 }catch(Exception e){
-                    // TODO: test / display / don't abort
                     Logger.getLogger(getClass()).error(
                             "Error reading waypoint file " + fileName, e)
                     exceptions[fileName] = e

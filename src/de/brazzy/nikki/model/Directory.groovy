@@ -149,7 +149,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
                 image.save(this.path)
             }
             catch(Exception ex) {
-                Logger.getLogger(getClass()).error( // TODO: test / display
+                Logger.getLogger(getClass()).error(
                         "Error saving data in image " + image.fileName, ex)
                 exceptions[image.fileName]=ex
             }
