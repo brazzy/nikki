@@ -21,11 +21,13 @@ package de.brazzy.nikki.util;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 
 import de.brazzy.nikki.Nikki;
+import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
 
 /**
@@ -35,20 +37,33 @@ import de.brazzy.nikki.model.Directory;
  */
 public class SaveExitWorker extends SwingWorker<Void, Void> {
     private List<Directory> dirs;
-    private UncaughtExceptionHandler handler;
+    private Dialogs dialogs;
 
     public SaveExitWorker(List<Directory> dirs, Dialogs dialogs) {
         super();
         this.dirs = dirs;
-        this.handler = dialogs.getExceptionHandler();
+        this.dialogs = dialogs;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        Thread.currentThread().setUncaughtExceptionHandler(handler);
+        Thread.currentThread().setUncaughtExceptionHandler(
+                dialogs.getExceptionHandler());
+        boolean errorOccurred = false;
         for (Directory dir : dirs) {
-            dir.save(this); // TODO: Handle errors
+            if (dir.save(this).size() > 0) {
+                errorOccurred = true;
+            }
         }
+        if (errorOccurred) {
+            ConfirmResult answer = dialogs.confirm(
+                    Texts.Dialogs.Save.ERROR_SAVE_CLOSE,
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (answer == ConfirmResult.CANCEL) {
+                return null;
+            }
+        }
+
         try {
             System.exit(Nikki.EXIT_CODE_SAVED_MODIFICATIONS);
         } catch (SecurityException e) {
@@ -57,5 +72,4 @@ public class SaveExitWorker extends SwingWorker<Void, Void> {
         }
         return null;
     }
-
 }

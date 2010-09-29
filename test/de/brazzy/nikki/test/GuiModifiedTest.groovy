@@ -78,6 +78,7 @@ class GuiModifiedTest extends GuiTest {
     public void testModifiedSaveError() {
         def file = prepareTestModified()
         file.delete();
+        dialogs.add(ConfirmResult.YES)
         dialogs.add(ConfirmResult.CANCEL)
         assertFalse(logContains(IMAGE1))
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
@@ -87,7 +88,9 @@ class GuiModifiedTest extends GuiTest {
         assertTrue(logContains(IMAGE1))
         
         dialogs.add(ConfirmResult.YES)
+        dialogs.add(ConfirmResult.YES)
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
+        dialogs.registerWorker(null)
         assertEquals(Nikki.EXIT_CODE_SAVED_MODIFICATIONS, exitStatus)        
         assertTrue(dialogs.isQueueEmpty())
     }

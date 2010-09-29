@@ -130,6 +130,8 @@ public final class Texts {
         public static class Save {
             public static final String ERROR_PREFIX = bundle
                     .getString("dialogs.save.error_prefix");
+            public static final String ERROR_SAVE_CLOSE = bundle
+                    .getString("dialogs.save.error_save_close");
         }
 
         public static class Scan {
