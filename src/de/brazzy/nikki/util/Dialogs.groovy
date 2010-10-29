@@ -17,14 +17,23 @@ package de.brazzy.nikki.util
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import groovy.swing.SwingBuilder;
+
+import java.awt.BorderLayout;
 import java.awt.Desktop
+import java.awt.Dimension;
+import java.beans.PropertyChangeListener;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
+import javax.swing.ProgressMonitor;
+import javax.swing.border.EmptyBorder;
+import javax.swing.WindowConstants;
 
 import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.view.AboutBox;
+import de.brazzy.nikki.view.NikkiFrame;
 import de.brazzy.nikki.view.ScanOptions
 import de.brazzy.nikki.view.GeotagOptions
 import javax.swing.SwingWorker
@@ -37,11 +46,11 @@ import org.joda.time.Seconds
  * Encapsulates user interaction via modal dialogs for testability
  */
 class Dialogs {
-    def parentComponent
+    NikkiFrame view
     
     public void showAboutBox() {
         def box = new AboutBox()
-        JOptionPane.showOptionDialog(parentComponent, box, Texts.Dialogs.About.TITLE, 
+        JOptionPane.showOptionDialog(view.frame, box, Texts.Dialogs.About.TITLE, 
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
     }
     
@@ -53,7 +62,7 @@ class Dialogs {
     public File askDirectory(File startDir) {
         def fc = new JFileChooser(startDir)
         fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-        return fc.showOpenDialog(parentComponent) == JFileChooser.APPROVE_OPTION ?
+        return fc.showOpenDialog(view.frame) == JFileChooser.APPROVE_OPTION ?
         fc.getSelectedFile() :
         null;
     }
@@ -68,7 +77,7 @@ class Dialogs {
         def fc = new JFileChooser(dir);
         fc.fileSelectionMode = JFileChooser.FILES_ONLY
         fc.selectedFile = new File(dir, defaultFileName);
-        return (fc.showSaveDialog(parentComponent) == JFileChooser.APPROVE_OPTION) ?
+        return (fc.showSaveDialog(view.frame) == JFileChooser.APPROVE_OPTION) ?
         fc.getSelectedFile() :
         null;
     }
@@ -78,7 +87,7 @@ class Dialogs {
      */
     public ReadablePeriod askOffset() {
         def opt = new GeotagOptions()
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
+        int pressed = JOptionPane.showConfirmDialog(view.frame, opt, 
                 Texts.Dialogs.GeotagOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : null
     }
@@ -90,7 +99,7 @@ class Dialogs {
      */
     public DateTimeZone askTimeZone(DateTimeZone defaultZone) {
         ScanOptions opt = new ScanOptions(defaultZone)
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, opt, 
+        int pressed = JOptionPane.showConfirmDialog(view.frame, opt, 
                 Texts.Dialogs.ScanOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
     }
@@ -102,7 +111,7 @@ class Dialogs {
      * @param optionType which buttons to show (see constants in JOptionPane)
      */
     public ConfirmResult confirm(String message, int optionType) {
-        int pressed = JOptionPane.showConfirmDialog(parentComponent, message, 
+        int pressed = JOptionPane.showConfirmDialog(view.frame, message, 
         Texts.Dialogs.CONFIRM_TITLE, optionType)
         return (pressed == JOptionPane.YES_OPTION ? ConfirmResult.YES :
         pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
@@ -115,7 +124,7 @@ class Dialogs {
      * @param message Text shown to user
      */
     public void error(String message) {
-        JOptionPane.showMessageDialog(parentComponent, message, 
+        JOptionPane.showMessageDialog(view.frame, message, 
         Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
     }
     
@@ -127,10 +136,52 @@ class Dialogs {
     }
     
     /**
-     * Allows waiting for background actions to be completed during tests
+     * Allows displaying of progress bar and waiting for background 
+     * actions to be completed during tests
      */
     public void registerWorker(SwingWorker worker) {
+        def swing = new SwingBuilder()
+        def progress
+        def monitor
         
+        swing.edt{
+            monitor = dialog(owner: view.frame, title: "message", modal:true, 
+            defaultCloseOperation:WindowConstants.DO_NOTHING_ON_CLOSE){
+                panel(border: new EmptyBorder(5,5,5,5)){
+                    borderLayout()
+                    label(text: "text", constraints: BorderLayout.NORTH)
+                    progress = progressBar(minimum:0, maximum: 100, constraints: BorderLayout.CENTER, preferredSize:new Dimension(200,20))                    
+                }
+            }
+        }
+        monitor.locationRelativeTo = view.frame
+        
+        def listener = { evt ->
+            switch(evt.propertyName){
+                case "progress":
+                progress.value = evt.newValue.intValue()
+                break
+                case "state":
+                if(evt.newValue == SwingWorker.StateValue.DONE){
+                    monitor.visible = false
+                    monitor.dispose()
+                }
+                break
+            }
+            println evt.propertyName + "-" + evt.newValue
+            
+            view.dirList.repaint()
+            view.dayList.repaint()
+            if(view.dayList.selectedValue){
+                view.dayList.selectedValue.fireTableDataChanged()           
+            }
+        } as PropertyChangeListener
+        worker.addPropertyChangeListener(listener)
+        
+        if(!worker.isDone()){
+            monitor.pack()
+            monitor.show()            
+        }
     }
     
     /**

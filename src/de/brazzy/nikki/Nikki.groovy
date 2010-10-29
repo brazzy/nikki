@@ -70,17 +70,6 @@ public class Nikki{
     /** assigns timezones to waypoints*/
     def timezoneFinder
     
-    private progressListener = { evt ->
-        if("progress".equals(evt.propertyName)) {
-            view.progressBar.value = evt.newValue.intValue();
-        }
-        view.dirList.repaint()
-        view.dayList.repaint()
-        if(view.dayList.selectedValue){
-            view.dayList.selectedValue.fireTableDataChanged()        	
-        }
-    } as PropertyChangeListener
-    
     private copyListener = {
         view.dayList.repaint()	
     } as ActionListener
@@ -138,7 +127,6 @@ public class Nikki{
     private scanAction = {
         def scanner = new DirectoryScanner(finder:timezoneFinder, parserFactory:parserFactory)
         ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner)
-        worker.addPropertyChangeListener(progressListener)
         worker.execute()
         dialogs.registerWorker(worker)                
     }
@@ -146,7 +134,6 @@ public class Nikki{
     private saveAction = {
         view.imageTable.editorComponent?.getValue()
         SaveWorker worker = new SaveWorker(view.dirList.selectedValue, dialogs)
-        worker.addPropertyChangeListener(progressListener)
         worker.execute()
         dialogs.registerWorker(worker)
     }
@@ -182,7 +169,6 @@ public class Nikki{
         if(selectedFile){
             model.exportDir = selectedFile.getParentFile()
             ExportWorker worker = new ExportWorker(day, selectedFile, dialogs)
-            worker.addPropertyChangeListener(progressListener)
             worker.execute()
             dialogs.registerWorker(worker)
         }
@@ -223,7 +209,6 @@ public class Nikki{
             switch(dialogs.confirm(Texts.Dialogs.UNSAVED_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION)) {
                 case ConfirmResult.YES:
                 SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)
-                worker.addPropertyChangeListener(progressListener)
                 worker.execute()
                 dialogs.registerWorker(worker);
                 break;

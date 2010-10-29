@@ -52,7 +52,6 @@ public class NikkiFrame{
     def dayList
     def imageSortOrder
     def imageTable
-    def progressBar
     def helpButton
     
     public static NikkiFrame create(){
@@ -130,7 +129,6 @@ public class NikkiFrame{
                     }
                 }
             }
-            result.progressBar = progressBar(constraints: BorderLayout.SOUTH, minimum:0, maximum:100)
         }
         
         result.frame.defaultCloseOperation = JFrame.DO_NOTHING_ON_CLOSE;

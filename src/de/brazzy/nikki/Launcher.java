@@ -42,7 +42,7 @@ public class Launcher {
         Nikki n = new Nikki();
         ParserFactory pf = new ParserFactory();
         n.build(NikkiModel.class, d, finder, pf);
-        d.setParentComponent(((NikkiFrame) n.getView()).getFrame());
+        d.setView((NikkiFrame) n.getView());
         n.start();
     }
 }
