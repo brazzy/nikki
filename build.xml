@@ -203,7 +203,8 @@
     </target>
     
     <target name="create_release_id">
-    	  <exec executable="git" outputproperty="release.tags">
+    	<echo message="${env.Path}"/>
+    	  <exec executable="git" outputproperty="release.tags" searchpath="true">
             <arg value="for-each-ref"/>
             <arg value="--sort=taggerdate"/>
             <arg value="refs/tags/release_*"/>
