@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.util.NikkiWorker;
 
 /**
  * Represents on filesystem directory containing images and GPS tracks
@@ -140,11 +141,12 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
      * @param worker to update progress
      * @return any exceptions encountered during the operation, keyed on file name
      */
-    public Map<String, Exception> save(SwingWorker worker) {
+    public Map<String, Exception> save(NikkiWorker worker) {
         worker?.progress = 0
         def count = 0
         def exceptions = [:]
-        for(image in images.values()){
+        for(Image image in images.values()){
+            worker?.labelUpdate = image.fileName
             try {
                 image.save(this.path)
             }

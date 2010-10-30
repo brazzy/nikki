@@ -138,18 +138,21 @@ class Dialogs {
     /**
      * Allows displaying of progress bar and waiting for background 
      * actions to be completed during tests
+     * 
+     * TODO: refactor
      */
-    public void registerWorker(SwingWorker worker) {
+    public void registerWorker(NikkiWorker worker) {
         def swing = new SwingBuilder()
         def progress
         def monitor
+        def itemLabel
         
         swing.edt{
-            monitor = dialog(owner: view.frame, title: "message", modal:true, 
+            monitor = dialog(owner: view.frame, title: worker.header, modal:true, 
             defaultCloseOperation:WindowConstants.DO_NOTHING_ON_CLOSE){
                 panel(border: new EmptyBorder(5,5,5,5)){
                     borderLayout()
-                    label(text: "text", constraints: BorderLayout.NORTH)
+                    itemLabel = label(text: "<html>&nbsp;</html>", constraints: BorderLayout.NORTH)
                     progress = progressBar(minimum:0, maximum: 100, constraints: BorderLayout.CENTER, preferredSize:new Dimension(200,20))                    
                 }
             }
@@ -161,12 +164,17 @@ class Dialogs {
                 case "progress":
                 progress.value = evt.newValue.intValue()
                 break
+                
                 case "state":
                 if(evt.newValue == SwingWorker.StateValue.DONE){
                     monitor.visible = false
                     monitor.dispose()
                 }
                 break
+                
+                case NikkiWorker.LABEL:
+                itemLabel.text = evt.newValue
+                break;
             }
             
             view.dirList.repaint()

@@ -33,7 +33,7 @@ import de.brazzy.nikki.model.Directory;
  * 
  * @author Michael Borgwardt
  */
-public class ScanWorker extends SwingWorker<Void, Void> {
+public class ScanWorker extends NikkiWorker {
     private Dialogs dialogs;
     private Directory dir;
     private DirectoryScanner scanner;
@@ -51,7 +51,7 @@ public class ScanWorker extends SwingWorker<Void, Void> {
      *            does the scanning
      */
     public ScanWorker(Directory dir, Dialogs dialogs, DirectoryScanner scanner) {
-        super();
+        super(Texts.Dialogs.Scan.PROGRESS_HEADER);
         this.dir = dir;
         this.dialogs = dialogs;
         this.scanner = scanner;

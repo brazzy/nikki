@@ -34,14 +34,14 @@ import de.brazzy.nikki.model.Day;
  * 
  * @author Michael Borgwardt
  */
-public class ExportWorker extends SwingWorker<Void, Void> {
+public class ExportWorker extends NikkiWorker {
     private Day day;
     private File file;
     private Dialogs dialogs;
     private Exception exception;
 
     public ExportWorker(Day day, File file, Dialogs dialogs) {
-        super();
+        super(Texts.Dialogs.Export.PROGRESS_HEADER);
         this.day = day;
         this.file = file;
         this.dialogs = dialogs;

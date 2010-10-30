@@ -73,7 +73,7 @@ class DirectoryScanner {
      * @return ScanResult.TIMEZONE_MISSING if zone was null and images were found that
      *         have no time zone in their EXIF data
      */
-    public ScanResult scan(Directory dir, SwingWorker worker){
+    public ScanResult scan(Directory dir, NikkiWorker worker){
         worker?.progress = 0
         
         int count = 0;
@@ -90,8 +90,10 @@ class DirectoryScanner {
             !it.toUpperCase().endsWith(".THM") &&            
             !it.toUpperCase().endsWith(".DB")
         }
+        def totalFileNum = imageFiles.size() + otherFiles.size()
         
         for(fileName in imageFiles){
+            worker?.labelUpdate = fileName
             if(!dir.images[fileName]){
                 ImageReader reader = new ImageReader(new File(dir.path, fileName), this.zone)
                 if(reader.timeZone==null){
@@ -100,10 +102,10 @@ class DirectoryScanner {
                 dir.addImage(reader.createImage())
             }
             
-            worker?.progress = new Integer((int)(++count / imageFiles.size() * 100))
+            worker?.progress = new Integer((int)(++count / totalFileNum * 100))
         }
         
-        parseWaypointFiles(dir, otherFiles)
+        parseWaypointFiles(dir, otherFiles, worker)
         removeMissing(dir, allFiles)
         
         dir.fireContentsChanged(dir, 0, dir.size-1)
@@ -136,8 +138,9 @@ class DirectoryScanner {
         }
     }
     
-    private parseWaypointFiles(Directory dir, Set<String> files){
+    private parseWaypointFiles(Directory dir, Set<String> files, NikkiWorker worker){
         for(fileName in files){
+            worker?.labelUpdate = fileName
             if(!dir.waypointFiles[fileName]){
                 try{
                     def wf = parseWaypointFile(new File(dir.path, fileName))

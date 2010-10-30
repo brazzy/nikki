@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
 import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.util.NikkiWorker;
 
 import javax.swing.SwingWorker
 
@@ -145,7 +146,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
      * @param out stream to write the data to
      * @param worker for updating progress
      */
-    public void export(ZipOutputStream out, SwingWorker worker) {
+    public void export(ZipOutputStream out, NikkiWorker worker) {
         worker?.progress = 0;
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
@@ -161,6 +162,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
         
         def imgIndex = 0;
         for(Image image : images) {
+            worker?.labelUpdate = image.fileName
             image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))
         }

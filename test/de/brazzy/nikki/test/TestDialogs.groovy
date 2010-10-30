@@ -21,6 +21,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import de.brazzy.nikki.util.ConfirmResult;
 import de.brazzy.nikki.util.Dialogs
+import de.brazzy.nikki.util.NikkiWorker;
 import de.brazzy.nikki.view.NikkiFrame;
 
 import javax.swing.SwingWorker
@@ -65,7 +66,7 @@ class TestDialogs extends Dialogs{
     }
     
     @Override
-    public void registerWorker(SwingWorker worker) {
+    public void registerWorker(NikkiWorker worker) {
         worker.execute()
         worker.get()
         worker.done()

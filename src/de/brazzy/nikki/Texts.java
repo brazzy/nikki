@@ -125,6 +125,8 @@ public final class Texts {
                     .getString("dialogs.export.noimage_message");
             public static final String ERROR_PREFIX = bundle
                     .getString("dialogs.export.error_prefix");
+            public static final String PROGRESS_HEADER = bundle
+                    .getString("dialogs.export.progress_header");
         }
 
         public static class Save {
@@ -132,11 +134,15 @@ public final class Texts {
                     .getString("dialogs.save.error_prefix");
             public static final String ERROR_SAVE_CLOSE = bundle
                     .getString("dialogs.save.error_save_close");
+            public static final String PROGRESS_HEADER = bundle
+                    .getString("dialogs.save.progress_header");
         }
 
         public static class Scan {
             public static final String ERROR_PREFIX = bundle
                     .getString("dialogs.scan.error_prefix");
+            public static final String PROGRESS_HEADER = bundle
+                    .getString("dialogs.scan.progress_header");
         }
 
         public static class About {

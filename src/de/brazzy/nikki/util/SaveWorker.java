@@ -30,13 +30,13 @@ import de.brazzy.nikki.model.Directory;
  * 
  * @author Michael Borgwardt
  */
-public class SaveWorker extends SwingWorker<Void, Void> {
+public class SaveWorker extends NikkiWorker {
     private Directory dir;
     private Dialogs dialogs;
     private Map<String, Exception> exceptions;
 
     public SaveWorker(Directory dir, Dialogs dialogs) {
-        super();
+        super(Texts.Dialogs.Save.PROGRESS_HEADER);
         this.dir = dir;
         this.dialogs = dialogs;
     }
