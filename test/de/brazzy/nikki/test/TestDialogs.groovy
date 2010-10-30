@@ -34,7 +34,6 @@ import org.joda.time.ReadablePeriod
  */
 class TestDialogs extends Dialogs{
     def queue = []
-    def worker
     def opened
     
     @Override
@@ -66,12 +65,10 @@ class TestDialogs extends Dialogs{
     }
     
     @Override
-    public void registerWorker(SwingWorker worker, NikkiFrame view = null) {
-        if(this.worker) {
-            this.worker.get()
-            this.worker.done()
-        }
-        this.worker = worker
+    public void registerWorker(SwingWorker worker) {
+        worker.execute()
+        worker.get()
+        worker.done()
     }
     
     public boolean isQueueEmpty() {

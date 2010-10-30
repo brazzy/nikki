@@ -254,7 +254,6 @@ class GuiImageTest extends GuiTest {
         
         editor.title.text = "otherTitle"
         view.saveButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertEquals("otherTitle", image.title)
     }
     
@@ -399,7 +398,6 @@ class GuiImageTest extends GuiTest {
         assertFalse(editor.export.selected)
         
         view.imageTable.editCellAt(1,0)
-        dialogs.registerWorker(null)
         assertFalse(image1.export)
         image1.title = null
         image1.description=null        
@@ -409,7 +407,6 @@ class GuiImageTest extends GuiTest {
         assertFalse(editor.export.selected)
         
         view.imageTable.editCellAt(0,0)
-        dialogs.registerWorker(null)
         assertFalse(image2.export)
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.selected)
@@ -419,7 +416,6 @@ class GuiImageTest extends GuiTest {
         image2.waypoint = constructWaypoint(image2.day, 2)
         
         view.imageTable.editCellAt(1,0)
-        dialogs.registerWorker(null)
         assertTrue(image1.export)
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.selected)
@@ -446,7 +442,6 @@ class GuiImageTest extends GuiTest {
         editor.title.text = "changedTitle"
         
         view.exportAllButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         
         assertTrue(editor.export.selected)
         assertTrue(image1.export)
@@ -456,7 +451,6 @@ class GuiImageTest extends GuiTest {
         image2.waypoint = constructWaypoint(image2.day, 2)
         
         view.exportAllButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         
         assertTrue(editor.export.selected)
         assertTrue(image1.export)
@@ -467,7 +461,6 @@ class GuiImageTest extends GuiTest {
         assertTrue(editor.export.selected)
         
         view.exportNoneButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         
         assertFalse(editor.export.selected)
         assertFalse(image1.export)
@@ -475,8 +468,6 @@ class GuiImageTest extends GuiTest {
         
         view.dayList.selectedIndex = 2
         view.exportAllButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         view.exportNoneButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
     }
 }

@@ -69,7 +69,6 @@ class GuiModifiedTest extends GuiTest {
         def file = prepareTestModified()
         dialogs.add(ConfirmResult.YES)
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
-        dialogs.registerWorker(null)
         assertEquals(Nikki.EXIT_CODE_SAVED_MODIFICATIONS, exitStatus)
         assertTrue(dialogs.isQueueEmpty())
         assertFalse(baseTime == file.lastModified())
@@ -82,7 +81,6 @@ class GuiModifiedTest extends GuiTest {
         dialogs.add(ConfirmResult.CANCEL)
         assertFalse(logContains(IMAGE1))
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
-        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())        
         assertNull(exitStatus)
         assertTrue(logContains(IMAGE1))
@@ -90,7 +88,6 @@ class GuiModifiedTest extends GuiTest {
         dialogs.add(ConfirmResult.YES)
         dialogs.add(ConfirmResult.YES)
         view.frame.dispatchEvent(new WindowEvent(view.frame, WindowEvent.WINDOW_CLOSING))
-        dialogs.registerWorker(null)
         assertEquals(Nikki.EXIT_CODE_SAVED_MODIFICATIONS, exitStatus)        
         assertTrue(dialogs.isQueueEmpty())
     }

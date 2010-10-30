@@ -124,7 +124,6 @@ class GuiDirDayTest extends GuiTest {
         def timestamp = imgFile.lastModified()
         
         view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
         assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
@@ -134,7 +133,6 @@ class GuiDirDayTest extends GuiTest {
         assertEquals(2, tmpDir.path.list().length)
         tmpDir.images[IMAGE1].title = "changedTitle"
         view.saveButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(imgFile.lastModified() > timestamp)
         assertEquals(2, tmpDir.path.list().length)
         
@@ -148,14 +146,12 @@ class GuiDirDayTest extends GuiTest {
         
         dialogs.add(null)
         view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.size())
         
         dialogs.add(TZ_BERLIN)
         view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertEquals(2, tmpDir.size())
         assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
         assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
@@ -169,7 +165,6 @@ class GuiDirDayTest extends GuiTest {
         
         assertTrue(imgFile.delete())
         view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         
         assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
         assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
@@ -210,13 +205,11 @@ class GuiDirDayTest extends GuiTest {
         assertEquals(1, tmpDir.path.list().length)
         dialogs.add(null)
         view.exportButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.path.list().length)
         
         dialogs.add(new File(tmpDir.path, "export.kmz"))
         view.exportButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(2, tmpDir.path.list().length)
     }
@@ -291,7 +284,6 @@ class GuiDirDayTest extends GuiTest {
         assertFalse(logContains(IMAGE1));
         dialogs.add("error");
         view.saveButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(logContains(IMAGE1));
         assertTrue(dialogs.isQueueEmpty())
     }
@@ -304,7 +296,6 @@ class GuiDirDayTest extends GuiTest {
         assertFalse(logContains(WAYPOINTS1));
         dialogs.add("error");
         view.scanButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(logContains(WAYPOINTS1));
         assertTrue(dialogs.isQueueEmpty())
     }
@@ -321,7 +312,6 @@ class GuiDirDayTest extends GuiTest {
         dialogs.add(new File(tmpDir.path.absolutePath+"_doesnt_exist", "export.kmz"))
         dialogs.add("error");
         view.exportButton.actionListeners[0].actionPerformed()
-        dialogs.registerWorker(null)
         assertTrue(logContains("_doesnt_exist"));
         assertTrue(dialogs.isQueueEmpty())
     }

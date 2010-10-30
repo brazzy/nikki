@@ -168,7 +168,6 @@ class Dialogs {
                 }
                 break
             }
-            println evt.propertyName + "-" + evt.newValue
             
             view.dirList.repaint()
             view.dayList.repaint()
@@ -177,11 +176,10 @@ class Dialogs {
             }
         } as PropertyChangeListener
         worker.addPropertyChangeListener(listener)
+        worker.execute()
         
-        if(!worker.isDone()){
-            monitor.pack()
-            monitor.show()            
-        }
+        monitor.pack()
+        monitor.show()
     }
     
     /**

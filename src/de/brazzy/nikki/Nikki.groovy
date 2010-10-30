@@ -127,14 +127,12 @@ public class Nikki{
     private scanAction = {
         def scanner = new DirectoryScanner(finder:timezoneFinder, parserFactory:parserFactory)
         ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner)
-        worker.execute()
         dialogs.registerWorker(worker)                
     }
     
     private saveAction = {
         view.imageTable.editorComponent?.getValue()
         SaveWorker worker = new SaveWorker(view.dirList.selectedValue, dialogs)
-        worker.execute()
         dialogs.registerWorker(worker)
     }
     
@@ -169,7 +167,6 @@ public class Nikki{
         if(selectedFile){
             model.exportDir = selectedFile.getParentFile()
             ExportWorker worker = new ExportWorker(day, selectedFile, dialogs)
-            worker.execute()
             dialogs.registerWorker(worker)
         }
     }
@@ -209,7 +206,6 @@ public class Nikki{
             switch(dialogs.confirm(Texts.Dialogs.UNSAVED_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION)) {
                 case ConfirmResult.YES:
                 SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)
-                worker.execute()
                 dialogs.registerWorker(worker);
                 break;
                 case ConfirmResult.NO:
