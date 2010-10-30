@@ -21,8 +21,6 @@ package de.brazzy.nikki.util;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.SwingWorker;
-
 import org.joda.time.DateTimeZone;
 
 import de.brazzy.nikki.Texts;

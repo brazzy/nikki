@@ -18,11 +18,9 @@ package de.brazzy.nikki.util;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 

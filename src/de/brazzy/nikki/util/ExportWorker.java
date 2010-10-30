@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.SwingWorker;
-
 import org.apache.log4j.Logger;
 
 import de.brazzy.nikki.Texts;

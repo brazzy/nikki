@@ -20,8 +20,6 @@ package de.brazzy.nikki.util;
 
 import java.util.Map;
 
-import javax.swing.SwingWorker;
-
 import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
 
