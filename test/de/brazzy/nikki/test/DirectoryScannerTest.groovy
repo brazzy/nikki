@@ -96,9 +96,9 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         copyFile(WAYPOINTS2)
         
         assertEquals(ScanResult.TIMEZONE_MISSING, scanner.scan(tmpDir, null))
-        assertEquals(1, tmpDir.size())
+        assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
-        assertEquals(1, tmpDir.waypointFiles.size())
+        assertEquals(2, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size())
         assertEquals(3, day1.waypoints.size())
         

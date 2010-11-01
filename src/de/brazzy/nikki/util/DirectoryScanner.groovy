@@ -92,6 +92,9 @@ class DirectoryScanner {
         }
         def totalFileNum = imageFiles.size() + otherFiles.size()
         
+        removeMissing(dir, allFiles)
+        parseWaypointFiles(dir, otherFiles, worker)
+        
         for(fileName in imageFiles){
             worker?.labelUpdate = fileName
             if(!dir.images[fileName]){
@@ -104,9 +107,6 @@ class DirectoryScanner {
             
             worker?.progress = new Integer((int)(++count / totalFileNum * 100))
         }
-        
-        parseWaypointFiles(dir, otherFiles, worker)
-        removeMissing(dir, allFiles)
         
         dir.fireContentsChanged(dir, 0, dir.size-1)
         worker?.progress = 0
