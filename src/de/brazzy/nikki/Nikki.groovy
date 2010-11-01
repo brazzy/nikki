@@ -85,6 +85,12 @@ public class Nikki{
         view.deleteButton.enabled = (sel != null)
         view.scanButton.enabled = (sel != null)
         view.saveButton.enabled = (sel != null)
+        if(sel){
+            if(sel.size > 0){
+                view.dayList.selectedIndex = 0                
+            }
+            scanAction()
+        }
     } as ListSelectionListener
     
     private selectDayAction = { it ->
@@ -128,8 +134,17 @@ public class Nikki{
     
     private scanAction = {
         def scanner = new DirectoryScanner(finder:timezoneFinder, parserFactory:parserFactory)
-        ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner)
-        dialogs.registerWorker(worker)                
+        def prevSelected = view.dayList.selectedValue
+        def callback = {
+            if(prevSelected){
+                view.dayList.setSelectedValue(prevSelected, true)                
+            } else if(view.dirList.selectedValue.size > 0){
+                view.dayList.selectedIndex = 0
+            }
+        }
+        
+        ScanWorker worker = new ScanWorker(view.dirList.selectedValue, dialogs, scanner, callback)
+        dialogs.registerWorker(worker)
     }
     
     private saveAction = {

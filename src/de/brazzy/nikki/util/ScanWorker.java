@@ -18,6 +18,8 @@ package de.brazzy.nikki.util;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import groovy.lang.Closure;
+
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ public class ScanWorker extends NikkiWorker {
     private Dialogs dialogs;
     private Directory dir;
     private DirectoryScanner scanner;
+    private Closure callback;
 
     private DateTimeZone zone = null;
     private Object zoneLock = new Object();
@@ -47,12 +50,16 @@ public class ScanWorker extends NikkiWorker {
      *            used to ask the timezone from the user
      * @param scanner
      *            does the scanning
+     * @param callback
+     *            called when the scanning ends
      */
-    public ScanWorker(Directory dir, Dialogs dialogs, DirectoryScanner scanner) {
+    public ScanWorker(Directory dir, Dialogs dialogs, DirectoryScanner scanner,
+            Closure callback) {
         super(Texts.Dialogs.Scan.PROGRESS_HEADER);
         this.dir = dir;
         this.dialogs = dialogs;
         this.scanner = scanner;
+        this.callback = callback;
     }
 
     @Override
@@ -96,6 +103,7 @@ public class ScanWorker extends NikkiWorker {
             dialogs.error(Texts.Dialogs.Scan.ERROR_PREFIX + e.getKey() + ": "
                     + e.getValue().getMessage());
         }
+        callback.call();
     }
 
 }
