@@ -49,8 +49,8 @@ class GuiDirDayTest extends GuiTest {
         view.addButton.actionListeners[0].actionPerformed()
         assertEquals(3, model.size())
         assertEquals(1, view.dirList.selectedIndex)
+        assertEquals(tmpDir.path.name+" (1, 1)", model[1].toString())
         assertEquals(0, view.dayList.selectedIndex)
-        assertEquals(tmpDir.path.name+" (1, 2)", model[1].toString())
     }
     
     public void testRemove() {
@@ -61,7 +61,7 @@ class GuiDirDayTest extends GuiTest {
         view.dirList.selectedIndex = 0
         view.deleteButton.actionListeners[0].actionPerformed()
         assertEquals(1, model.size())
-        assertEquals("tmp2 (0, 0)", model[0].toString())
+        assertEquals("xxx (0, 0)", model[0].toString())
         assertEquals(view.dirList.selectedIndex, -1)
         assertEquals(view.dayList.selectedIndex, -1)
     }
@@ -147,43 +147,43 @@ class GuiDirDayTest extends GuiTest {
         assertEquals(2, tmpDir.path.list().length)
         
         model.remove(tmpDir)
+        FileUtils.deleteDirectory(tmpDir.path)
+        tmpDir.path.mkdir()
         tmpDir = new Directory(path: tmpDir.path);
         model.add(tmpDir)
-        FileUtils.copyFile(imgFile, new File(tmpDir.path, "other.JPG"))
+        copyFile(WAYPOINTS2)
         copyFile(IMAGE2)
         
         dialogs.add(null)
         view.dirList.selectedIndex = 0
         assertTrue(dialogs.isQueueEmpty())
-        assertEquals(1, tmpDir.images.size())
-        assertEquals(0, tmpDir.waypointFiles.size())
+        assertEquals(0, tmpDir.images.size())
+        assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
+        assertEquals(DATE2+" (0, 2)", tmpDir[0].toString())
         assertEquals(0, view.dayList.selectedIndex)
         
-        copyFile(WAYPOINTS2)
-        dialogs.add(null)
-        view.scanButton.actionListeners[0].actionPerformed()
-        assertEquals(1, tmpDir.images.size())
-        assertEquals(1, tmpDir.waypointFiles.size())
-        assertEquals(1, view.dayList.selectedIndex)
-        
+        copyFile(IMAGE1)
+        def otherFile = new File(tmpDir.path, "other1.JPG")
+        FileUtils.copyFile(imgFile, otherFile)
+        FileUtils.moveFile(imgFile, new File(tmpDir.path, "other2.JPG"))
         dialogs.add(TZ_BERLIN)
         view.scanButton.actionListeners[0].actionPerformed()
         assertEquals(2, tmpDir.size())
-        assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
+        assertEquals(TZ_DARWIN, tmpDir.images[otherFile.name].time.zone)
         assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
-        assertEquals(tmpDir.path.name + " (3, 2)", model[0].toString())
-        assertEquals(DATE1+" (2, 3)", tmpDir[0].toString())
+        assertEquals(tmpDir.path.name + " (3, 1)", model[0].toString())
+        assertEquals(DATE1+" (2, 1)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
         
-        view.dayList.selectedIndex = 0
+        assertEquals(1, view.dayList.selectedIndex)
         view.imageTable.editCellAt(0,0)
         
-        assertTrue(imgFile.delete())
+        assertTrue(otherFile.delete())
         view.scanButton.actionListeners[0].actionPerformed()
         
-        assertEquals(tmpDir.path.name + " (2, 2)", model[0].toString())
-        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
+        assertEquals(tmpDir.path.name + " (2, 1)", model[0].toString())
+        assertEquals(DATE1+" (1, 0)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
     }
     
@@ -277,11 +277,13 @@ class GuiDirDayTest extends GuiTest {
     public void testExportNoImage() {
         ensureTmpDir()
         model.add(tmpDir)
+        view.dirList.selectedIndex = 0
         
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
         image1.export = false
         image2.export = false
+        
         view.dayList.selectedIndex = 0
         dialogs.add(ConfirmResult.CANCEL)
         view.exportButton.actionListeners[0].actionPerformed()
