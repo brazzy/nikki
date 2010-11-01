@@ -39,6 +39,7 @@ class GuiImageTest extends GuiTest {
         assertFalse(view.exportAllButton.enabled)
         assertFalse(view.exportNoneButton.enabled)
         
+        ensureTmpDir()
         view.dirList.selectedIndex = 0
         assertFalse(view.exportAllButton.enabled)
         assertFalse(view.exportNoneButton.enabled)
@@ -65,10 +66,12 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testOffsetFinder() {
-        Image image = addImage(DAY1, IMAGE1)
-        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
@@ -79,10 +82,12 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testOffsetFinderError() {
-        Image image = addImage(DAY1, IMAGE1)
-        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        
+        Image image = addImage(DAY1, IMAGE1)
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
@@ -97,14 +102,16 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testImageView() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, "a"+IMAGE2)
         Image image3 = addImage(DAY1, "b"+IMAGE2)
         Image image4 = addImage(DAY1, "c"+IMAGE2)
         image1.modified = false
-        model.add(tmpDir)
         
-        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         
         view.imageTable.editCellAt(0,0)
@@ -159,6 +166,10 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testImageSort() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image image1_c7 = addImage(DAY1, "c",7)
         Image image1_b9 = addImage(DAY1, "b",9)
         Image image1_a8 = addImage(DAY1, "a",8)
@@ -173,8 +184,6 @@ class GuiImageTest extends GuiTest {
         assertNull(view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
         
-        model.add(tmpDir)
-        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         assertEquals(ImageSortField.FILENAME, view.imageSortOrder.selectedItem)
         assertFalse(view.imageSortOrder.enabled)
@@ -236,12 +245,14 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testAutoCommit() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         copyFile(IMAGE1)
         Image image = addImage(DAY1, IMAGE1)
         addWaypointFile(DAY1, WAYPOINTS1)
-        model.add(tmpDir)
         
-        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         
         view.imageTable.editCellAt(0,0)
@@ -258,14 +269,16 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testCopyPaste() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image imageWithDate = addImage(DAY1, IMAGE1)
         Image imageNoDate = addImage(null, NO_EXIF)
-        model.add(tmpDir)
         assertEquals(2, tmpDir.getSize())
         assertEquals(1, tmpDir[0].images.size())
         assertEquals(1, tmpDir[1].images.size())
         
-        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
@@ -322,6 +335,10 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testExportLock() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image image1 = addImage(DAY1, IMAGE2)
         Image image2 = addImage(DAY1, IMAGE1)
         Image image3 = addImage(DAY1, "dummy")
@@ -332,9 +349,7 @@ class GuiImageTest extends GuiTest {
         image2.waypoint = null
         image3.export = false
         assertNotNull(image3.waypoint)
-        model.add(tmpDir)
         
-        view.dirList.selectedIndex = 0
         view.dayList.selectedIndex = 0
         
         view.imageTable.editCellAt(2,0)
@@ -369,6 +384,10 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testAutoSelectExport() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
         image1.export = false
@@ -378,8 +397,7 @@ class GuiImageTest extends GuiTest {
         image2.title = null
         image2.description=null
         image2.waypoint=null
-        model.add(tmpDir)        
-        view.dirList.selectedIndex = 0
+        
         view.dayList.selectedIndex = 0
         
         view.imageTable.editCellAt(0,0)
@@ -424,14 +442,17 @@ class GuiImageTest extends GuiTest {
     }
     
     public void testMassSelectExport() {
+        ensureTmpDir()
+        model.add(tmpDir)
+        view.dirList.selectedIndex = 0
+        
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
         WaypointFile wpf = addWaypointFile(DAY2, "dummy")
         image1.export = false
         image2.export = false
         image2.waypoint = null
-        model.add(tmpDir)
-        view.dirList.selectedIndex = 0
+        
         view.dayList.selectedIndex = 0
         
         view.imageTable.editCellAt(0,0)
