@@ -174,7 +174,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
      * Adds waypoint file and all waypoints therein
      * to correct Day, creating new Day if necessary
      */
-    private addWaypointFile(WaypointFile wf) {
+    public addWaypointFile(WaypointFile wf) {
         for(Waypoint wp in wf.waypoints) {
             def date = wp.timestamp.toLocalDate()
             Day d = getDay(date)
