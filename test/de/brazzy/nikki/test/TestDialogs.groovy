@@ -24,6 +24,7 @@ import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.util.NikkiWorker;
 import de.brazzy.nikki.view.NikkiFrame;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker
 
 
@@ -67,8 +68,7 @@ class TestDialogs extends Dialogs{
     
     @Override
     public void registerWorker(NikkiWorker worker) {
-        worker.execute()
-        worker.get()
+        worker.doInBackground()
         worker.done()
     }
     
