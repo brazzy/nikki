@@ -115,7 +115,9 @@ public class Nikki{
         def selectedFile = dialogs.askDirectory(model.selectionDir);
         if(selectedFile){
             model.selectionDir = selectedFile.getParentFile()
-            model.add(new Directory(path:selectedFile))
+            def dir = new Directory(path:selectedFile)
+            model.add(dir)
+            view.dirList.setSelectedValue(dir, true)
         }
     }
     
