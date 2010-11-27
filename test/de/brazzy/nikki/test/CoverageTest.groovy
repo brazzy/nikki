@@ -50,6 +50,9 @@ class CoverageTest {
         dummy = new Texts.Dialogs.About() 
         dummy = new Texts.Dialogs.GeotagOptions() 
         dummy = new Texts.Dialogs.ScanOptions() 
+        dummy = new Texts.Dialogs.Export() 
+        dummy = new Texts.Dialogs.Save() 
+        dummy = new Texts.Dialogs.Scan() 
         dummy = new Texts.Image()
         dummy = new Texts.Main()
     }   
