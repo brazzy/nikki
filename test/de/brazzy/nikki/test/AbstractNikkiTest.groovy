@@ -64,7 +64,7 @@ class AbstractNikkiTest extends GroovyTestCase {
     
     protected void setUp() {
         tmpDir = new Directory(path: new File(
-        System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
+                System.getProperty("java.io.tmpdir")+"/nikkitest"+(int)(Math.random()*1e9)));
         Locale.setDefault(Locale.GERMAN);
         Logger.getRootLogger().getAppender("A1").rollOver()
     }
@@ -93,7 +93,7 @@ class AbstractNikkiTest extends GroovyTestCase {
             tmpFile.mkdir()
             tmpFile.deleteOnExit()
             tmpDir.path = tmpFile
-        }        
+        }
     }
     
     protected WaypointFile addWaypointFile(LocalDate date, String fileName) {
@@ -111,24 +111,21 @@ class AbstractNikkiTest extends GroovyTestCase {
     
     protected static Waypoint constructWaypoint(Day day, int index) {
         Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0), ZONE),
-        latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
-        longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
+                latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
         day.waypoints << wp
         return wp
     }
     
+    protected static Image constructImage(LocalDate date, String fileName, int index=5) {
+        return new Image(fileName: fileName, title:"testTitle",
+        description:"testDescription", thumbnail: THUMB,
+        export: true, time: date?.toDateTime(new LocalTime(index, 0, 0), ZONE), modified: true)
+    }
+    
     protected Image addImage(LocalDate date, String fileName, int index=5) {
-        Day day = tmpDir.find{ it.date.equals(date)}
-        if(!day) {
-            day = new Day(date: date, directory:tmpDir)
-            tmpDir.add(day);
-        }
-        Waypoint wp = date == null ? null : constructWaypoint(day, index)
-        Image image = new Image(fileName: fileName, title:"testTitle",
-                description:"testDescription", day: day, thumbnail: THUMB,
-                export: true, time: wp?.timestamp, waypoint: wp, modified: true)
-        day.images.add(image)
-        tmpDir.images.put(fileName, image)
+        Image image = constructImage(date, fileName, index);
+        tmpDir.addImage(image);
         return image
     }
     
@@ -147,7 +144,7 @@ class AbstractNikkiTest extends GroovyTestCase {
                     assert !a[i].is(b[i]), "$i, $j"
                     assert a[i] != a[j]  , "$i, $j"                  
                     assert a[i] != b[j]  , "$i, $j"
-                }                                 
+                }
             }
         }
     }
