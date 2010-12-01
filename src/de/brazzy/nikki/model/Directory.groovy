@@ -59,13 +59,11 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
     /**
      * Adds an Image, creates a Day as well if necessary
      */
-    public void addImage(Image image) {
+    public Day addImage(Image image) {
         this.images[image.fileName] = image
         def date = image.time?.toLocalDate()
         def day = getDay(date)
-        if(day) {
-        }
-        else {
+        if(!day) {
             day = new Day(date:date, directory: this)
             this.add(day)
         } 
@@ -77,6 +75,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         def modified = image.modified
         image.day = day
         image.modified = modified
+        return day
     }
     
     /**
@@ -92,7 +91,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         if(day) {
             day.images.remove(image)
             if(image.waypoint){
-                day.waypoints.remove(image.waypoint)        	
+                day.waypoints.remove(image.waypoint)
             }
             image.day = null
             if(day.images.size() == 0 && day.waypoints.size() == 0) {
@@ -100,7 +99,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
             }
         }
         else {
-            throw new IllegalStateException("tried to remove image for unknown day $date")            
+            throw new IllegalStateException("tried to remove image for unknown day $date")
         }
     }
     
@@ -118,7 +117,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
             }
         }
         else {
-            throw new IllegalStateException("tried to remove image for unknown day $date")            
+            throw new IllegalStateException("tried to remove image for unknown day $date")
         }
     }
     
@@ -183,7 +182,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
                 add(d)
             }
             wp.day = d
-            d.waypoints.add(wp)            
+            d.waypoints.add(wp)
         }
         waypointFiles[wf.fileName] = wf
     }
