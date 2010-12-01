@@ -24,7 +24,6 @@ import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.ScanResult;
-import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.util.ParserFactory;
 import java.util.TimeZone;
 
@@ -254,28 +253,5 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(1000*60*60*2, TZ_2.getStandardOffset(0))
         assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC).toInstant(),
                 new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2).toInstant())  
-    }
-}
-
-private class MockTimezoneFinder extends TimezoneFinder {
-    def queue = []
-    
-    public addCall(float lat, float lng, DateTimeZone result) {
-        queue.add([lat, lng, result])
-    }
-    
-    public DateTimeZone find(float latitude, float longitude) {
-        def entry = queue.remove(0)
-        if(!Float.isNaN(entry[0])) {
-            assert Math.abs(entry[0] - latitude) < 0.1, "error: $latitude"            
-        }
-        if(!Float.isNaN(entry[1])) {
-            assert Math.abs(entry[1] - longitude) < 0.1, "error: $longitude"
-        }
-        return entry[2]
-    }
-    
-    public void finished() {
-        assert queue.size() == 0
     }
 }
