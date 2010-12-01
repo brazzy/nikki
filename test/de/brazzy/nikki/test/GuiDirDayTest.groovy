@@ -188,6 +188,7 @@ class GuiDirDayTest extends GuiTest {
     }
     
     public void testGeotag() {
+        // TODO: test auto-geotagging, including scan
         ensureTmpDir()
         model.add(tmpDir)        
         view.dirList.selectedIndex = 0

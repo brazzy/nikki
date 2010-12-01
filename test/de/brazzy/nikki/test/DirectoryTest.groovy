@@ -17,15 +17,25 @@ package de.brazzy.nikki.test
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.Rectangle;
+
 import groovy.mock.interceptor.MockFor;
 
 
 import javax.swing.event.ListDataListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+
+import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.Directory
 import de.brazzy.nikki.model.Day
+import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image
+import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile
+import de.brazzy.nikki.util.TimezoneFinder;
 
 
 /**
@@ -70,9 +80,15 @@ public class DirectoryTest extends AbstractNikkiTest {
     
     public void testAdd() {        
         def mock = new MockFor(ListDataListener)
-        mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
-        mock.demand.intervalAdded { assert it.index0 == 0 && it.index1==0 }
-        mock.demand.intervalAdded { assert it.index0 == 1 && it.index1==1 }
+        mock.demand.intervalAdded {
+            assert it.index0 == 0 && it.index1==0
+        }
+        mock.demand.intervalAdded {
+            assert it.index0 == 0 && it.index1==0
+        }
+        mock.demand.intervalAdded {
+            assert it.index0 == 1 && it.index1==1
+        }
         
         def mockListener = mock.proxyDelegateInstance()
         tmpDir.addListDataListener(mockListener)
@@ -135,8 +151,12 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir.add(day2)
         
         def mock = new MockFor(ListDataListener)
-        mock.demand.intervalRemoved { assert it.index0 == 0 && it.index1==0 }
-        mock.demand.intervalRemoved { assert it.index0 == 1 && it.index1==1 }
+        mock.demand.intervalRemoved {
+            assert it.index0 == 0 && it.index1==0
+        }
+        mock.demand.intervalRemoved {
+            assert it.index0 == 1 && it.index1==1
+        }
         def mockListener = mock.proxyDelegateInstance()
         tmpDir.addListDataListener(mockListener)
         
@@ -168,6 +188,47 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertTrue(tmpDir.modified)
         tmpDir.save(null)
         assertFalse(tmpDir.modified)
+    }
+    
+    def TIME_UTC_20H = new DateTime(2010,1,1,20,0,0,0,DateTimeZone.UTC);
+    def WP_AUSTRALIA = new Waypoint(timestamp: TIME_UTC_20H.withZone(TZ_BRISBANE),
+    latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 10),
+    longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10))
+    def WP_EUROPE = new Waypoint(timestamp: TIME_UTC_20H.plusMinutes(2).withZone(TZ_BERLIN),
+    latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 10),
+    longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10))
+    
+    public void testAddImageUntagged(){
+        def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H)
+        def imageEurope = new Image(fileName:IMAGE2, time:TIME_UTC_20H.plusMinutes(2))
+        
+        tmpDir.addWaypoint(WP_AUSTRALIA);
+        tmpDir.addWaypoint(WP_EUROPE);
+        
+        def finder = new MockTimezoneFinder()
+        finder.addCall(10f, 10f, TZ_BERLIN)
+        finder.addCall(10f, -10f, TZ_BRISBANE)
+        // TODO: use finder
+        
+        assertEquals(new LocalDate(2010,1,2), tmpDir.addImage(imageAustralia).date)
+        assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageEurope).date)
+        finder.finished()
+    }
+    
+    public void testAddImageTagged(){
+        def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H, waypoint: WP_EUROPE)
+        
+        tmpDir.addWaypoint(WP_AUSTRALIA);
+        
+        def finder = new MockTimezoneFinder()
+        // TODO: use finder
+        
+        assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageAustralia).date)
+        finder.finished()
+    }
+    
+    public void testAddWaypoints(){
+        // TODO: test auto-geotagging
     }
 }
 
