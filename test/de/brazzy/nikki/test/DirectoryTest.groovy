@@ -190,7 +190,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertFalse(tmpDir.modified)
     }
     
-    def TIME_UTC_20H = new DateTime(2010,1,1,20,0,0,0,DateTimeZone.UTC);
+    def TIME_UTC_20H = new DateTime(2010,1,1,20,0,0,0,DateTimeZone.UTC)
     def WP_AUSTRALIA = new Waypoint(timestamp: TIME_UTC_20H.withZone(TZ_BRISBANE),
     latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 10),
     longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10))
@@ -202,13 +202,14 @@ public class DirectoryTest extends AbstractNikkiTest {
         def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H)
         def imageEurope = new Image(fileName:IMAGE2, time:TIME_UTC_20H.plusMinutes(2))
         
-        tmpDir.addWaypoint(WP_AUSTRALIA);
-        tmpDir.addWaypoint(WP_EUROPE);
-        
         def finder = new MockTimezoneFinder()
         finder.addCall(10f, 10f, TZ_BERLIN)
         finder.addCall(10f, -10f, TZ_BRISBANE)
-        // TODO: use finder
+        
+        tmpDir.addWaypoint(WP_AUSTRALIA, finder)
+        tmpDir.addWaypoint(WP_EUROPE, finder)
+        assertSame(WP_AUSTRALIA, imageAustralia.waypoint)
+        assertSame(WP_EUROPE, imageEurope.waypoint)
         
         assertEquals(new LocalDate(2010,1,2), tmpDir.addImage(imageAustralia).date)
         assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageEurope).date)
@@ -218,17 +219,30 @@ public class DirectoryTest extends AbstractNikkiTest {
     public void testAddImageTagged(){
         def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H, waypoint: WP_EUROPE)
         
-        tmpDir.addWaypoint(WP_AUSTRALIA);
-        
         def finder = new MockTimezoneFinder()
-        // TODO: use finder
+        tmpDir.addWaypoint(WP_AUSTRALIA. finder)
         
+        assertSame(WP_EUROPE, imageAustralia.waypoint)
         assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageAustralia).date)
         finder.finished()
     }
     
     public void testAddWaypoints(){
-        // TODO: test auto-geotagging
+        def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H)
+        
+        def finder = new MockTimezoneFinder()
+        finder.addCall(10f, 10f, TZ_BERLIN)
+        finder.addCall(10f, -10f, TZ_BRISBANE)
+        
+        tmpDir.addWaypoint(WP_EUROPE, finder)
+        assertSame(WP_EUROPE, imageAustralia.waypoint)
+        assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageAustralia).date)
+        
+        tmpDir.addWaypoint(WP_AUSTRALIA, finder)
+        assertSame(WP_AUSTRALIA, imageAustralia.waypoint)
+        assertEquals(new LocalDate(2010,1,2), imageAustralia.day.date)
+        
+        finder.finished()
     }
 }
 
