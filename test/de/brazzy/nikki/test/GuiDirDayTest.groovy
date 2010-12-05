@@ -21,6 +21,7 @@ package de.brazzy.nikki.test
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.Seconds;
 
 import de.brazzy.nikki.model.Directory;
@@ -71,7 +72,6 @@ class GuiDirDayTest extends GuiTest {
         assertFalse(view.deleteButton.enabled)
         assertFalse(view.scanButton.enabled)
         assertFalse(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
         
         model.add(tmpDir)
@@ -79,7 +79,6 @@ class GuiDirDayTest extends GuiTest {
         assertFalse(view.deleteButton.enabled)
         assertFalse(view.scanButton.enabled)
         assertFalse(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
         
         ensureTmpDir()
@@ -88,7 +87,6 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(view.deleteButton.enabled)
         assertTrue(view.scanButton.enabled)
         assertTrue(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
         
         addImage(DAY1, IMAGE1)
@@ -96,7 +94,6 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(view.deleteButton.enabled)
         assertTrue(view.scanButton.enabled)
         assertTrue(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
         
         view.dayList.selectedIndex = 0
@@ -104,7 +101,6 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(view.deleteButton.enabled)
         assertTrue(view.scanButton.enabled)
         assertTrue(view.saveButton.enabled)
-        assertTrue(view.tagButton.enabled)
         assertTrue(view.exportButton.enabled)
         
         view.dayList.clearSelection()
@@ -112,7 +108,6 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(view.deleteButton.enabled)
         assertTrue(view.scanButton.enabled)
         assertTrue(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
         
         view.dirList.clearSelection()
@@ -120,7 +115,6 @@ class GuiDirDayTest extends GuiTest {
         assertFalse(view.deleteButton.enabled)
         assertFalse(view.scanButton.enabled)
         assertFalse(view.saveButton.enabled)
-        assertFalse(view.tagButton.enabled)
         assertFalse(view.exportButton.enabled)
     }
     
@@ -188,28 +182,22 @@ class GuiDirDayTest extends GuiTest {
     }
     
     public void testGeotag() {
-        // TODO: test auto-geotagging, including scan
-        ensureTmpDir()
+        copyFile("auto_geotag.jpg")
+        copyFile("auto_geotag1.nmea")
         model.add(tmpDir)        
         view.dirList.selectedIndex = 0
         
-        Image image = addImage(DAY1, IMAGE1)
-        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
-        image.waypoint = null
-        assertNull(model[0].images[IMAGE1].waypoint)
-        view.dayList.selectedIndex = 0
+        def img = model[0].images["auto_geotag.jpg"]
+        assertEquals(TZ_BERLIN, img.waypoint.timestamp.zone)
+        assertEquals(1, model[0].size)
+        assertEquals(new LocalDate(2010,7,22), model[0][0].date)
         
-        dialogs.add(null)
-        view.tagButton.actionListeners[0].actionPerformed()
-        assertTrue(dialogs.isQueueEmpty())
-        assertNull(model[0].images[IMAGE1].waypoint)
+        copyFile("auto_geotag2.nmea")
+        view.scanButton.actionListeners[0].actionPerformed()
         
-        dialogs.add(Seconds.seconds(-5 * 60 * 60))
-        view.tagButton.actionListeners[0].actionPerformed()
-        assertTrue(dialogs.isQueueEmpty())
-        def wp = model[0].images[IMAGE1].waypoint
-        assertNotNull(wp)
-        assertEquals(new DateTime(2009, 11, 11, 1, 0, 0, 0, TZ_DARWIN), wp.timestamp)
+        assertEquals(TZ_DARWIN, img.waypoint.timestamp.zone)
+        assertEquals(1, model[0].size)
+        assertEquals(new LocalDate(2010,7,23), model[0][0].date)
     }
     
     public void testExport() {
@@ -342,5 +330,4 @@ class GuiDirDayTest extends GuiTest {
         assertTrue(logContains("_doesnt_exist"));
         assertTrue(dialogs.isQueueEmpty())
     }
-    
 }
