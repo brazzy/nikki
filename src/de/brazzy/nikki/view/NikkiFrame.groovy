@@ -44,7 +44,6 @@ public class NikkiFrame{
     def addButton
     def deleteButton
     def scanButton
-    def tagButton
     def saveButton
     def exportButton
     def exportAllButton
@@ -58,10 +57,10 @@ public class NikkiFrame{
         def swing = new SwingBuilder()
         def result = new NikkiFrame()
         def icons = [
-                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_64.gif")).image,
-                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_32.gif")).image,
-                new ImageIcon(NikkiFrame.class.getResource("/icons/logo_16.gif")).image
-                ]
+            new ImageIcon(NikkiFrame.class.getResource("/icons/logo_64.gif")).image,
+            new ImageIcon(NikkiFrame.class.getResource("/icons/logo_32.gif")).image,
+            new ImageIcon(NikkiFrame.class.getResource("/icons/logo_16.gif")).image
+        ]
         
         result.frame = swing.frame(title:Texts.Main.TITLE, iconImages:icons) {
             borderLayout()
@@ -75,8 +74,8 @@ public class NikkiFrame{
                         }
                         panel(constraints: BorderLayout.SOUTH){
                             result.addButton = button(text:Texts.Main.ADD_BUTTON, 
-                            toolTipText:Texts.Main.ADD_TOOLTIP,
-                            icon:new ImageIcon(NikkiFrame.class.getResource("/icons/add.png")))
+                                    toolTipText:Texts.Main.ADD_TOOLTIP,
+                                    icon:new ImageIcon(NikkiFrame.class.getResource("/icons/add.png")))
                             result.deleteButton = button(text:Texts.Main.DELETE_BUTTON, enabled:false, 
                                     toolTipText:Texts.Main.DELETE_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/bin_closed.png")))                       
@@ -95,9 +94,6 @@ public class NikkiFrame{
                             result.dayList = list()
                         }
                         panel(constraints: BorderLayout.SOUTH){
-                            result.tagButton = button(text:Texts.Main.GEOTAG_BUTTON, enabled:false, 
-                            toolTipText:Texts.Main.GEOTAG_TOOLTIP,
-                            icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_link.png")))
                             result.exportButton = button(text:Texts.Main.EXPORT_BUTTON, enabled:false, 
                                     toolTipText:Texts.Main.EXPORT_TOOLTIP,
                                     icon:new ImageIcon(NikkiFrame.class.getResource("/icons/world_go.png")))
@@ -112,7 +108,10 @@ public class NikkiFrame{
                             flowLayout(alignment:FlowLayout.LEFT, vgap:0)
                             label(text:Texts.Main.IMAGES, border: new EmptyBorder(0,5,0,5))
                             result.imageSortOrder = comboBox(enabled: false,
-                                    items: [ImageSortField.FILENAME, ImageSortField.TIME], selectedIndex:-1)
+                                    items: [
+                                        ImageSortField.FILENAME,
+                                        ImageSortField.TIME
+                                    ], selectedIndex:-1)
                         }
                         panel(constraints: BorderLayout.CENTER){
                             flowLayout(alignment:FlowLayout.RIGHT, vgap:0)
@@ -134,5 +133,5 @@ public class NikkiFrame{
         result.frame.defaultCloseOperation = JFrame.DO_NOTHING_ON_CLOSE;
         
         return result;
-    }    
+    }
 }

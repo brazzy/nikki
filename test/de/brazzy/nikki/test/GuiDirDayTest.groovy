@@ -184,7 +184,8 @@ class GuiDirDayTest extends GuiTest {
     public void testGeotag() {
         copyFile("auto_geotag.jpg")
         copyFile("auto_geotag1.nmea")
-        model.add(tmpDir)        
+        model.add(tmpDir)
+        dialogs.add(TZ_BERLIN)
         view.dirList.selectedIndex = 0
         
         def img = model[0].images["auto_geotag.jpg"]

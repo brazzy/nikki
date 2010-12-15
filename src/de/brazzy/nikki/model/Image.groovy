@@ -101,13 +101,13 @@ class Image implements Serializable{
     public void pasteTime(DateTime time) {
         if(time != this.time) {
             if(time?.toLocalDate() == this.time?.toLocalDate()) {
-                setTime(time)                
+                setTime(time)
             }
             else {
                 def dir = day.directory
                 dir.removeImage(this)
                 setTime(time)
-                dir.addImage(this)                            
+                dir.addImage(this)
             }
         }
     }
@@ -118,8 +118,8 @@ class Image implements Serializable{
         builder.html(){ 
             body(){ 
                 img(src: "images/"+fileName)
-                p(description) 
-            } 
+                p(description)
+            }
         } 
         return writer.toString()
     }
@@ -156,15 +156,19 @@ class Image implements Serializable{
                 .withStyleUrl("#image")
                 .withVisibility(true)
                 .createAndSetPoint()
-                .withCoordinates([new Coordinate(waypoint.longitude.value, waypoint.latitude.value)])
+                .withCoordinates([
+                    new Coordinate(waypoint.longitude.value, waypoint.latitude.value)
+                ])
         
         NumberFormat nf = NumberFormat.getIntegerInstance();
         day.waypoints.each{ Waypoint point ->
             doc.createAndAddPlacemark()
-            .withName(nf.format((point.timestamp.millis-time.millis)/1000))
-            .withVisibility(true)
-            .createAndSetPoint()
-            .withCoordinates([new Coordinate(point.longitude.value, point.latitude.value)])
+                    .withName(nf.format((point.timestamp.millis-time.millis)/1000))
+                    .withVisibility(true)
+                    .createAndSetPoint()
+                    .withCoordinates([
+                        new Coordinate(point.longitude.value, point.latitude.value)
+                    ])
         }
         
         kml.marshal(out)
@@ -177,11 +181,11 @@ class Image implements Serializable{
      * 
      * @param offset to adjust for incorrectly set camera time
      */
-    public void geotag(ReadablePeriod offset = Seconds.seconds(0)) {
+    public void geotag(ReadablePeriod offset = Seconds.seconds(0), SortedSet<Waypoint> waypoints) {
         def imagetime = this.time.plus(offset)
         Waypoint imageTimestamp = new Waypoint(timestamp: imagetime)
-        def beforeSet = day.waypoints.headSet(imageTimestamp)
-        def afterSet = day.waypoints.tailSet(imageTimestamp)        
+        def beforeSet = waypoints.headSet(imageTimestamp)
+        def afterSet = waypoints.tailSet(imageTimestamp)        
         def result
         
         if(afterSet.isEmpty()) // after all WPs
@@ -211,6 +215,7 @@ class Image implements Serializable{
         
         if(result.timestamp!=waypoint?.timestamp) {
             waypoint = result
+            time = time.withZone(result.timestamp.zone)
             modified = true
         }
     }
@@ -230,7 +235,9 @@ class Image implements Serializable{
                     .withDescription(htmlForExport)
                     .withVisibility(true)
             pm.createAndSetPoint()
-                    .withCoordinates([new Coordinate(waypoint.longitude.value, waypoint.latitude.value)])
+                    .withCoordinates([
+                        new Coordinate(waypoint.longitude.value, waypoint.latitude.value)
+                    ])
             pm.createAndAddStyle()
                     .createAndSetIconStyle()
                     .withScale(1.5) // adjusts default icon size (64) for out icon size (96)

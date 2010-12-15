@@ -132,14 +132,6 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     }
     
     /**
-     * Assigns coordinates to each image on this day, based on the
-     * waypoint with the most similar timestamp
-     */
-    public void geotag(ReadablePeriod offset = Seconds.seconds(0)) {
-        images*.geotag(offset)
-    }
-    
-    /**
      * Exports this day's data (Annotated images and GPS tracks)
      * to a KMZ file
      * 
@@ -186,6 +178,9 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     }
     
     private void exportWaypoints(Document doc) {
+        def wpList = []
+        wpList.addAll(waypoints)
+        wpList.addAll(images.asList().waypoint)
         LineString ls;        
         DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
         for(Waypoint wp : waypoints) {
@@ -236,8 +231,8 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     @Override
     public int compareTo(Day other) {
         if(date==null) {
-            return other.date==null ? 0 : -1                
+            return other.date==null ? 0 : -1
         }
         return other.date == null ? 1 : date.compareTo(other.date)
-    }    
+    }
 }

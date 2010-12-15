@@ -18,10 +18,15 @@ package de.brazzy.nikki.model;
  */
 
 
+import java.util.SortedSet;
+
 import javax.swing.SwingWorker
 
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
+import org.joda.time.ReadableInstant;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
 
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.util.NikkiWorker;
@@ -33,17 +38,20 @@ import de.brazzy.nikki.util.NikkiWorker;
  * @author Michael Borgwardt
  */
 class Directory extends ListDataModel<Day> implements Comparable<Directory> {
-    public static final long serialVersionUID = 1;
+    public static final long serialVersionUID = 1
     
     /**
      * All the images in this directory, keyed on the file name
      */
-    Map<String, Image> images = [:];
+    Map<String, Image> images = [:]
     
     /**
      * All the GPS tracks in this directory, keyed on the file name
      */
-    Map<String, WaypointFile> waypointFiles = [:];    
+    Map<String, WaypointFile> waypointFiles = [:]
+    
+    /** All Waypoints found in this directory */
+    SortedSet<Waypoint> waypoints = new TreeSet()
     
     /**
      * This directory's filesystem path.
@@ -61,6 +69,10 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
      */
     public Day addImage(Image image) {
         this.images[image.fileName] = image
+        if(waypoints){
+            image.geotag(waypoints)
+        }
+        
         def date = image.time?.toLocalDate()
         def day = getDay(date)
         if(!day) {
@@ -68,9 +80,6 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
             this.add(day)
         } 
         day.images.add(image)
-        if(image.waypoint) {
-            day.waypoints.add(image.waypoint)
-        }
         
         def modified = image.modified
         image.day = day
@@ -90,9 +99,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         def day = getDay(date)
         if(day) {
             day.images.remove(image)
-            if(image.waypoint){
-                day.waypoints.remove(image.waypoint)
-            }
+            
             image.day = null
             if(day.images.size() == 0 && day.waypoints.size() == 0) {
                 remove(day)
@@ -110,6 +117,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         def date = wp.timestamp.toLocalDate()
         def day = getDay(date)
         if(day) {
+            waypoints.remove(wp);
             day.waypoints.remove(wp)
             wp.day = null
             if(day.images.size() == 0 && day.waypoints.size() == 0) {
@@ -117,7 +125,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
             }
         }
         else {
-            throw new IllegalStateException("tried to remove image for unknown day $date")
+            throw new IllegalStateException("tried to remove waypoint for unknown day $date")
         }
     }
     
@@ -175,16 +183,35 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
      */
     public addWaypointFile(WaypointFile wf) {
         for(Waypoint wp in wf.waypoints) {
-            def date = wp.timestamp.toLocalDate()
-            Day d = getDay(date)
-            if(!d) {
-                d = new Day(directory: this, date: date)
-                add(d)
-            }
-            wp.day = d
-            d.waypoints.add(wp)
+            addWaypoint(wp)
         }
         waypointFiles[wf.fileName] = wf
+    }
+    
+    /**
+     * Adds waypoint to correct Day, creating new Day if necessary
+     */
+    public addWaypoint(Waypoint wp) {
+        def date = wp.timestamp.toLocalDate()
+        Day d = getDay(date)
+        if(!d) {
+            d = new Day(directory: this, date: date)
+            add(d)
+        }
+        wp.day = d
+        d.waypoints.add(wp)
+        waypoints.add(wp)
+    }
+    
+    /**
+     * Re-geotags all images and reassigns them to different days if necessary
+     */
+    public void geotag(ReadablePeriod offset = Seconds.seconds(0)){
+        for(image in images.values()){
+            image.geotag(waypoints)
+            removeImage(image)
+            addImage(image)
+        }
     }
     
     @Override

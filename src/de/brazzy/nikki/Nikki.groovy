@@ -71,13 +71,13 @@ public class Nikki{
     def timezoneFinder
     
     private copyListener = {
-        view.dayList.repaint()	
+        view.dayList.repaint()
     } as ActionListener
     
     private selectDirectoryAction = { it ->
         def sel = view.dirList.selectedValue
         if(sel) {
-            view.dayList.model = sel                
+            view.dayList.model = sel
         }
         else {
             view.dayList.model = new DefaultListModel()
@@ -87,7 +87,7 @@ public class Nikki{
         view.saveButton.enabled = (sel != null)
         if(sel){
             if(sel.size > 0){
-                view.dayList.selectedIndex = 0                
+                view.dayList.selectedIndex = 0
             }
             scanAction()
         }
@@ -107,7 +107,6 @@ public class Nikki{
         view.exportButton.enabled = (sel != null)
         view.exportAllButton.enabled = (sel != null)
         view.exportNoneButton.enabled = (sel != null)
-        view.tagButton.enabled = (sel != null)
     } as ListSelectionListener 
     
     private sortOrderAction = { it ->
@@ -137,7 +136,7 @@ public class Nikki{
         def prevSelected = view.dayList.selectedValue
         def callback = {
             if(prevSelected){
-                view.dayList.setSelectedValue(prevSelected, true)                
+                view.dayList.setSelectedValue(prevSelected, true)
             } else if(view.dirList.selectedValue.size > 0){
                 view.dayList.selectedIndex = 0
             }
@@ -153,17 +152,6 @@ public class Nikki{
         dialogs.registerWorker(worker)
     }
     
-    private geotagAction = {
-        def offset = dialogs.askOffset();
-        if(offset != null) {
-            view.dayList.selectedValue.geotag(offset)
-            
-            def current = view.imageTable.editorComponent?.getValue()    
-            view.imageTable.editorComponent?.setValue(current)    
-            view.imageTable.repaint()
-        }
-    }
-    
     private exportAction = {
         view.imageTable.editorComponent?.getValue()
         def day = view.dayList.selectedValue
@@ -175,7 +163,7 @@ public class Nikki{
         if(!exportFlags.contains(true)) {
             ConfirmResult c = dialogs.confirm(Texts.Dialogs.Export.NOIMAGE_MESSAGE, JOptionPane.OK_CANCEL_OPTION)
             if(c == ConfirmResult.CANCEL) {
-                return                    
+                return
             }
         }
         
@@ -193,7 +181,7 @@ public class Nikki{
         def day = view.dayList.selectedValue
         for(Image img in day.images){
             if(img.waypoint){
-                img.export = true                
+                img.export = true
             }
         }
         view.imageTable.editorComponent?.setValue(current)    
@@ -210,32 +198,29 @@ public class Nikki{
         view.imageTable.repaint()
     }
     
-    private aboutAction = {
-        dialogs.showAboutBox()
-    }
+    private aboutAction = { dialogs.showAboutBox() }
     
     private closeListener = [
-    windowClosing: {
-        view.imageTable.editorComponent?.getValue()
-        def modifiedDirs = model.dataList.findAll{ it.modified
-        }
-        if(modifiedDirs) {
-            switch(dialogs.confirm(Texts.Dialogs.UNSAVED_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION)) {
-                case ConfirmResult.YES:
-                SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)
-                dialogs.registerWorker(worker);
-                break;
-                case ConfirmResult.NO:
-                System.exit(EXIT_CODE_UNSAVED_MODIFICATIONS)
-                case ConfirmResult.CANCEL:
-                default:
-                break;
+        windowClosing: {
+            view.imageTable.editorComponent?.getValue()
+            def modifiedDirs = model.dataList.findAll{ it.modified }
+            if(modifiedDirs) {
+                switch(dialogs.confirm(Texts.Dialogs.UNSAVED_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION)) {
+                    case ConfirmResult.YES:
+                        SaveExitWorker worker = new SaveExitWorker(modifiedDirs, dialogs)
+                        dialogs.registerWorker(worker);
+                        break;
+                    case ConfirmResult.NO:
+                        System.exit(EXIT_CODE_UNSAVED_MODIFICATIONS)
+                    case ConfirmResult.CANCEL:
+                    default:
+                        break;
+                }
+            }
+            else {
+                System.exit(EXIT_CODE_NO_MODIFICATIONS)
             }
         }
-        else {
-            System.exit(EXIT_CODE_NO_MODIFICATIONS)
-        }
-    }
     ] as WindowAdapter
     
     /**
@@ -259,7 +244,6 @@ public class Nikki{
         view.saveButton.actionPerformed = saveAction
         view.dayList.addListSelectionListener(selectDayAction)
         view.imageSortOrder.addActionListener(sortOrderAction)
-        view.tagButton.actionPerformed = geotagAction        
         view.exportButton.actionPerformed = exportAction
         view.exportAllButton.actionPerformed = exportAllAction
         view.exportNoneButton.actionPerformed = exportNoneAction

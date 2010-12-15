@@ -80,15 +80,15 @@ class DirectoryScanner {
         def allFiles = dir.path.list() as Set;
         def imageFiles = allFiles.findAll{
             it.toUpperCase().endsWith(".JPG") ||
-            it.toUpperCase().endsWith(".JPEG")
+                    it.toUpperCase().endsWith(".JPEG")
         }
         def otherFiles = new HashSet(allFiles)
         otherFiles.removeAll(imageFiles)
         otherFiles = otherFiles.findAll{
             !new File(dir.path, it).isDirectory() &&
-            !it.toUpperCase().endsWith(".AVI") &&
-            !it.toUpperCase().endsWith(".THM") &&            
-            !it.toUpperCase().endsWith(".DB")
+                    !it.toUpperCase().endsWith(".AVI") &&
+                    !it.toUpperCase().endsWith(".THM") &&            
+                    !it.toUpperCase().endsWith(".DB")
         }
         def totalFileNum = imageFiles.size() + otherFiles.size()
         
@@ -139,6 +139,7 @@ class DirectoryScanner {
     }
     
     private parseWaypointFiles(Directory dir, Set<String> files, NikkiWorker worker){
+        def newFound = false;
         for(fileName in files){
             worker?.labelUpdate = fileName
             if(!dir.waypointFiles[fileName]){
@@ -146,12 +147,16 @@ class DirectoryScanner {
                     def wf = parseWaypointFile(new File(dir.path, fileName))
                     wf.directory = dir
                     dir.addWaypointFile(wf)
+                    newFound = true;
                 }catch(Exception e){
                     Logger.getLogger(getClass()).error(
                             "Error reading waypoint file " + fileName, e)
                     exceptions[fileName] = e
                 }
             }
+        }
+        if(newFound){
+            dir.geotag()
         }
     }
     
@@ -179,7 +184,7 @@ class DirectoryScanner {
                 
                 def wp = new Waypoint(latitude: lat, longitude: lon, timestamp: ts)
                 wp.file = wf
-                wf.waypoints.add(wp)                
+                wf.waypoints.add(wp)
             }
         }
         return wf

@@ -17,8 +17,6 @@ package de.brazzy.nikki.test
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Arrays;
-
 import javax.imageio.ImageIO;
 
 import mediautil.image.jpeg.Entry;
@@ -26,6 +24,10 @@ import mediautil.image.jpeg.Entry;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
 
 import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
@@ -150,12 +152,14 @@ class ImageTest extends AbstractNikkiTest{
     }
     
     public void testSaveImage() {
+        def IMAGE_INDEX = 5;
         copyFile(IMAGE2)
         long baseTime = System.currentTimeMillis()-10000000
         File file = new File(tmpDir.path, IMAGE2)
         assertTrue(file.setLastModified(baseTime))
         
         Image image = addImage(DAY2, IMAGE2)
+        image.waypoint = constructWaypoint(image.day, IMAGE_INDEX);
         
         assertTrue(file.lastModified() == baseTime)
         image.save(tmpDir.path)
@@ -176,8 +180,8 @@ class ImageTest extends AbstractNikkiTest{
         assertEquals(ZONE.ID, reader.timeZone.ID)
         assertEquals("Ü\nß", reader.description)
         assertEquals("ä#'\n\n<>", reader.title)
-        assertEquals(-5.0f, reader.waypoint.latitude.value)
-        assertEquals(25.0f, reader.waypoint.longitude.value)
+        assertEquals(-(double)IMAGE_INDEX, reader.waypoint.latitude.value)
+        assertEquals((double)IMAGE_INDEX+20, reader.waypoint.longitude.value)
         assertFalse(reader.export)
         def thumb = reader.thumbnail
         assertTrue(Arrays.equals(thumb, th))
@@ -232,7 +236,7 @@ class ImageTest extends AbstractNikkiTest{
         image.day = new Day(date:new LocalDate(2009,1,1))
         constructWaypoint(image.day, 1)
         image.modified=false
-        image.geotag()        
+        image.geotag(image.day.waypoints)        
         assertTrue(image.modified)
         image.save(tmpDir.path)
         assertFalse(image.modified)
@@ -297,12 +301,65 @@ class ImageTest extends AbstractNikkiTest{
     
     public void testReadError() {
         reader = new ImageReader(new File(getClass().getResource(WAYPOINTS1).toURI()),
-        DateTimeZone.UTC)
+                DateTimeZone.UTC)
         assertFalse(logContains(WAYPOINTS1));
         Image image = reader.createImage()
         assertTrue(image.description.startsWith(Texts.ERROR_PREFIX))
         assertTrue(Arrays.equals(image.thumbnail, ImageReader.errorIcon))
         assertTrue(logContains(WAYPOINTS1));
+    }
+    
+    public void testGeotag() {
+        def dat = new LocalDate(2009, 1, 1)
+        
+        def day = new Day(date:dat)
+        def wp12 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(12, 0)))
+        def wp14 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(14, 0)))
+        def wp16 = new Waypoint(timestamp: dat.toDateTime(new LocalTime(16, 0)))
+        def waypoints = new TreeSet([wp12, wp14, wp16])
+        
+        def im08 = new Image(time: dat.toDateTime(new LocalTime(8, 0)), day:day)
+        def im11 = new Image(time: dat.toDateTime(new LocalTime(11, 0)), day:day)
+        def im13l = new Image(time: dat.toDateTime(new LocalTime(12, 45)), day:day)
+        def im15h = new Image(time: dat.toDateTime(new LocalTime(15, 10)), day:day)
+        def im17 = new Image(time: dat.toDateTime(new LocalTime(17, 0)), day:day)
+        def im12 = new Image(time: dat.toDateTime(new LocalTime(12, 0)), day:day)
+        def im14 = new Image(time: dat.toDateTime(new LocalTime(14, 0)), day:day)
+        def im16 = new Image(time: dat.toDateTime(new LocalTime(16, 0)), day:day)
+        
+        def images = [
+            im08,
+            im13l,
+            im11,
+            im14,
+            im16,
+            im12,
+            im17,
+            im15h
+        ]
+        
+        images*.geotag(waypoints)
+        
+        assertSame(wp12, im12.waypoint)
+        assertSame(wp14, im14.waypoint)
+        assertSame(wp16, im16.waypoint)
+        assertSame(wp12, im08.waypoint)
+        assertSame(wp12, im11.waypoint)
+        assertSame(wp12, im13l.waypoint)
+        assertSame(wp16, im15h.waypoint)
+        assertSame(wp16, im17.waypoint)
+        
+        images.each{ it.waypoint = null }
+        images*.geotag(Minutes.minutes(90), waypoints)
+        
+        assertSame(wp14, im12.waypoint)
+        assertSame(wp16, im14.waypoint)
+        assertSame(wp16, im16.waypoint)
+        assertSame(wp12, im08.waypoint)
+        assertSame(wp12, im11.waypoint)
+        assertSame(wp14, im13l.waypoint)
+        assertSame(wp16, im15h.waypoint)
+        assertSame(wp16, im17.waypoint)
     }
 }
 

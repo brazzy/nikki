@@ -105,11 +105,11 @@ class AbstractNikkiTest extends GroovyTestCase {
         WaypointFile file = new WaypointFile(fileName: fileName, directory:tmpDir)
         file.waypoints.add(constructWaypoint(day, 1))
         file.waypoints.add(constructWaypoint(day, 2))
-        tmpDir.waypointFiles.put(fileName, file)
+        tmpDir.addWaypointFile(file)
         return file
     }
     
-    protected static Waypoint constructWaypoint(Day day, int index) {
+    protected static Waypoint constructWaypoint(Day day, int index=5) {
         Waypoint wp = new Waypoint(day: day, timestamp: day.date.toDateTime(new LocalTime(index, 0, 0), ZONE),
                 latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: (double)index),
                 longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: (double)index+20))
