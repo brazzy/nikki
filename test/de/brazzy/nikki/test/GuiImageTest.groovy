@@ -70,8 +70,9 @@ class GuiImageTest extends GuiTest {
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
         
-        Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        Image image = addImage(DAY1, IMAGE1)
+        
         view.dayList.selectedIndex = 0
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
@@ -105,12 +106,14 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, "a"+IMAGE2)
         Image image3 = addImage(DAY1, "b"+IMAGE2)
         Image image4 = addImage(DAY1, "c"+IMAGE2)
         image1.modified = false
+        def time_diff = (image1.time.millis-wpf.waypoints[1].timestamp.millis)/1000
         
         view.dayList.selectedIndex = 0
         
@@ -120,7 +123,7 @@ class GuiImageTest extends GuiTest {
         assertEquals("testDescription", editor.textArea.text)
         assertEquals(IMAGE1, editor.filename.text)
         assertEquals(FORMAT_TIME.print(image1.time), editor.time.text)
-        assertEquals("0", editor.timeDiff.text)
+        assertEquals(time_diff as String, editor.timeDiff.text)
         assertEquals(image1.waypoint.latitude.toString(), editor.latitude.text)
         assertEquals(image1.waypoint.longitude.toString(), editor.longitude.text)
         assertTrue(editor.export.selected)
@@ -162,7 +165,7 @@ class GuiImageTest extends GuiTest {
         view.imageTable.editCellAt(3,0)
         editor = view.imageTable.editorComponent
         assertEquals(FORMAT_TIME.print(image3.time), editor.time.text)
-        assertEquals("-2", editor.timeDiff.text)
+        assertEquals(time_diff-2 as String, editor.timeDiff.text)
     }
     
     public void testImageSort() {
@@ -241,7 +244,7 @@ class GuiImageTest extends GuiTest {
     private assertImageName(int index, String name){
         view.imageTable.editCellAt(index,0)
         def editor = view.imageTable.editorComponent
-        assertEquals(name, editor.filename.text)        
+        assertEquals(name, editor.filename.text)
     }
     
     public void testAutoCommit() {
@@ -338,11 +341,11 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         
         Image image1 = addImage(DAY1, IMAGE2)
         Image image2 = addImage(DAY1, IMAGE1)
         Image image3 = addImage(DAY1, "dummy")
-        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         image1.export = false
         image1.waypoint = null
         image2.export = false
@@ -372,21 +375,13 @@ class GuiImageTest extends GuiTest {
         editor = view.imageTable.editorComponent
         assertFalse(editor.export.enabled)
         assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_LOCKED_TOOLTIP)
-        
-        dialogs.add(null)
-        view.tagButton.actionListeners[0].actionPerformed()
-        assertTrue(dialogs.isQueueEmpty())
-        view.imageTable.editCellAt(0,0)
-        editor = view.imageTable.editorComponent        
-        
-        assertTrue(editor.export.enabled)
-        assertEquals(editor.export.toolTipText, Texts.Image.EXPORT_TOOLTIP)
     }
     
     public void testAutoSelectExport() {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
@@ -445,10 +440,10 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        WaypointFile wpf = addWaypointFile(DAY2, "dummy")
         
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
-        WaypointFile wpf = addWaypointFile(DAY2, "dummy")
         image1.export = false
         image2.export = false
         image2.waypoint = null

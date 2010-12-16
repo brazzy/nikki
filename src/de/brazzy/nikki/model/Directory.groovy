@@ -51,7 +51,7 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
     Map<String, WaypointFile> waypointFiles = [:]
     
     /** All Waypoints found in this directory */
-    SortedSet<Waypoint> waypoints = new TreeSet()
+    SortedSet<Waypoint> waypoints = new TreeSet<Waypoint>()
     
     /**
      * This directory's filesystem path.

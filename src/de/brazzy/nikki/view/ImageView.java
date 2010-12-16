@@ -71,12 +71,12 @@ public class ImageView extends JPanel {
     private JTextField timeDiff = new JTextField();
     private JTextField latitude = new JTextField();
     private JTextField longitude = new JTextField();
-    private JButton offsetFinder = new JButton(new ImageIcon(ImageView.class
-            .getResource("/icons/find.png")));
-    private JButton copy = new JButton(new ImageIcon(ImageView.class
-            .getResource("/icons/page_copy.png")));
-    private JButton paste = new JButton(new ImageIcon(ImageView.class
-            .getResource("/icons/paste_plain.png")));
+    private JButton offsetFinder = new JButton(new ImageIcon(
+            ImageView.class.getResource("/icons/find.png")));
+    private JButton copy = new JButton(new ImageIcon(
+            ImageView.class.getResource("/icons/page_copy.png")));
+    private JButton paste = new JButton(new ImageIcon(
+            ImageView.class.getResource("/icons/paste_plain.png")));
     private JCheckBox export = new JCheckBox(Texts.Image.EXPORT);
 
     private Image[] clipboard;
@@ -122,74 +122,77 @@ public class ImageView extends JPanel {
         grid.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-        layout
-                .setHorizontalGroup(layout
-                        .createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(
-                                layout.createSequentialGroup().addComponent(
-                                        title).addComponent(export))
-                        .addGroup(
-                                layout
-                                        .createSequentialGroup()
-                                        .addGroup(
-                                                layout
-                                                        .createParallelGroup(
-                                                                GroupLayout.Alignment.LEADING)
-                                                        .addComponent(
-                                                                filenameLabel)
-                                                        .addComponent(
-                                                                latitudeLabel))
-                                        .addGroup(
-                                                layout
-                                                        .createParallelGroup(
-                                                                GroupLayout.Alignment.LEADING)
-                                                        .addComponent(filename)
-                                                        .addComponent(latitude))
-                                        .addGroup(
-                                                layout
-                                                        .createParallelGroup(
-                                                                GroupLayout.Alignment.LEADING)
-                                                        .addComponent(timeLabel)
-                                                        .addComponent(
-                                                                longitudeLabel))
-                                        .addGroup(
-                                                layout
-                                                        .createParallelGroup(
-                                                                GroupLayout.Alignment.LEADING)
-                                                        .addGroup(
-                                                                layout
-                                                                        .createSequentialGroup()
-                                                                        .addComponent(
-                                                                                time)
-                                                                        .addComponent(
-                                                                                timeDiff)
-                                                                        .addComponent(
-                                                                                copy)
-                                                                        .addComponent(
-                                                                                paste))
-                                                        .addGroup(
-                                                                layout
-                                                                        .createSequentialGroup()
-                                                                        .addComponent(
-                                                                                longitude)
-                                                                        .addComponent(
-                                                                                offsetFinder))))
-                        .addComponent(scrollPane));
-        layout.setVerticalGroup(layout.createSequentialGroup().addGroup(
-                layout.createParallelGroup().addComponent(title,
-                        (int) title.getPreferredSize().getHeight(),
-                        (int) title.getPreferredSize().getHeight(),
-                        (int) title.getPreferredSize().getHeight())
-                        .addComponent(export)).addGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(filenameLabel).addComponent(filename)
-                        .addComponent(timeLabel).addComponent(time)
-                        .addComponent(timeDiff).addComponent(copy)
-                        .addComponent(paste)).addGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(latitudeLabel).addComponent(latitude)
-                        .addComponent(longitudeLabel).addComponent(longitude)
-                        .addComponent(offsetFinder)).addComponent(scrollPane));
+        layout.setHorizontalGroup(layout
+                .createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(
+                        layout.createSequentialGroup().addComponent(title)
+                                .addComponent(export))
+                .addGroup(
+                        layout.createSequentialGroup()
+                                .addGroup(
+                                        layout.createParallelGroup(
+                                                GroupLayout.Alignment.LEADING)
+                                                .addComponent(filenameLabel)
+                                                .addComponent(latitudeLabel))
+                                .addGroup(
+                                        layout.createParallelGroup(
+                                                GroupLayout.Alignment.LEADING)
+                                                .addComponent(filename)
+                                                .addComponent(latitude))
+                                .addGroup(
+                                        layout.createParallelGroup(
+                                                GroupLayout.Alignment.LEADING)
+                                                .addComponent(timeLabel)
+                                                .addComponent(longitudeLabel))
+                                .addGroup(
+                                        layout.createParallelGroup(
+                                                GroupLayout.Alignment.LEADING)
+                                                .addGroup(
+                                                        layout.createSequentialGroup()
+                                                                .addComponent(
+                                                                        time)
+                                                                .addComponent(
+                                                                        timeDiff)
+                                                                .addComponent(
+                                                                        copy)
+                                                                .addComponent(
+                                                                        paste))
+                                                .addGroup(
+                                                        layout.createSequentialGroup()
+                                                                .addComponent(
+                                                                        longitude)
+                                                                .addComponent(
+                                                                        offsetFinder))))
+                .addComponent(scrollPane));
+        layout.setVerticalGroup(layout
+                .createSequentialGroup()
+                .addGroup(
+                        layout.createParallelGroup()
+                                .addComponent(
+                                        title,
+                                        (int) title.getPreferredSize()
+                                                .getHeight(),
+                                        (int) title.getPreferredSize()
+                                                .getHeight(),
+                                        (int) title.getPreferredSize()
+                                                .getHeight())
+                                .addComponent(export))
+                .addGroup(
+                        layout.createParallelGroup(
+                                GroupLayout.Alignment.BASELINE)
+                                .addComponent(filenameLabel)
+                                .addComponent(filename).addComponent(timeLabel)
+                                .addComponent(time).addComponent(timeDiff)
+                                .addComponent(copy).addComponent(paste))
+                .addGroup(
+                        layout.createParallelGroup(
+                                GroupLayout.Alignment.BASELINE)
+                                .addComponent(latitudeLabel)
+                                .addComponent(latitude)
+                                .addComponent(longitudeLabel)
+                                .addComponent(longitude)
+                                .addComponent(offsetFinder))
+                .addComponent(scrollPane));
         filename.setEditable(false);
         time.setEditable(false);
         timeDiff.setEditable(false);
@@ -212,9 +215,9 @@ public class ImageView extends JPanel {
                 value.offsetFinder(tmpOut);
                 dialogs.open(tmpFile);
             } catch (Exception ex) {
-                dialogs.error(ex.getMessage());
                 Logger.getLogger(ImageView.class).error(
                         "Failed to create offset finder", ex);
+                dialogs.error(ex.getMessage());
             } finally {
                 try {
                     tmpOut.close();

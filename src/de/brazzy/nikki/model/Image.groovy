@@ -140,9 +140,6 @@ class Image implements Serializable{
      * to allow choosing a more correct offset for geotagging.
      */
     public void offsetFinder(OutputStream out) {
-        if(!waypoint) {
-            geotag()
-        }
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
         
