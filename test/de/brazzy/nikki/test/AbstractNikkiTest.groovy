@@ -42,6 +42,7 @@ import org.joda.time.format.ISODateTimeFormat
  */
 class AbstractNikkiTest extends GroovyTestCase {
     public static final DateTimeZone TZ_BERLIN = DateTimeZone.forID("Europe/Berlin")
+    public static final DateTimeZone TZ_STOCKHOLM = DateTimeZone.forID("Europe/Stockholm")
     public static final DateTimeZone TZ_DARWIN = DateTimeZone.forID("Australia/Darwin")
     public static final DateTimeZone TZ_BRISBANE = DateTimeZone.forID("Australia/Brisbane")
     protected static final DateTimeZone ZONE = TZ_DARWIN
@@ -80,7 +81,7 @@ class AbstractNikkiTest extends GroovyTestCase {
         
         File f = new File(tmpDir.path, name)
         def stream = new FileOutputStream(f)
-        IOUtils.copy(DirectoryTest.class.getResourceAsStream(name),
+        IOUtils.copy(AbstractNikkiTest.class.getResourceAsStream(name),
                 stream)
         stream.close()
         f.deleteOnExit()

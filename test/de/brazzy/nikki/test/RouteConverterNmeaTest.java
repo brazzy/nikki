@@ -50,14 +50,25 @@ public class RouteConverterNmeaTest {
         cal.set(Calendar.HOUR_OF_DAY, 5);
         cal.set(Calendar.MINUTE, 9);
         cal.set(Calendar.SECOND, 4);
-        assertEquals(format.format(cal.getTime()), format.format(pos.getTime()
-                .getTime()));
+        assertEquals(format.format(cal.getTime()),
+                format.format(pos.getTime().getTime()));
+    }
+
+    @Test
+    public void nmeaRead() throws Exception {
+        NmeaFormat fmt = new NmeaFormat();
+        assertEquals(
+                1,
+                fmt.read(
+                        AbstractNikkiTest.class
+                                .getResourceAsStream("auto_geotag1.nmea"))
+                        .size());
     }
 
     private static NmeaPosition parse(String data)
             throws UnsupportedEncodingException, IOException {
-        ByteArrayInputStream input = new ByteArrayInputStream(data
-                .getBytes("US-ASCII"));
+        ByteArrayInputStream input = new ByteArrayInputStream(
+                data.getBytes("US-ASCII"));
         List<NmeaRoute> routes = new NmeaFormat().read(input);
         assertEquals(1, routes.size());
         List<NmeaPosition> positions = routes.get(0).getPositions();

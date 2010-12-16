@@ -24,10 +24,13 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Seconds;
 
+import slash.navigation.nmea.NmeaFormat;
+
 import de.brazzy.nikki.model.Directory;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.ConfirmResult;
+import de.brazzy.nikki.util.TimezoneFinder;
 import de.brazzy.nikki.view.GeotagOptions;
 import de.brazzy.nikki.view.ScanOptions;
 
@@ -182,23 +185,26 @@ class GuiDirDayTest extends GuiTest {
     }
     
     public void testGeotag() {
+        nikki.timezoneFinder = new TimezoneFinder(TimezoneFinder.class
+                .getResourceAsStream("timezones.dat"))
         copyFile("auto_geotag.jpg")
         copyFile("auto_geotag1.nmea")
         model.add(tmpDir)
-        dialogs.add(TZ_BERLIN)
+        dialogs.add(TZ_STOCKHOLM)
         view.dirList.selectedIndex = 0
         
-        def img = model[0].images["auto_geotag.jpg"]
-        assertEquals(TZ_BERLIN, img.waypoint.timestamp.zone)
-        assertEquals(1, model[0].size)
-        assertEquals(new LocalDate(2010,7,22), model[0][0].date)
+        def img = tmpDir.images["auto_geotag.jpg"]
+        assertEquals(1, tmpDir.size)
+        assertEquals(TZ_STOCKHOLM, img.waypoint.timestamp.zone)
+        assertEquals(new LocalDate(2010,7,22), tmpDir[0].date)
         
         copyFile("auto_geotag2.nmea")
         view.scanButton.actionListeners[0].actionPerformed()
         
+        assertEquals(2, tmpDir.size)
         assertEquals(TZ_DARWIN, img.waypoint.timestamp.zone)
-        assertEquals(1, model[0].size)
-        assertEquals(new LocalDate(2010,7,23), model[0][0].date)
+        assertEquals(new LocalDate(2010,7,23), tmpDir[1].date)
+        assertSame(tmpDir[1], img.day)
     }
     
     public void testExport() {
@@ -207,8 +213,8 @@ class GuiDirDayTest extends GuiTest {
         view.dirList.selectedIndex = 0
         
         copyFile(IMAGE1)
-        Image image = addImage(DAY1, IMAGE1)
         WaypointFile wpf = addWaypointFile(DAY1, "dummy")
+        Image image = addImage(DAY1, IMAGE1)
         view.dayList.selectedIndex = 0
         
         assertEquals(1, tmpDir.path.list().length)
