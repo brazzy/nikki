@@ -179,6 +179,10 @@ class Image implements Serializable{
      * @param offset to adjust for incorrectly set camera time
      */
     public void geotag(ReadablePeriod offset = Seconds.seconds(0), SortedSet<Waypoint> waypoints) {
+        if(!this.time){
+            return;
+        }
+        
         def imagetime = this.time.plus(offset)
         Waypoint imageTimestamp = new Waypoint(timestamp: imagetime)
         def beforeSet = waypoints.headSet(imageTimestamp)
