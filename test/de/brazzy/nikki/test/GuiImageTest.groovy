@@ -172,6 +172,8 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        addWaypointFile(DAY1, "dummy")
+        addWaypointFile(DAY2, "dummy")
         
         Image image1_c7 = addImage(DAY1, "c",7)
         Image image1_b9 = addImage(DAY1, "b",9)
@@ -251,6 +253,7 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        addWaypointFile(DAY1, "dummy")
         
         copyFile(IMAGE1)
         Image image = addImage(DAY1, IMAGE1)
@@ -275,6 +278,7 @@ class GuiImageTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        addWaypointFile(DAY1, "dummy")
         
         Image imageWithDate = addImage(DAY1, IMAGE1)
         Image imageNoDate = addImage(null, NO_EXIF)

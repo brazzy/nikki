@@ -122,6 +122,14 @@ class GuiDirDayTest extends GuiTest {
     }
     
     public void testScanSaveRescan() {
+        def finder = new MockTimezoneFinder()
+        finder.addCall(Float.NaN,Float.NaN,TZ_DARWIN)
+        finder.addCall(Float.NaN,Float.NaN,TZ_DARWIN)
+        finder.addCall(Float.NaN,Float.NaN,TZ_BERLIN)
+        finder.addCall(Float.NaN,Float.NaN,TZ_BERLIN)
+        nikki.timezoneFinder = finder
+        
+        
         model.add(tmpDir)
         assertEquals(tmpDir.path.name + " (0, 0)", model[0].toString())
         copyFile(IMAGE1)
@@ -132,9 +140,9 @@ class GuiDirDayTest extends GuiTest {
         view.dirList.selectedIndex = 0
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(1, tmpDir.size())
-        assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].time.zone)
+        assertEquals(TZ_DARWIN, tmpDir.images[IMAGE1].waypoint.timestamp.zone)
         assertEquals(tmpDir.path.name + " (1, 1)", model[0].toString())
-        assertEquals(DATE1+" (1, 3)", tmpDir[0].toString())
+        assertEquals(DATE1+" (1, 2)", tmpDir[0].toString())
         assertEquals(0, view.dayList.selectedIndex)
         
         assertEquals(2, tmpDir.path.list().length)
@@ -153,6 +161,7 @@ class GuiDirDayTest extends GuiTest {
         
         dialogs.add(null)
         view.dirList.selectedIndex = 0
+        finder.finished()
         assertTrue(dialogs.isQueueEmpty())
         assertEquals(0, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
@@ -167,10 +176,10 @@ class GuiDirDayTest extends GuiTest {
         dialogs.add(TZ_BERLIN)
         view.scanButton.actionListeners[0].actionPerformed()
         assertEquals(2, tmpDir.size())
-        assertEquals(TZ_DARWIN, tmpDir.images[otherFile.name].time.zone)
-        assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].time.zone)
+        assertEquals(TZ_DARWIN, tmpDir.images[otherFile.name].waypoint.timestamp.zone)
+        assertEquals(TZ_BERLIN, tmpDir.images[IMAGE2].waypoint.timestamp.zone)
         assertEquals(tmpDir.path.name + " (3, 1)", model[0].toString())
-        assertEquals(DATE1+" (2, 1)", tmpDir[0].toString())
+        assertEquals(DATE1+" (2, 0)", tmpDir[0].toString())
         assertEquals(DATE2+" (1, 2)", tmpDir[1].toString())
         
         assertEquals(1, view.dayList.selectedIndex)
@@ -255,6 +264,7 @@ class GuiDirDayTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        addWaypointFile(DAY1, "dummy")
         
         Image image = addImage(DAY1, IMAGE1)
         assertTrue(image.export)
@@ -274,6 +284,7 @@ class GuiDirDayTest extends GuiTest {
         ensureTmpDir()
         model.add(tmpDir)
         view.dirList.selectedIndex = 0
+        WaypointFile wpf = addWaypointFile(DAY1, "dummy")
         
         Image image1 = addImage(DAY1, IMAGE1)
         Image image2 = addImage(DAY1, IMAGE2)
@@ -324,6 +335,7 @@ class GuiDirDayTest extends GuiTest {
     public void testExportError() {
         copyFile(IMAGE1)
         model.add(tmpDir)
+        addWaypointFile(DAY1, "dummy")
         Image image = addImage(DAY1, IMAGE1)
         view.dirList.selectedIndex = 0
         
@@ -334,7 +346,7 @@ class GuiDirDayTest extends GuiTest {
         dialogs.add(new File(tmpDir.path.absolutePath+"_doesnt_exist", "export.kmz"))
         dialogs.add("error");
         view.exportButton.actionListeners[0].actionPerformed()
-        assertTrue(logContains("_doesnt_exist"));
         assertTrue(dialogs.isQueueEmpty())
+        assertTrue(logContains("_doesnt_exist"));
     }
 }

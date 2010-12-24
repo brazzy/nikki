@@ -81,15 +81,15 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
-        Image image = addImage(DAY1, IMAGE1)
         WaypointFile file = addWaypointFile(DAY1, WAYPOINTS1)
+        Image image = addImage(DAY1, IMAGE1)
         Day day1 = tmpDir[0] 
         
         assertEquals(1, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size())
-        assertEquals(3, day1.waypoints.size())
+        assertEquals(2, day1.waypoints.size())
         
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
@@ -99,7 +99,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(1, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size())
-        assertEquals(3, day1.waypoints.size())
+        assertEquals(2, day1.waypoints.size())
         
         scanner.zone = ZONE
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
@@ -109,7 +109,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         
         assertEquals(DAY1, day1.date)
         assertSame(day1.directory, tmpDir)
-        assertEquals(3, day1.waypoints.size())
+        assertEquals(2, day1.waypoints.size())
         assertSame(file.waypoints[0], day1.waypoints.first())
         assertSame(file.waypoints[1], day1.waypoints.headSet(day1.waypoints.last()).last())
         
@@ -150,10 +150,10 @@ class DirectoryScannerTest extends AbstractNikkiTest {
     public void testRescanRemove() {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS2)
-        Image image1 = addImage(DAY1, IMAGE1)
-        Image image2 = addImage(DAY2, IMAGE2)
         WaypointFile file1 = addWaypointFile(DAY1, WAYPOINTS1)
         WaypointFile file2 = addWaypointFile(DAY2, WAYPOINTS2)
+        Image image1 = addImage(DAY1, IMAGE1)
+        Image image2 = addImage(DAY2, IMAGE2)
         Day day1 = tmpDir[0] 
         Day day2 = tmpDir[1] 
         
@@ -161,9 +161,9 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
         assertEquals(1, day1.images.size)
-        assertEquals(3, day1.waypoints.size())
+        assertEquals(2, day1.waypoints.size())
         assertEquals(1, day2.images.size)
-        assertEquals(3, day2.waypoints.size())
+        assertEquals(2, day2.waypoints.size())
         
         scanner.zone = ZONE
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
@@ -174,8 +174,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(1, tmpDir.waypointFiles.size())
         assertSame(file2, tmpDir.waypointFiles.values().iterator().next())
         assertEquals(1, day1.images.size)
-        assertEquals(1, day1.waypoints.size())
-        assertSame(day1.images[0].waypoint, day1.waypoints.first())
+        assertEquals(0, day1.waypoints.size())
         assertEquals(0, day2.images.size)
         assertEquals(2, day2.waypoints.size())
         assertEquals(day2.waypoints as Set, file2.waypoints as Set)
@@ -197,7 +196,6 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         scanner.scan(tmpDir, null)
         assertNotNull(tmpDir.path.list())
         assertEquals(0, tmpDir.size);
-        
     }
     
     public void testSubdirectory() {
@@ -211,7 +209,6 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         scanner.scan(tmpDir, null)
         assertEquals(3, tmpDir.path.list().length)
         assertEquals(1, tmpDir.size);
-        
     }
     
     public void testParseWaypointFile() {
@@ -252,6 +249,6 @@ class DirectoryScannerTest extends AbstractNikkiTest {
     public void testTimezoneShift() {
         assertEquals(1000*60*60*2, TZ_2.getStandardOffset(0))
         assertEquals(new DateTime(2009, 7, 27, 7, 12, 32, 0, DateTimeZone.UTC).toInstant(),
-                new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2).toInstant())  
+                new DateTime(2009, 7, 27, 7+2, 12, 32, 0, TZ_2).toInstant())
     }
 }

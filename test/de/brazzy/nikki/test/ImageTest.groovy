@@ -152,14 +152,14 @@ class ImageTest extends AbstractNikkiTest{
     }
     
     public void testSaveImage() {
-        def IMAGE_INDEX = 5;
+        def IMAGE_INDEX = 2;
         copyFile(IMAGE2)
         long baseTime = System.currentTimeMillis()-10000000
         File file = new File(tmpDir.path, IMAGE2)
         assertTrue(file.setLastModified(baseTime))
+        addWaypointFile(DAY2, "dummy");
         
         Image image = addImage(DAY2, IMAGE2)
-        image.waypoint = constructWaypoint(image.day, IMAGE_INDEX);
         
         assertTrue(file.lastModified() == baseTime)
         image.save(tmpDir.path)
@@ -243,20 +243,22 @@ class ImageTest extends AbstractNikkiTest{
     }
     
     public void testCoordinatePrecision() {
-        double start = 12.38599967956543;
+        double start = 12.38599967956543
         Entry e = ImageWriter.writeGpsMagnitude(start)
         double end = ImageReader.readGpsMagnitude(e)
         assert Math.abs(start-end) < 0.00001d
     }
     
     public void testCopyPasteTime() {
+        addWaypointFile(DAY1, "dummy")
+        addWaypointFile(DAY2, "dummy")
         Image imageWithDate = addImage(DAY1, IMAGE1)
         Image imageNoDate1 = addImage(null, NO_EXIF)
         Image imageNoDate2 = addImage(null, IMAGE2)
         imageNoDate1.modified = false
         imageNoDate2.modified = false
         
-        assertEquals(2, tmpDir.getSize())
+        assertEquals(3, tmpDir.getSize())
         assertEquals(null, tmpDir[0].date)
         assertEquals(2, tmpDir[0].images.size())
         assertSame(imageNoDate1, tmpDir[0].images[1])
