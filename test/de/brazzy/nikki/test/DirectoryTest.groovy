@@ -198,7 +198,7 @@ public class DirectoryTest extends AbstractNikkiTest {
     latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 10),
     longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10))
     
-    public void testAddImage(){
+    public void testAddImageUntagged(){
         def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H)
         def imageEurope = new Image(fileName:IMAGE2, time:TIME_UTC_20H.plusMinutes(2))
         
@@ -207,6 +207,17 @@ public class DirectoryTest extends AbstractNikkiTest {
         
         assertEquals(new LocalDate(2010,1,2), tmpDir.addImage(imageAustralia).date)
         assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageEurope).date)
+    }
+    
+    public void testAddImageTagged(){
+        def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H)
+        imageAustralia.waypoint = WP_AUSTRALIA
+        
+        tmpDir.addWaypoint(WP_EUROPE)
+        
+        tmpDir.addImage(imageAustralia)
+        assertSame(WP_AUSTRALIA, imageAustralia.waypoint)
+        assertEquals(new LocalDate(2010,1,2), imageAustralia.day.date)
     }
     
     public void testGeotag(){
