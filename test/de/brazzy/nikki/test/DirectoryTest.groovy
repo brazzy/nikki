@@ -122,6 +122,12 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertSame(day2, tmpDir[2])
         assertSame(dayX, tmpDir[0])
         
+        def it = tmpDir.iterator()
+        assertSame(dayX, it.next())
+        assertSame(day1, it.next())
+        assertSame(day2, it.next())
+        assertFalse(it.hasNext())
+        
         try {
             tmpDir.add(null)
             fail("added null")

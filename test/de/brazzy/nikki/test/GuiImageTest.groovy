@@ -117,6 +117,8 @@ class GuiImageTest extends GuiTest {
         
         view.dayList.selectedIndex = 0
         
+        assertNotNull(view.imageTable.getCellRenderer(0,0))
+        
         view.imageTable.editCellAt(0,0)
         def editor = view.imageTable.editorComponent
         assertEquals("testTitle", editor.title.text)

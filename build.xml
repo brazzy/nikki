@@ -126,6 +126,7 @@
             <fileset dir="${cobertura.instrument.dir}">
                 <include name="**/*.class"/>
                 <exclude name="**/Dialogs.class"/>
+                <exclude name="**/Dialogs$*"/>
                 <exclude name="**/Launcher.class"/>
             </fileset>
         </cobertura-instrument>

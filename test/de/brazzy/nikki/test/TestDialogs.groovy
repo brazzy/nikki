@@ -67,6 +67,7 @@ class TestDialogs extends Dialogs{
     
     @Override
     public void registerWorker(NikkiWorker worker) {
+        assert worker.header != null
         worker.doInBackground()
         worker.done()
     }
