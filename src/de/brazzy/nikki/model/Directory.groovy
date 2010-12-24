@@ -72,8 +72,11 @@ class Directory extends ListDataModel<Day> implements Comparable<Directory> {
         if(waypoints && !image.waypoint){
             image.geotag(waypoints)
         }
-        
-        def date = image.waypoint?.timestamp?.toLocalDate()
+        def timestamp = image.time
+        if(image.waypoint?.timestamp?.zone){
+            timestamp = timestamp?.withZone(image.waypoint?.timestamp?.zone)
+        }
+        def date = timestamp?.toLocalDate()
         def day = getDay(date)
         if(!day) {
             day = new Day(date:date, directory: this)

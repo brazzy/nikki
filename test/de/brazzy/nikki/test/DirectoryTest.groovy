@@ -190,7 +190,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         assertFalse(tmpDir.modified)
     }
     
-    def TIME_UTC_20H = new DateTime(2010,1,1,20,0,0,0,DateTimeZone.UTC)
+    def TIME_UTC_20H = new DateTime(2010,1,10,20,0,0,0,DateTimeZone.UTC)
     def WP_AUSTRALIA = new Waypoint(timestamp: TIME_UTC_20H.withZone(TZ_BRISBANE),
     latitude: new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 10),
     longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 10))
@@ -205,8 +205,19 @@ public class DirectoryTest extends AbstractNikkiTest {
         tmpDir.addWaypoint(WP_AUSTRALIA)
         tmpDir.addWaypoint(WP_EUROPE)
         
-        assertEquals(new LocalDate(2010,1,2), tmpDir.addImage(imageAustralia).date)
-        assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageEurope).date)
+        assertEquals(new LocalDate(2010,1,10), tmpDir.addImage(imageEurope).date)
+        assertEquals(new LocalDate(2010,1,11), tmpDir.addImage(imageAustralia).date)
+    }
+    
+    public void testAddImageDifferentDay(){
+        def imageAustralia = new Image(fileName:IMAGE1, time: TIME_UTC_20H.minusDays(3))
+        def imageEurope = new Image(fileName:IMAGE2, time:TIME_UTC_20H.plusMinutes(2).plusDays(1))
+        
+        tmpDir.addWaypoint(WP_AUSTRALIA)
+        tmpDir.addWaypoint(WP_EUROPE)
+        
+        assertEquals(new LocalDate(2010,1,11), tmpDir.addImage(imageEurope).date)
+        assertEquals(new LocalDate(2010,1,8), tmpDir.addImage(imageAustralia).date)
     }
     
     public void testAddImageTagged(){
@@ -217,7 +228,7 @@ public class DirectoryTest extends AbstractNikkiTest {
         
         tmpDir.addImage(imageAustralia)
         assertSame(WP_AUSTRALIA, imageAustralia.waypoint)
-        assertEquals(new LocalDate(2010,1,2), imageAustralia.day.date)
+        assertEquals(new LocalDate(2010,1,11), imageAustralia.day.date)
     }
     
     public void testGeotag(){
@@ -225,13 +236,13 @@ public class DirectoryTest extends AbstractNikkiTest {
         
         tmpDir.addWaypoint(WP_EUROPE)
         tmpDir.geotag()
-        assertEquals(new LocalDate(2010,1,1), tmpDir.addImage(imageAustralia).date)
+        assertEquals(new LocalDate(2010,1,10), tmpDir.addImage(imageAustralia).date)
         assertSame(WP_EUROPE, imageAustralia.waypoint)
         
         tmpDir.addWaypoint(WP_AUSTRALIA)
         tmpDir.geotag()
         assertSame(WP_AUSTRALIA, imageAustralia.waypoint)
-        assertEquals(new LocalDate(2010,1,2), imageAustralia.day.date)
+        assertEquals(new LocalDate(2010,1,11), imageAustralia.day.date)
     }
 }
 
