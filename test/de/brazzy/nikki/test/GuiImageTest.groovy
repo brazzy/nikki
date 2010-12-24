@@ -123,7 +123,7 @@ class GuiImageTest extends GuiTest {
         assertEquals("testDescription", editor.textArea.text)
         assertEquals(IMAGE1, editor.filename.text)
         assertEquals(FORMAT_TIME.print(image1.time), editor.time.text)
-        assertEquals(time_diff as String, editor.timeDiff.text)
+        assertEquals(String.valueOf(time_diff.intValue()), editor.timeDiff.text)
         assertEquals(image1.waypoint.latitude.toString(), editor.latitude.text)
         assertEquals(image1.waypoint.longitude.toString(), editor.longitude.text)
         assertTrue(editor.export.selected)

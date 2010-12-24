@@ -27,8 +27,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
-
 import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
