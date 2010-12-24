@@ -216,7 +216,6 @@ class Image implements Serializable{
         
         if(result.timestamp!=waypoint?.timestamp) {
             waypoint = result
-            time = time.withZone(result.timestamp.zone)
             modified = true
         }
     }

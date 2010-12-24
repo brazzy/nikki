@@ -47,6 +47,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         copyFile(WAYPOINTS1)
         
         assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        scanner.finder.finished()
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
         assertEquals(1, tmpDir.size())
@@ -55,16 +56,16 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         Image image = day.images[0]
         
         assertSame(tmpDir, day.directory)
-        assertEquals(3, day.waypoints.size())
+        assertEquals(2, day.waypoints.size())
         assertEquals(1, day.images.size())
         assertSame(day.images[0], tmpDir.images[IMAGE1])
         assertSame(day.waypoints.first(), 
                 tmpDir.waypointFiles[WAYPOINTS1].waypoints[0])
-        assertSame(day.waypoints.headSet(day.waypoints.last()).last(), 
+        assertSame(day.waypoints.last(), 
                 tmpDir.waypointFiles[WAYPOINTS1].waypoints[1])
-        assertSame(day.waypoints.last(), image.waypoint)
+        assertFalse(day.waypoints.contains(image.waypoint))
         assertEquals(DAY1, day.date)
-        assertEquals(DATE1+" (1, 3)", day.toString())
+        assertEquals(DATE1+" (1, 2)", day.toString())
         
         assertEquals(IMAGE1, image.fileName)
         assertEquals("Überschrift", image.title)
@@ -95,6 +96,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         copyFile(WAYPOINTS2)
         
         assertEquals(ScanResult.TIMEZONE_MISSING, scanner.scan(tmpDir, null))
+        scanner.finder.finished()
         assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
@@ -111,7 +113,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertSame(day1.directory, tmpDir)
         assertEquals(2, day1.waypoints.size())
         assertSame(file.waypoints[0], day1.waypoints.first())
-        assertSame(file.waypoints[1], day1.waypoints.headSet(day1.waypoints.last()).last())
+        assertSame(file.waypoints[1], day1.waypoints.last())
         
         assertEquals(1, day1.images.size())
         Image image1 = day1.images[0]
@@ -125,9 +127,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         Waypoint wp = image1.waypoint
         assertNotNull(wp)
         assertEquals(day1, wp.day)
-        assertEquals(TIME1, wp.timestamp)
-        assertEquals(-5d, wp.latitude.value, 0.001)
-        assertEquals(25d, wp.longitude.value, 0.001)
+        assertSame(file.waypoints[1], wp)
         
         Day day2 = tmpDir[1]
         
@@ -137,7 +137,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(IMAGE2, image2.fileName)
         assertNull(image2.title)
         assertNull(image2.description)
-        assertNull(image2.waypoint)
+        assertSame(tmpDir.waypointFiles[WAYPOINTS2].waypoints[0], image2.waypoint)
         assertFalse(image2.export)
         assertNotNull(image2.thumbnail)
         assertSame(day2, image2.day)
