@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
   spec="1.5+"
-  codebase="http://github.com/downloads/brazzy/nikki/"
+  codebase="http://cloud.github.com/downloads/brazzy/nikki/" 
   href="Nikki_@@RELEASE_ID@@.jnlp">
   <information>
     <title>Nikki</title>
     <vendor>Michael Borgwardt</vendor>
     <homepage href="http://www.brazzy.de/nikki/"/>
     <description>GPS Photo diary - standalone Java app, geotagging, export to KMZ</description>
-    <icon href="http://github.com/downloads/brazzy/nikki_libs/logo_splash.png" kind="splash"/>
-	<icon href="http://github.com/downloads/brazzy/nikki_libs/logo_64.gif" width="64" height="64"/>
-	<icon href="http://github.com/downloads/brazzy/nikki_libs/logo_32.gif" width="32" height="32"/>   
-	<icon href="http://github.com/downloads/brazzy/nikki_libs/logo_16.gif" width="16" height="16"/>      
+    <icon href="http://cloud.github.com/downloads/brazzy/nikki_libs/logo_splash.png" kind="splash"/>
+	<icon href="http://cloud.github.com/downloads/brazzy/nikki_libs/logo_64.gif" width="64" height="64"/>
+	<icon href="http://cloud.github.com/downloads/brazzy/nikki_libs/logo_32.gif" width="32" height="32"/>   
+	<icon href="http://cloud.github.com/downloads/brazzy/nikki_libs/logo_16.gif" width="16" height="16"/>      
 	<offline-allowed/> 
     <shortcut online="false">
       <desktop/>
@@ -22,19 +22,19 @@
 		  <all-permissions/>
 	  </security>
   <resources>
-    <j2se version="1.5+" java-vm-args="-Xmx128m"/>
+    <j2se version="1.6+" java-vm-args="-Xmx128m"/>
     <jar href="Nikki_@@RELEASE_ID@@.jar"/>
-    <jar href="http://github.com/downloads/brazzy/nikki_libs/groovy-all-1.7.0.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/commons-io-1.4.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/java-image-scaling-0.8.4.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/JavaAPIforKml.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/jaxb-api.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/jaxb-impl.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/joda-time-1.6.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/mediautil-1.0_patched.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/jsi-1.0b2p1.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/trove-0.1.8.jar"/>
-	<jar href="http://github.com/downloads/brazzy/nikki_libs/RouteConverterCmdLine.jar"/>
+    <jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/groovy-all-1.7.0.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/commons-io-1.4.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/java-image-scaling-0.8.4.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/JavaAPIforKml.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/jaxb-api.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/jaxb-impl.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/joda-time-1.6.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/mediautil-1.0_patched.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/jsi-1.0b2p1.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/trove-0.1.8.jar"/>
+	<jar href="http://cloud.github.com/downloads/brazzy/nikki_libs/RouteConverterCmdLine.jar"/>
 	<property name="jnlp.packEnabled" value="true"/>
   </resources>
   <application-desc main-class="de.brazzy.nikki.Launcher"/>
