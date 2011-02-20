@@ -1,0 +1,52 @@
+<installation version="1.0">
+<info>
+	<appname>nikki</appname>
+	<appversion>${release.id}</appversion>
+	<url>http://www.brazzy.de/nikki/</url>
+	<authors>
+	   <author name="Michael Borgwardt" email="brazzy@gmail.com"/>
+	</authors>
+	<uninstaller/>
+	<javaversion>1.6</javaversion>
+	<requiresjdk>no</requiresjdk>
+	<webdir>http://cloud.github.com/downloads/brazzy/nikki_libs/</webdir>
+	<writeinstallationinformation>no</writeinstallationinformation>
+	<pack200/>
+</info>
+<locale>
+  <langpack iso3="eng"/>
+  <langpack iso3="deu"/>
+</locale>
+<resources>
+    <res id="LicensePanel.license" src="src/Nikki-LICENSE.txt"/>
+    <res id="InfoPanel.splash" src="src/icons/logo_splash.png"/>
+    <res id="InfoPanel.icon" src="src/icons/logo_64.gif"/>
+</resources>
+<panels>
+    <panel classname="HelloPanel"/>
+    <panel classname="LicencePanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="InstallPanel"/>
+</panels>
+<packs>
+  <pack name="Nikki" id="core" required="yes">
+    <description>Nikki application JARs</description>
+    <fileset dir="." targetdir="$INSTALL_PATH">
+      <include name="Nikki.jar" />
+      <include name="lib/RouteConverterCmdLine.jar.pack.gz" />
+      <include name="lib/trove-0.1.8.jar.pack.gz" />
+      <include name="lib/mediautil-1.0_patched.jar.pack.gz" />
+      <include name="lib/jsi-1.0b2p1.jar.pack.gz" />
+      <include name="lib/joda-time-1.6.jar.pack.gz" />
+      <include name="lib/jaxb-impl.jar.pack.gz" />
+      <include name="lib/jaxb-api.jar.pack.gz" />
+      <include name="lib/java-image-scaling-0.8.4.jar.pack.gz" />
+      <include name="lib/JavaAPIforKml.jar.pack.gz" />
+      <include name="lib/groovy-all-1.7.0.jar.pack.gz" />
+      <include name="lib/commons-io-1.4.jar.pack.gz" />
+    </fileset>
+
+    <executable targetfile="$INSTALL_PATH/nikki.jar" stage="never"/>
+  </pack>
+</packs>
+</installation>
