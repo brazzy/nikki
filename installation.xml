@@ -11,10 +11,22 @@
 	<requiresjdk>no</requiresjdk>
 	<webdir>http://cloud.github.com/downloads/brazzy/nikki_libs/</webdir>
 	<writeinstallationinformation>no</writeinstallationinformation>
+	<run-privileged/>
 	<pack200/>
 </info>
+	<guiprefs width="600" height="480" resizable="no">
+	<modifier key="useHeadingPanel" value="yes"/>
+	<modifier key="useHeadingForSummary" value="yes"/>
+	<modifier key="headingImageOnLeft" value="yes"/>
+	<modifier key="headingLineCount" value="2"/>
+	<modifier key="headingFontSize" value="1.5"/>
+	<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+	<modifier key="headingPanelCounter" value="text"/>
+	<modifier key="headingPanelCounterPos" value="inHeading"/>
+</guiprefs>
+
 <locale>
-  <langpack iso3="eng"/>
+  <langpack iso3="eng" />
   <langpack iso3="deu"/>
 </locale>
 <resources>

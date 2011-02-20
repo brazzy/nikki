@@ -12,6 +12,8 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="util/ant-contrib-1.0b3.jar"/>
     <typedef resource="org/jdesktop/deployment/ant/pack200/antlib.xml"
              classpath="util/deployment-ant-pack200-1.0-rc1.jar"/>
+	<taskdef name="IzPack" classname="com.izforge.izpack.ant.IzPackTask" 
+	         classpath="util/izpack_standalone-compiler.jar"/>
 
     <property environment="env"/>
     <property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
@@ -280,6 +282,7 @@
             <fileset file="${dist.dir}/Nikki_${release.id}.jar"/>
         	<mapper type="glob" from="*.jar" to="*.jar.pack.gz"/>
         </pack200 >
+		
     </target>
     
     <target name="prepare_dist_libs" depends="get_keystore_passwords">
@@ -298,6 +301,15 @@
             <mapper type="glob" from="*.jar" to="*.jar.pack.gz"/>
         </pack200 >
     </target>
+	
+	<target name="izpack">
+        <mkdir dir="${dist.dir}"/>
+		<IzPack input="installation.xml"
+		        output="${dist.dir}/IzPack-install.jar"
+		        installerType="standard"
+		        basedir="."
+		        IzPackDir="${dist.dir}/"/>
+	</target>
     
     <target name="findbugs" depends="build">
         <findbugs home="${findbugs.home}"
