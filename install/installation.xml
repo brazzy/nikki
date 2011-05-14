@@ -31,7 +31,7 @@
 <resources>
     <res id="LicencePanel.licence" src="src/Nikki-LICENSE.txt"/>
     <res id="InfoPanel.splash" src="src/icons/logo_splash.png"/>
-    <res id="InfoPanel.icon" src="src/icons/logo_64.gif"/>
+    <res id="shortcutSpec.xml" src="install/shortcutSpec.xml"/>
 </resources>
 <panels>
     <panel classname="HelloPanel"/>
@@ -50,7 +50,12 @@
     <fileset dir="/build" targetdir="$INSTALL_PATH">
       <include name="Nikki_@@RELEASE_ID@@.jar" />
     </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <include name="Nikki.bat" />
+      <include name="logo_32.ico" />
+    </fileset>
     <executable targetfile="$INSTALL_PATH/Nikki_@@RELEASE_ID@@.jar" stage="never"/>
   </pack>
 </packs>
+<native type="izpack" name="ShellLink.dll"/>
 </installation>

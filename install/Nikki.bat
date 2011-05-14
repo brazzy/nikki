@@ -1,0 +1,1 @@
+javaw -jar Nikki_*.jar

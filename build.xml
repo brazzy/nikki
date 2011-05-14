@@ -303,8 +303,9 @@
     </target>
 	
 	<target name="create_installer" depends="create_run_jar">
-        <copy file="installation.xml" tofile="build/installation.xml" />
+        <copy file="install/installation.xml" tofile="build/installation.xml" />
         <replace file="build/installation.xml" token="@@RELEASE_ID@@" value="${release.id}" />
+
 		<IzPack input="build/installation.xml"
 			    output="${dist.dir}/${release.file}-install.jar"
 		        installerType="standard"
