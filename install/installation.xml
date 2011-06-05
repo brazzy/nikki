@@ -52,6 +52,7 @@
     </fileset>
     <fileset dir="/install" targetdir="$INSTALL_PATH">
       <include name="Nikki.bat" />
+      <include name="Uninstall.bat" />
       <include name="logo_32.ico" />
     </fileset>
     <executable targetfile="$INSTALL_PATH/Nikki_@@RELEASE_ID@@.jar" stage="never"/>

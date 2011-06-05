@@ -9,11 +9,20 @@
     workingDirectory="$INSTALL_PATH"
     description="Start Nikki"
     iconFile="$INSTALL_PATH\logo_32.ico"
-    programGrou="yes"
+    programGroup="yes"
     initialState="noShow" 
-    desktop="yes" 
-    startMenu="yes">
-
+    desktop="yes">
+    <createForPack name="Nikki"/>
+  </shortcut>
+  <shortcut
+    name="Uninstall Nikki"
+    target="$INSTALL_PATH\Uninstall.bat"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Uninstall Nikki"
+    programGroup="yes"
+    initialState="noShow" 
+    desktop="no">
     <createForPack name="Nikki"/>
   </shortcut>
 </shortcuts>
