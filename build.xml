@@ -303,6 +303,7 @@
     </target>
 	
 	<target name="create_installer" depends="create_run_jar">
+        <mkdir dir="${dist.dir}"/>
         <copy file="install/installation.xml" tofile="build/installation.xml" />
         <replace file="build/installation.xml" token="@@RELEASE_ID@@" value="${release.id}" />
 
