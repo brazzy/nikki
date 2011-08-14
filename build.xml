@@ -30,8 +30,8 @@
     <property name="source" value="1.6"/>
     
     <path id="JUnit 4.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+        <pathelement location="util/junit.jar"/>
+        <pathelement location="util/hamcrest.jar"/>
     </path>
     <path id="Groovy Libraries.libraryclasspath">
         <pathelement location="lib/groovy-all-1.7.0.jar"/>
