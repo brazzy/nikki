@@ -1,4 +1,4 @@
-package de.brazzy.nikki;
+package de.brazzy.nikki.util;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
  */
 public final class Texts {
     private static final ResourceBundle bundle = ResourceBundle.getBundle(
-            "de.brazzy.nikki.Texts", new ResourceControl());
+            "de.brazzy.nikki.util.Texts", new ResourceControl());
 
     public static final String ERROR_PREFIX = bundle
             .getString("general.error_prefix");

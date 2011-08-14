@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki.model;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -38,8 +38,7 @@ import mediautil.image.jpeg.LLJTranException;
 
 import org.apache.commons.io.IOUtils;
 
-import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.model.Waypoint;
+import de.brazzy.nikki.util.ImageDataIO;
 
 /**
  * Writes image data to EXIF headers, creating new ones if necessary.

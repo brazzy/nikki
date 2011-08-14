@@ -27,10 +27,9 @@ import javax.swing.JFrame
 import javax.swing.JSplitPane
 import javax.swing.border.EmptyBorder
 
-import de.brazzy.nikki.Texts
-import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ImageSortField
+import de.brazzy.nikki.util.Texts;
 
 /**
  * Main UI class for the application.

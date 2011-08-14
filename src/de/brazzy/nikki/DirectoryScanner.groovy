@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util
+package de.brazzy.nikki
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -35,9 +35,13 @@ import de.brazzy.nikki.model.Cardinal;
 import de.brazzy.nikki.model.Directory;
 import de.brazzy.nikki.model.GeoCoordinate;
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.ImageReader;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
+import de.brazzy.nikki.util.NikkiWorker;
 import de.brazzy.nikki.util.ParserFactory;
+import de.brazzy.nikki.util.ScanResult;
+import de.brazzy.nikki.util.TimezoneFinder;
 
 /**
  * Populates Directory instances with image and GPS data
@@ -45,25 +49,25 @@ import de.brazzy.nikki.util.ParserFactory;
  * @author Michael Borgwardt
  */
 class DirectoryScanner {
-    
+
     /** finds time zones for waypoints */
     TimezoneFinder finder
-    
+
     /** Yields parsers for parsing GPS logs */
     ParserFactory parserFactory
-    
+
     /**
      * time zone to which the camera time was set when the images were taken. 
      * Can be null, which assumes that all images already have time zone
      * set in their EXIF data
      */
     DateTimeZone zone
-    
+
     /**
      * Any exceptions encountered during scanning, keyed on file name
      */
     Map<String, Exception> exceptions = [:]
-    
+
     /**
      * Scans a directory for image and GPS files and populates it with 
      * the data in them
@@ -75,7 +79,7 @@ class DirectoryScanner {
      */
     public ScanResult scan(Directory dir, NikkiWorker worker){
         worker?.progress = 0
-        
+
         int count = 0;
         def allFiles = dir.path.list() as Set;
         def imageFiles = allFiles.findAll{
@@ -87,14 +91,14 @@ class DirectoryScanner {
         otherFiles = otherFiles.findAll{
             !new File(dir.path, it).isDirectory() &&
                     !it.toUpperCase().endsWith(".AVI") &&
-                    !it.toUpperCase().endsWith(".THM") &&            
+                    !it.toUpperCase().endsWith(".THM") &&
                     !it.toUpperCase().endsWith(".DB")
         }
         def totalFileNum = imageFiles.size() + otherFiles.size()
-        
+
         removeMissing(dir, allFiles)
         parseWaypointFiles(dir, otherFiles, worker)
-        
+
         for(fileName in imageFiles){
             worker?.labelUpdate = fileName
             if(!dir.images[fileName]){
@@ -104,15 +108,15 @@ class DirectoryScanner {
                 }
                 dir.addImage(reader.createImage())
             }
-            
+
             worker?.progress = new Integer((int)(++count / totalFileNum * 100))
         }
-        
+
         dir.fireContentsChanged(dir, 0, dir.size-1)
         worker?.progress = 0
         return ScanResult.COMPLETE
     }
-    
+
     private removeMissing(Directory dir, Set<String> files){
         def toRemove = []
         for(image in dir.images.values()){
@@ -123,7 +127,7 @@ class DirectoryScanner {
         for(image in toRemove){
             dir.removeImage(image)
         }
-        
+
         toRemove = []
         for(waypointFile in dir.waypointFiles.values()){
             if(!files.contains(waypointFile.fileName)){
@@ -137,7 +141,7 @@ class DirectoryScanner {
             }
         }
     }
-    
+
     private parseWaypointFiles(Directory dir, Set<String> files, NikkiWorker worker){
         def newFound = false;
         for(fileName in files){
@@ -159,8 +163,8 @@ class DirectoryScanner {
             dir.geotag()
         }
     }
-    
-    
+
+
     /**
      * Parses one GPS log file
      */
@@ -169,19 +173,19 @@ class DirectoryScanner {
         NavigationFormat format = parserFactory.findParser(file)
         def routes = format.read(new BufferedInputStream(new FileInputStream(file)))
         def positions = routes*.positions.flatten()
-        
+
         for(BaseNavigationPosition pos in positions){
             if(pos.latitude && pos.longitude && pos.time){
-                def lat = new GeoCoordinate(magnitude: Math.abs(pos.latitude), 
+                def lat = new GeoCoordinate(magnitude: Math.abs(pos.latitude),
                         direction: pos.latitude > 0 ? Cardinal.NORTH : Cardinal.SOUTH)
-                def lon = new GeoCoordinate(magnitude: Math.abs(pos.longitude), 
+                def lon = new GeoCoordinate(magnitude: Math.abs(pos.longitude),
                         direction: pos.longitude > 0 ? Cardinal.EAST : Cardinal.WEST)
                 def ts =  new DateTime(pos.time.timeInMillis, DateTimeZone.UTC)
-                def zone  = finder.find(lat.value, lon.value)                
+                def zone  = finder.find(lat.value, lon.value)
                 if(zone){
                     ts = ts.withZone(zone)
                 }
-                
+
                 def wp = new Waypoint(latitude: lat, longitude: lon, timestamp: ts)
                 wp.file = wf
                 wf.waypoints.add(wp)

@@ -44,10 +44,9 @@ import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.util.Dialogs;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * Used to render and edit {@link Image}s in a JTable

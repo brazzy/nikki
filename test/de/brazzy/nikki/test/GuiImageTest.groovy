@@ -20,10 +20,10 @@ package de.brazzy.nikki.test
 
 import org.joda.time.DateTime;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ImageSortField;
 import de.brazzy.nikki.model.WaypointFile;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * @author Michael Borgwardt

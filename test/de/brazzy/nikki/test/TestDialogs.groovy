@@ -20,8 +20,8 @@ package de.brazzy.nikki.test
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import de.brazzy.nikki.util.ConfirmResult;
-import de.brazzy.nikki.util.Dialogs
 import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.view.Dialogs;
 import de.brazzy.nikki.view.NikkiFrame;
 
 import javax.swing.SwingWorker

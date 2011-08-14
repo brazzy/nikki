@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTimeZone;
 
-import de.brazzy.nikki.util.ImageReader;
+import de.brazzy.nikki.model.ImageReader;
 
 /**
  * @author Michael Borgwardt

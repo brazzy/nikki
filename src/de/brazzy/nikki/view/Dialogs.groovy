@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util
+package de.brazzy.nikki.view
 /*   
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
@@ -31,29 +31,30 @@ import javax.swing.ProgressMonitor;
 import javax.swing.border.EmptyBorder;
 import javax.swing.WindowConstants;
 
-import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.view.AboutBox;
-import de.brazzy.nikki.view.NikkiFrame;
-import de.brazzy.nikki.view.ScanOptions
-import de.brazzy.nikki.view.GeotagOptions
+
 import javax.swing.SwingWorker
 
 import org.joda.time.DateTimeZone
 import org.joda.time.ReadablePeriod
 import org.joda.time.Seconds
 
+import de.brazzy.nikki.util.ConfirmResult;
+import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.Texts;
+
+
 /**
  * Encapsulates user interaction via modal dialogs for testability
  */
 class Dialogs {
     NikkiFrame view
-    
+
     public void showAboutBox() {
         def box = new AboutBox()
-        JOptionPane.showOptionDialog(view.frame, box, Texts.Dialogs.About.TITLE, 
+        JOptionPane.showOptionDialog(view.frame, box, Texts.Dialogs.About.TITLE,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)
     }
-    
+
     /**
      * Opens a JFileChooser to return a directory
      * 
@@ -66,7 +67,7 @@ class Dialogs {
         fc.getSelectedFile() :
         null;
     }
-    
+
     /**
      * Opens a JFileChooser to return a file
      * 
@@ -81,17 +82,17 @@ class Dialogs {
         fc.getSelectedFile() :
         null;
     }
-    
+
     /**
      * Asks user for an offset to adjust for wrong camera time before geotagging
      */
     public ReadablePeriod askOffset() {
         def opt = new GeotagOptions()
-        int pressed = JOptionPane.showConfirmDialog(view.frame, opt, 
+        int pressed = JOptionPane.showConfirmDialog(view.frame, opt,
                 Texts.Dialogs.GeotagOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? Seconds.seconds(opt.offset) : null
     }
-    
+
     /**
      * Asks user for time zone used to set camera clock
      * 
@@ -99,11 +100,11 @@ class Dialogs {
      */
     public DateTimeZone askTimeZone(DateTimeZone defaultZone) {
         ScanOptions opt = new ScanOptions(defaultZone)
-        int pressed = JOptionPane.showConfirmDialog(view.frame, opt, 
+        int pressed = JOptionPane.showConfirmDialog(view.frame, opt,
                 Texts.Dialogs.ScanOptions.TITLE, JOptionPane.OK_CANCEL_OPTION)
         return pressed == JOptionPane.OK_OPTION ? opt.timezone : null
     }
-    
+
     /**
      * Ask user for confirmation for an action
      * 
@@ -111,30 +112,30 @@ class Dialogs {
      * @param optionType which buttons to show (see constants in JOptionPane)
      */
     public ConfirmResult confirm(String message, int optionType) {
-        int pressed = JOptionPane.showConfirmDialog(view.frame, message, 
-        Texts.Dialogs.CONFIRM_TITLE, optionType)
+        int pressed = JOptionPane.showConfirmDialog(view.frame, message,
+                Texts.Dialogs.CONFIRM_TITLE, optionType)
         return (pressed == JOptionPane.YES_OPTION ? ConfirmResult.YES :
         pressed == JOptionPane.NO_OPTION ? ConfirmResult.NO :
         pressed == JOptionPane.CANCEL_OPTION ? ConfirmResult.CANCEL : null);
     }
-    
+
     /**
      * Show error message to user
      * 
      * @param message Text shown to user
      */
     public void error(String message) {
-        JOptionPane.showMessageDialog(view.frame, message, 
-        Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
+        JOptionPane.showMessageDialog(view.frame, message,
+                Texts.Dialogs.ERROR_TITLE, JOptionPane.ERROR_MESSAGE)
     }
-    
+
     /**
      * Opens file via OS
      */
     public void open(File f) {
         Desktop.getDesktop().open(f);
     }
-    
+
     /**
      * Allows displaying of progress bar and waiting for background 
      * actions to be completed during tests
@@ -146,50 +147,51 @@ class Dialogs {
         def progress
         def monitor
         def itemLabel
-        
+
         swing.edt{
-            monitor = dialog(owner: view.frame, title: worker.header, modal:true, 
-            defaultCloseOperation:WindowConstants.DO_NOTHING_ON_CLOSE){
-                panel(border: new EmptyBorder(5,5,5,5)){
-                    borderLayout()
-                    itemLabel = label(text: "<html>&nbsp;</html>", constraints: BorderLayout.NORTH)
-                    progress = progressBar(minimum:0, maximum: 100, constraints: BorderLayout.CENTER, preferredSize:new Dimension(200,20))                    
-                }
-            }
+            monitor = dialog(owner: view.frame, title: worker.header, modal:true,
+                    defaultCloseOperation:WindowConstants.DO_NOTHING_ON_CLOSE){
+                        panel(border: new EmptyBorder(5,5,5,5)){
+                            borderLayout()
+                            itemLabel = label(text: "<html>&nbsp;</html>", constraints: BorderLayout.NORTH)
+                            progress = progressBar(minimum:0, maximum: 100, constraints: BorderLayout.CENTER, preferredSize:new Dimension(200,20))
+                        }
+                    }
         }
         monitor.locationRelativeTo = view.frame
-        
-        def listener = { evt ->
+
+        def listener = {
+            evt ->
             switch(evt.propertyName){
                 case "progress":
-                progress.value = evt.newValue.intValue()
-                break
-                
+                    progress.value = evt.newValue.intValue()
+                    break
+
                 case "state":
-                if(evt.newValue == SwingWorker.StateValue.DONE){
-                    monitor.visible = false
-                    monitor.dispose()
-                }
-                break
-                
+                    if(evt.newValue == SwingWorker.StateValue.DONE){
+                        monitor.visible = false
+                        monitor.dispose()
+                    }
+                    break
+
                 case NikkiWorker.LABEL:
-                itemLabel.text = evt.newValue
-                break;
+                    itemLabel.text = evt.newValue
+                    break;
             }
-            
+
             view.dirList.repaint()
             view.dayList.repaint()
             if(view.dayList.selectedValue){
-                view.dayList.selectedValue.fireTableDataChanged()           
+                view.dayList.selectedValue.fireTableDataChanged()
             }
         } as PropertyChangeListener
         worker.addPropertyChangeListener(listener)
         worker.execute()
-        
+
         monitor.pack()
         monitor.show()
     }
-    
+
     /**
      * used when testing for system exit
      */

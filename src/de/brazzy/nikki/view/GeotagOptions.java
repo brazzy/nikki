@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * UI for modal dialog that asks user for parameters used when geotagging

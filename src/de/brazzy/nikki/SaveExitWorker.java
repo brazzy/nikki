@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -24,9 +24,12 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import de.brazzy.nikki.Nikki;
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.util.ConfirmResult;
+import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.Texts;
+import de.brazzy.nikki.util.Texts.Dialogs.Save;
+import de.brazzy.nikki.view.Dialogs;
 
 /**
  * Saves all image data to EXIF headers before exiting the application

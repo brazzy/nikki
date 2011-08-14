@@ -26,8 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.joda.time.DateTimeZone;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * UI for modal dialog that asks user for parameters used when looking for new

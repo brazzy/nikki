@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.joda.time.DateTimeZone;
 
+import de.brazzy.nikki.DirectoryScanner;
 import de.brazzy.nikki.model.Directory;
 
 public class ParseWaypointBenchmark {

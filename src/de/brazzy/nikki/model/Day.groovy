@@ -26,8 +26,8 @@ import de.micromata.opengis.kml.v_2_2_0.AltitudeMode
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.Texts;
 
 import javax.swing.SwingWorker
 

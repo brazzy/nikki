@@ -27,13 +27,13 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
+import de.brazzy.nikki.model.ImageReader;
+import de.brazzy.nikki.model.ImageWriter;
 import de.brazzy.nikki.model.Rotation;
 import de.brazzy.nikki.model.Waypoint;
-import de.brazzy.nikki.util.ImageReader;
-import de.brazzy.nikki.util.ImageWriter;
+import de.brazzy.nikki.util.Texts;
 import de.brazzy.nikki.util.TimezoneFinder;
 
 /**

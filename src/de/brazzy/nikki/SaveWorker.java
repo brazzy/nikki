@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -20,8 +20,10 @@ package de.brazzy.nikki.util;
 
 import java.util.Map;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.Texts;
+import de.brazzy.nikki.view.Dialogs;
 
 /**
  * Saves image data to EXIF headers

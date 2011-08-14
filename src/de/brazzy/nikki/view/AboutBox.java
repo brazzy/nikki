@@ -31,7 +31,7 @@ import javax.swing.event.HyperlinkListener;
 
 import org.apache.log4j.Logger;
 
-import de.brazzy.nikki.Texts;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * Displays the about box

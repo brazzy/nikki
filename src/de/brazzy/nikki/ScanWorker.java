@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -25,8 +25,12 @@ import java.util.Map;
 
 import org.joda.time.DateTimeZone;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Directory;
+import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.ScanResult;
+import de.brazzy.nikki.util.Texts;
+import de.brazzy.nikki.util.Texts.Dialogs.Scan;
+import de.brazzy.nikki.view.Dialogs;
 
 /**
  * Scans directory for new image and GPS files

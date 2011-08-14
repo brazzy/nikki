@@ -21,9 +21,9 @@ package de.brazzy.nikki;
 import javax.swing.UIManager;
 
 import de.brazzy.nikki.model.NikkiModel;
-import de.brazzy.nikki.util.Dialogs;
 import de.brazzy.nikki.util.ParserFactory;
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.view.Dialogs;
 import de.brazzy.nikki.view.NikkiFrame;
 
 /**

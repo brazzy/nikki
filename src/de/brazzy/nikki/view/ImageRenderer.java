@@ -27,7 +27,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.util.Dialogs;
 
 /**
  * For rendering/editing {@link Image}s in a JTable. Uses {@link ImageView} to

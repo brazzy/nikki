@@ -17,8 +17,8 @@ package de.brazzy.nikki.model
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import de.brazzy.nikki.Texts 
 import de.brazzy.nikki.util.PropertyComparator;
+import de.brazzy.nikki.util.Texts;
 
 
 /**

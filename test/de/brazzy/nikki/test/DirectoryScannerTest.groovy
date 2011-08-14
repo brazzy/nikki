@@ -18,11 +18,11 @@ package de.brazzy.nikki.test;
  */
 
 import static org.junit.Assert.*;
+import de.brazzy.nikki.DirectoryScanner;
 import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
-import de.brazzy.nikki.util.DirectoryScanner;
 import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.ParserFactory;
 import java.util.TimeZone;

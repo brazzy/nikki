@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -24,8 +24,10 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Day;
+import de.brazzy.nikki.util.NikkiWorker;
+import de.brazzy.nikki.util.Texts;
+import de.brazzy.nikki.view.Dialogs;
 
 /**
  * Exports data to a KMZ file

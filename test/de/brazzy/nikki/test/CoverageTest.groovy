@@ -28,11 +28,11 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import de.brazzy.nikki.Texts;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.ListDataModel;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.util.PropertyComparator;
+import de.brazzy.nikki.util.Texts;
 import de.brazzy.nikki.view.AboutBox;
 
 

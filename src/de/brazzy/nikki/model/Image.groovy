@@ -17,7 +17,6 @@ package de.brazzy.nikki.model;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import de.brazzy.nikki.util.ImageReader
 import de.micromata.opengis.kml.v_2_2_0.Kml
 import de.micromata.opengis.kml.v_2_2_0.Document
 import de.micromata.opengis.kml.v_2_2_0.Coordinate
@@ -30,7 +29,6 @@ import java.util.zip.CRC32
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-import de.brazzy.nikki.util.ImageWriter
 import org.joda.time.DateTime
 import org.joda.time.ReadablePeriod
 import org.joda.time.Seconds

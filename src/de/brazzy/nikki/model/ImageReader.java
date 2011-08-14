@@ -1,4 +1,4 @@
-package de.brazzy.nikki.util;
+package de.brazzy.nikki.model;
 
 /*   
  *   Copyright 2010 Michael Borgwardt
@@ -46,12 +46,8 @@ import org.joda.time.DateTimeZone;
 import com.mortennobel.imagescaling.ResampleOp;
 import com.mortennobel.imagescaling.ThumpnailRescaleOp;
 
-import de.brazzy.nikki.Texts;
-import de.brazzy.nikki.model.Cardinal;
-import de.brazzy.nikki.model.GeoCoordinate;
-import de.brazzy.nikki.model.Image;
-import de.brazzy.nikki.model.Rotation;
-import de.brazzy.nikki.model.Waypoint;
+import de.brazzy.nikki.util.ImageDataIO;
+import de.brazzy.nikki.util.Texts;
 
 /**
  * Extracts all data from an image file
