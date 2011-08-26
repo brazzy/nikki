@@ -23,8 +23,9 @@ import de.brazzy.nikki.model.Day;
 import de.brazzy.nikki.model.Image;
 import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
-import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.ParserFactory;
+import de.brazzy.nikki.util.TimezoneMissingException;
+
 import java.util.TimeZone;
 
 import org.joda.time.DateTime;
@@ -46,7 +47,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         copyFile(IMAGE1)
         copyFile(WAYPOINTS1)
         
-        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        scanner.scan(tmpDir, null)
         scanner.finder.finished()
         assertEquals(1, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
@@ -95,7 +96,12 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         copyFile(IMAGE2)
         copyFile(WAYPOINTS2)
         
-        assertEquals(ScanResult.TIMEZONE_MISSING, scanner.scan(tmpDir, null))
+        try{
+			scanner.scan(tmpDir, null)
+			fail("Expected TimezoneMissingException")
+        } catch (TimezoneMissingException ex){
+			// expected
+		}
         scanner.finder.finished()
         assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
@@ -104,7 +110,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(2, day1.waypoints.size())
         
         scanner.zone = ZONE
-        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        scanner.scan(tmpDir, null)
         assertEquals(2, tmpDir.size())
         assertEquals(2, tmpDir.images.size())
         assertEquals(2, tmpDir.waypointFiles.size())
@@ -166,7 +172,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         assertEquals(2, day2.waypoints.size())
         
         scanner.zone = ZONE
-        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        scanner.scan(tmpDir, null)
         
         assertEquals(2, tmpDir.size())
         assertEquals(1, tmpDir.images.size())
@@ -181,7 +187,7 @@ class DirectoryScannerTest extends AbstractNikkiTest {
         
         assertTrue(new File(tmpDir.path, image1.fileName).delete())
         
-        assertEquals(ScanResult.COMPLETE, scanner.scan(tmpDir, null))
+        scanner.scan(tmpDir, null)
         assertEquals(1, tmpDir.size())
         assertEquals(0, tmpDir.images.size())
         assertEquals(1, tmpDir.waypointFiles.size())
