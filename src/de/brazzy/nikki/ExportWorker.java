@@ -38,7 +38,7 @@ public class ExportWorker extends NikkiWorker {
     private Day day;
     private File file;
     private Dialogs dialogs;
-    private Exception exception;
+    private Throwable exception;
 
     public ExportWorker(Day day, File file, Dialogs dialogs) {
         super(Texts.Dialogs.Export.PROGRESS_HEADER);
@@ -53,10 +53,10 @@ public class ExportWorker extends NikkiWorker {
             ZipOutputStream out = new ZipOutputStream(
                     new FileOutputStream(file));
             day.export(out, this);
-        } catch (Exception e) {
+        } catch (Throwable t) {
             Logger.getLogger(getClass()).error(
-                    "Error during export to " + file.getAbsolutePath(), e);
-            this.exception = e;
+                    "Error during export to " + file.getAbsolutePath(), t);
+            this.exception = t;
         }
         return null;
     }
