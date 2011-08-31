@@ -120,17 +120,14 @@ public class ImageReader extends ImageDataIO {
         }
         if (exifData != null) {
             int orientation = exifData.getOrientation();
-            if (orientation > 0) { // see
-                // http://sylvana.net/jpegcrop/exif_orientation.html
-                if (orientation == 8) {
-                    return Rotation.LEFT;
-                }
-                if (orientation == 3) {
-                    return Rotation.ROT180D;
-                }
-                if (orientation == 6) {
-                    return Rotation.RIGHT;
-                }
+            // see http://sylvana.net/jpegcrop/exif_orientation.html
+            switch (exifData.getOrientation()) {
+            case 8:
+                return Rotation.LEFT;
+            case 3:
+                return Rotation.ROT180D;
+            case 6:
+                return Rotation.RIGHT;
             }
         }
         return Rotation.NONE;
