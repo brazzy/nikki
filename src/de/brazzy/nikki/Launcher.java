@@ -18,6 +18,9 @@ package de.brazzy.nikki;
  *  along with Nikki.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.UIManager;
 
 import de.brazzy.nikki.model.NikkiModel;
@@ -36,8 +39,9 @@ public class Launcher {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         // UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         // UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        TimezoneFinder finder = new TimezoneFinder(TimezoneFinder.class
-                .getResourceAsStream("timezones.dat"));
+        Logger.getLogger("").setLevel(Level.WARNING);
+        TimezoneFinder finder = new TimezoneFinder(
+                TimezoneFinder.class.getResourceAsStream("timezones.dat"));
         Dialogs d = new Dialogs();
         Nikki n = new Nikki();
         ParserFactory pf = new ParserFactory();
