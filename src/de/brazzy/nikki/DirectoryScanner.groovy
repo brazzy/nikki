@@ -40,8 +40,8 @@ import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.model.WaypointFile;
 import de.brazzy.nikki.util.NikkiWorker;
 import de.brazzy.nikki.util.ParserFactory;
-import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.TimezoneFinder;
+import de.brazzy.nikki.util.TimezoneMissingException;
 
 /**
  * Populates Directory instances with image and GPS data
@@ -74,13 +74,12 @@ class DirectoryScanner {
      * 
      * @param dir the directory to scan
      * @param worker for updating progress
-     * @return ScanResult.TIMEZONE_MISSING if zone was null and images were found that
+     * @throws TimezoneMissingException if zone was null and images were found that
      *         have no time zone in their EXIF data
      */
-    public ScanResult scan(Directory dir, NikkiWorker worker){
+    public scan(Directory dir, NikkiWorker worker) throws TimezoneMissingException{
         worker?.progress = 0
 
-        int count = 0;
         def allFiles = dir.path.list() as Set;
         def imageFiles = allFiles.findAll{
             it.toUpperCase().endsWith(".JPG") ||
@@ -94,28 +93,30 @@ class DirectoryScanner {
                     !it.toUpperCase().endsWith(".THM") &&
                     !it.toUpperCase().endsWith(".DB")
         }
-        def totalFileNum = imageFiles.size() + otherFiles.size()
 
         removeMissing(dir, allFiles)
         parseWaypointFiles(dir, otherFiles, worker)
+		readImages(dir, imageFiles, worker, imageFiles.size() + otherFiles.size())
 
-        for(fileName in imageFiles){
+        dir.fireContentsChanged(dir, 0, dir.size-1)
+        worker?.progress = 0
+    }
+	
+	private readImages(Directory dir, Collection<String> files, NikkiWorker worker, int totalFileNum){
+        int count = 0;
+        for(fileName in files){
             worker?.labelUpdate = fileName
             if(!dir.images[fileName]){
                 ImageReader reader = new ImageReader(new File(dir.path, fileName), this.zone)
                 if(reader.timeZone==null){
-                    return ScanResult.TIMEZONE_MISSING
+                    throw new TimezoneMissingException()
                 }
                 dir.addImage(reader.createImage())
             }
 
             worker?.progress = new Integer((int)(++count / totalFileNum * 100))
         }
-
-        dir.fireContentsChanged(dir, 0, dir.size-1)
-        worker?.progress = 0
-        return ScanResult.COMPLETE
-    }
+	}
 
     private removeMissing(Directory dir, Set<String> files){
         def toRemove = []

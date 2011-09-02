@@ -27,8 +27,8 @@ import org.joda.time.DateTimeZone;
 
 import de.brazzy.nikki.model.Directory;
 import de.brazzy.nikki.util.NikkiWorker;
-import de.brazzy.nikki.util.ScanResult;
 import de.brazzy.nikki.util.Texts;
+import de.brazzy.nikki.util.TimezoneMissingException;
 import de.brazzy.nikki.util.Texts.Dialogs.Scan;
 import de.brazzy.nikki.view.Dialogs;
 
@@ -69,7 +69,9 @@ public class ScanWorker extends NikkiWorker {
     @Override
     protected Void doInBackground() throws Exception {
         thread = Thread.currentThread();
-        if (scanner.scan(dir, this) == ScanResult.TIMEZONE_MISSING) {
+        try{
+            scanner.scan(dir, this);;
+        } catch(TimezoneMissingException e){
             try {
                 synchronized (zoneLock) {
                     publish();
@@ -79,7 +81,7 @@ public class ScanWorker extends NikkiWorker {
                 }
                 scanner.setZone(zone);
                 scanner.scan(dir, this);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ex) {
                 // intentional - happens when time zone dialog was aborted
             } finally {
                 scanner.setZone(null);
