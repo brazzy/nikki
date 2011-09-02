@@ -289,6 +289,12 @@ public class ImageReader extends ImageDataIO {
         }
     }
 
+    public void readMainImage() throws IOException {
+        if (mainImage == null) {
+            mainImage = ImageIO.read(file);
+        }
+    }
+
     /**
      * Scales image to given size, preserving aspec ratio
      * 
@@ -301,9 +307,7 @@ public class ImageReader extends ImageDataIO {
      */
     public byte[] scale(int toWidth, boolean paintBorder, boolean isThumbnail)
             throws IOException, LLJTranException {
-        if (mainImage == null) {
-            mainImage = ImageIO.read(file);
-        }
+        readMainImage();
 
         int toHeight = heightForWidth(mainImage, toWidth);
 

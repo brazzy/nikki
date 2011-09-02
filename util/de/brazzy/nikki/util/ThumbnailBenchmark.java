@@ -35,6 +35,7 @@ public class ThumbnailBenchmark {
     public static void main(String[] args) throws Exception {
         ImageReader r = new ImageReader(new File("C:/tmp/test.JPG"),
                 DateTimeZone.UTC);
+        r.readMainImage();
         long start = System.nanoTime();
         byte[] t = r.scale(150, false, true);
         System.out.println();
