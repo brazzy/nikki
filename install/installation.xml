@@ -31,7 +31,8 @@
 <resources>
     <res id="LicencePanel.licence" src="src/Nikki-LICENSE.txt"/>
     <res id="InfoPanel.splash" src="src/icons/logo_splash.png"/>
-    <res id="shortcutSpec.xml" src="install/shortcutSpec.xml"/>
+    <res id="Win_shortcutSpec.xml" src="install/Win_shortcutSpec.xml"/>
+    <res id="Unix_shortcutSpec.xml" src="install/Unix_shortcutSpec.xml"/>
 </resources>
 <panels>
     <panel classname="HelloPanel"/>
@@ -51,6 +52,19 @@
       <include name="Nikki_@@RELEASE_ID@@.jar" />
     </fileset>
     <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="unix"/>
+      <include name="Nikki.sh" />
+      <include name="Uninstall.sh" />
+      <include name="logo_32.png" />
+    </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="mac"/>
+      <include name="Nikki.sh" />
+      <include name="Uninstall.sh" />
+      <include name="logo_32.png" />
+    </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="windows"/>
       <include name="Nikki.bat" />
       <include name="Uninstall.bat" />
       <include name="logo_32.ico" />
@@ -58,5 +72,10 @@
     <executable targetfile="$INSTALL_PATH/Nikki_@@RELEASE_ID@@.jar" stage="never"/>
   </pack>
 </packs>
-<native type="izpack" name="ShellLink.dll"/>
+<native type="izpack" name="ShellLink.dll">
+    <os family="windows" arch="x86"/>
+</native>
+<native type="izpack" name="ShellLink_x64.dll">
+    <os family="windows" arch="amd64"/>
+</native>
 </installation>

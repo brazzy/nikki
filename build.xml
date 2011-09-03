@@ -310,8 +310,7 @@
 		<IzPack input="build/installation.xml"
 			    output="${dist.dir}/${release.file}-install.jar"
 		        installerType="standard"
-		        basedir="."
-		        IzPackDir="${dist.dir}"/>
+		        basedir="."/>
 	</target>
     
     <target name="findbugs" depends="build">

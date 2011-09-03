@@ -1,0 +1,32 @@
+<shortcuts>
+  <skipIfNotSupported/>
+  <programGroup defaultName="Accessories"
+                location="applications"/>
+  <shortcut
+    name="Start Nikki"
+    type="Application"
+    encoding="UTF-8"
+    target="$INSTALL_PATH\Nikki.sh"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Start Nikki"
+    iconFile="$INSTALL_PATH\logo_32.png"
+    programGroup="yes"
+    initialState="noShow" 
+    desktop="yes">
+    <createForPack name="Nikki"/>
+  </shortcut>
+  <shortcut
+    name="Uninstall Nikki"
+    type="Application"
+    encoding="UTF-8"
+    target="$INSTALL_PATH\Uninstall.sh"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Uninstall Nikki"
+    programGroup="yes"
+    initialState="noShow" 
+    desktop="no">
+    <createForPack name="Nikki"/>
+  </shortcut>
+</shortcuts>
