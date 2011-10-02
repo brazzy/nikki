@@ -51,8 +51,9 @@ public class AboutBox extends JPanel {
         content.setContentType("text/html");
         content.setEditable(false);
         content.setBackground(getBackground());
-        content.read(new InputStreamReader(getClass().getResourceAsStream(
-                Texts.Dialogs.About.FILENAME), "UTF-8"), null);
+        content.read(
+                new InputStreamReader(getClass().getResourceAsStream(
+                        Texts.Dialogs.About.FILENAME), "UTF-8"), null);
         content.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
@@ -68,10 +69,8 @@ public class AboutBox extends JPanel {
         });
         add(content, BorderLayout.CENTER);
     }
-    //    
-    // public static void main(String... args) throws Exception
-    // {
-    // JOptionPane.showOptionDialog(null, new AboutBox(), "About Nikki",
-    // JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    // }
+
+    public String getHtml() {
+        return content.getText();
+    }
 }

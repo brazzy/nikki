@@ -19,6 +19,9 @@ package de.brazzy.nikki.test;
  */
 
 import static org.junit.Assert.*;
+
+import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 
@@ -34,6 +37,8 @@ import de.brazzy.nikki.model.Waypoint;
 import de.brazzy.nikki.util.PropertyComparator;
 import de.brazzy.nikki.util.Texts;
 import de.brazzy.nikki.view.AboutBox;
+import de.brazzy.nikki.view.ImageRenderer;
+import de.brazzy.nikki.view.ImageView;
 
 
 /**
@@ -44,19 +49,19 @@ import de.brazzy.nikki.view.AboutBox;
 class CoverageTest {
     @Test
     public void texts(){
-        def dummy 
+        def dummy
         dummy = new Texts()
-        dummy = new Texts.Dialogs() 
-        dummy = new Texts.Dialogs.About() 
-        dummy = new Texts.Dialogs.GeotagOptions() 
-        dummy = new Texts.Dialogs.ScanOptions() 
-        dummy = new Texts.Dialogs.Export() 
-        dummy = new Texts.Dialogs.Save() 
-        dummy = new Texts.Dialogs.Scan() 
+        dummy = new Texts.Dialogs()
+        dummy = new Texts.Dialogs.About()
+        dummy = new Texts.Dialogs.GeotagOptions()
+        dummy = new Texts.Dialogs.ScanOptions()
+        dummy = new Texts.Dialogs.Export()
+        dummy = new Texts.Dialogs.Save()
+        dummy = new Texts.Dialogs.Scan()
         dummy = new Texts.Image()
         dummy = new Texts.Main()
-    }   
-    
+    }
+
     @Test
     public void propertyComparator(){
         def dummy1a = new PropertyComparator(propertyName: "a")
@@ -70,7 +75,7 @@ class CoverageTest {
         assert dummy1a != dummy2a
         assert dummy2a == dummy2b
         assert dummy2a != dummy2c
-        
+
         def set = new HashSet();
         set.add(dummy1a)
         assertEquals(1, set.size())
@@ -78,23 +83,23 @@ class CoverageTest {
         assertEquals(1, set.size())
         set.add(dummy1c)
         assertEquals(2, set.size())
-        
+
         set.add(dummy2a)
         assertEquals(3, set.size())
         set.add(dummy2b)
         assertEquals(3, set.size())
         set.add(dummy2c)
         assertEquals(4, set.size())
-    }    
-    
+    }
+
     @Test
     public void toStringMethods(){
         def dummy = new Waypoint(timestamp: new DateTime())
         dummy.toString()
         dummy = new Image(fileName: "test")
         dummy.toString()
-    }    
-    
+    }
+
     @Test
     public void listDataModel(){
         ListDataModel dummy = new ListDataModel<String>()
@@ -104,19 +109,27 @@ class CoverageTest {
         assertEquals("a", itr.next())
         assertEquals("b", itr.next())
         assertFalse(itr.hasNext())
-    }    
-    
+    }
+
     @Test
     public void aboutBox() {
         Logger.getRootLogger().getAppender("A1").rollOver()
         AboutBox box = new AboutBox();
-        assertTrue(box.content.text.contains("Nikki GPS"))
-        assertTrue(box.content.text.contains("Michael Borgwardt"))
+        assertTrue(box.html.contains("Nikki GPS"))
+        assertTrue(box.html.contains("Borgwardt"))
         box.content.fireHyperlinkUpdate(
                 new HyperlinkEvent(this, HyperlinkEvent.EventType.ACTIVATED, new URL("http://ßß&about???")));
         File logFile = new File(System.getProperty("user.home")+"/nikki.log")
         assertTrue(GuiTest.logContains("about???"));
     }
-    
-    
+
+    @Test
+    public void imageRenderer(){
+        TestDialogs td = new TestDialogs();
+        ImageRenderer r = new ImageRenderer(td, new Image[1], null)
+        Image img = new Image();
+        img.thumbnail = new byte[0];
+        ImageView result = (ImageView) r.getTableCellRendererComponent(null, img, false, false, 0, 0);
+        assertSame(img, result.getValue());
+    }
 }

@@ -119,7 +119,6 @@ public class ImageReader extends ImageDataIO {
             return rotation;
         }
         if (exifData != null) {
-            int orientation = exifData.getOrientation();
             // see http://sylvana.net/jpegcrop/exif_orientation.html
             switch (exifData.getOrientation()) {
             case 8:
