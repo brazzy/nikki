@@ -12,6 +12,8 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="util/ant-contrib-1.0b3.jar"/>
     <typedef resource="org/jdesktop/deployment/ant/pack200/antlib.xml"
              classpath="util/deployment-ant-pack200-1.0-rc1.jar"/>
+	<taskdef name="IzPack" classname="com.izforge.izpack.ant.IzPackTask" 
+	         classpath="util/izpack_standalone-compiler.jar"/>
 
     <property environment="env"/>
     <property name="findbugs.home" value="C:/Programme/Java/findbugs-1.3.9" />
@@ -214,6 +216,7 @@
                   input="${release.tags}"
                   regexp=".*release_(.*)$"
                   select="\1" />
+        <property name="release.file" value="Nikki_${release.id}"/>
         <echo message="Release ID: ${release.id}"/>
     </target>
     
@@ -224,20 +227,20 @@
         <replace dir="${build.dir}/de/brazzy/nikki/view/" token="@@RELEASE_ID@@" value="${release.id}">
             <include name="about*.html"/>
         </replace>
-        <jar destfile="build/Nikki.jar">
+        <jar destfile="build/${release.file}.jar">
             <manifest>
                 <attribute name="Main-Class" value="de.brazzy.nikki.Launcher"/>
                 <attribute name="Class-Path" value="
-                    JavaAPIforKml.jar 
-                    RouteConverterCmdLine.jar 
-                    commons-io-1.4.jar 
-                    groovy-all-1.7.0.jar 
-                    java-image-scaling-0.8.4.jar 
-                    jaxb-api.jar lib/jaxb-impl.jar 
-                    joda-time-1.6.jar 
-                    jsi-1.0b2p1.jar 
-                    mediautil-1.0_patched.jar 
-                    trove-0.1.8.jar
+                    lib/JavaAPIforKml.jar 
+                	lib/RouteConverterCmdLine.jar 
+                	lib/commons-io-1.4.jar 
+                	lib/groovy-all-1.7.0.jar 
+                	lib/java-image-scaling-0.8.4.jar 
+                	lib/jaxb-api.jar lib/jaxb-impl.jar 
+                	lib/joda-time-1.6.jar 
+                	lib/jsi-1.0b2p1.jar 
+                	lib/mediautil-1.0_patched.jar 
+                	lib/trove-0.1.8.jar
                 "/>
                 <attribute name="Implementation-Version" value="${build.id}"/>
             </manifest>
@@ -262,27 +265,27 @@
         </if>
     </target>
 
-	<target name="prepare_dist_artifacts" depends="create_run_jar,get_keystore_passwords">
+	<target name="create_jws_distribution" depends="create_run_jar,get_keystore_passwords">
         <mkdir dir="${dist.dir}"/>
-        <copy file="Nikki.jnlp" tofile="${dist.dir}/Nikki_${release.id}.jnlp" />
-        <replace file="${dist.dir}/Nikki_${release.id}.jnlp" token="@@RELEASE_ID@@" value="${release.id}" />
+        <copy file="Nikki.jnlp" tofile="${dist.dir}/${release.file}.jnlp" />
+        <replace file="${dist.dir}/${release.file}.jnlp" token="@@RELEASE_ID@@" value="${release.id}" />
 
         <pack200 todir="${dist.dir}" repack="true">
-            <fileset file="build/Nikki.jar" />
+            <fileset file="build/${release.file}.jar" />
         </pack200 >
         
         <signjar alias="brazzy" keypass="${keystore.keypass}" storepass="${keystore.storepass}">
-            <fileset file="${dist.dir}/Nikki.jar"/>
+            <fileset file="${dist.dir}${release.file}.jar"/>
         </signjar>
-        <move file="${dist.dir}/Nikki.jar" tofile="${dist.dir}/Nikki_${release.id}.jar" />
             
         <pack200 todir="${dist.dir}">
-            <fileset file="${dist.dir}/Nikki_${release.id}.jar"/>
+            <fileset file="${dist.dir}/${release.file}.jarr"/>
         	<mapper type="glob" from="*.jar" to="*.jar.pack.gz"/>
         </pack200 >
+		
     </target>
     
-    <target name="prepare_dist_libs" depends="get_keystore_passwords">
+    <target name="create_jws_libs" depends="get_keystore_passwords">
         <mkdir dir="${dist.dir}"/>
 
         <pack200 todir="${dist.dir}" repack="true">
@@ -298,6 +301,17 @@
             <mapper type="glob" from="*.jar" to="*.jar.pack.gz"/>
         </pack200 >
     </target>
+	
+	<target name="create_installer" depends="create_run_jar">
+        <mkdir dir="${dist.dir}"/>
+        <copy file="install/installation.xml" tofile="build/installation.xml" />
+        <replace file="build/installation.xml" token="@@RELEASE_ID@@" value="${release.id}" />
+
+		<IzPack input="build/installation.xml"
+			    output="${dist.dir}/${release.file}-install.jar"
+		        installerType="standard"
+		        basedir="."/>
+	</target>
     
     <target name="findbugs" depends="build">
         <findbugs home="${findbugs.home}"
@@ -312,6 +326,6 @@
         </findbugs>
     </target>
 
-    <target name="integration" depends="clean,junit,coverage-report,javadoc,findbugs,create_run_jar,prepare_dist_artifacts" />
+    <target name="integration" depends="clean,junit,coverage-report,javadoc,findbugs,create_run_jar,create_installer" />
 
 </project>

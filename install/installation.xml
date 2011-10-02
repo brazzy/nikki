@@ -1,0 +1,81 @@
+<installation version="1.0">
+<info>
+	<appname>nikki</appname>
+	<appversion>@@RELEASE_ID@@</appversion>
+	<url>http://www.brazzy.de/nikki/</url>
+	<authors>
+	   <author name="Michael Borgwardt" email="brazzy@gmail.com"/>
+	</authors>
+	<uninstaller/>
+	<javaversion>1.6</javaversion>
+	<requiresjdk>no</requiresjdk>
+	<webdir>http://cloud.github.com/downloads/brazzy/nikki_libs/</webdir>
+	<writeinstallationinformation>no</writeinstallationinformation>
+	<run-privileged/>
+	<pack200/>
+</info>
+	<guiprefs width="600" height="480" resizable="no">
+	<modifier key="useHeadingPanel" value="yes"/>
+	<modifier key="useHeadingForSummary" value="yes"/>
+	<modifier key="headingImageOnLeft" value="yes"/>
+	<modifier key="headingLineCount" value="2"/>
+	<modifier key="headingFontSize" value="1.5"/>
+	<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+	<modifier key="headingPanelCounter" value="text"/>
+	<modifier key="headingPanelCounterPos" value="inHeading"/>
+</guiprefs>
+<locale>
+  <langpack iso3="eng" />
+  <langpack iso3="deu"/>
+</locale>
+<resources>
+    <res id="LicencePanel.licence" src="src/Nikki-LICENSE.txt"/>
+    <res id="InfoPanel.splash" src="src/icons/logo_splash.png"/>
+    <res id="Win_shortcutSpec.xml" src="install/Win_shortcutSpec.xml"/>
+    <res id="Unix_shortcutSpec.xml" src="install/Unix_shortcutSpec.xml"/>
+</resources>
+<panels>
+    <panel classname="HelloPanel"/>
+    <panel classname="LicencePanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="ShortcutPanel"/>
+    <panel classname="InstallPanel"/>
+    <panel classname="SimpleFinishPanel"/>
+</panels>
+<packs>
+  <pack name="Nikki" id="core" required="yes">
+    <description>Nikki application JARs</description>
+    <fileset dir="/lib" targetdir="$INSTALL_PATH/lib">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="/build" targetdir="$INSTALL_PATH">
+      <include name="Nikki_@@RELEASE_ID@@.jar" />
+    </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="unix"/>
+      <include name="Nikki.sh" />
+      <include name="Uninstall.sh" />
+      <include name="logo_32.png" />
+    </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="mac"/>
+      <include name="Nikki.sh" />
+      <include name="Uninstall.sh" />
+      <include name="logo_32.png" />
+    </fileset>
+    <fileset dir="/install" targetdir="$INSTALL_PATH">
+      <os family="windows"/>
+      <include name="Nikki.bat" />
+      <include name="Uninstall.bat" />
+      <include name="logo_32.ico" />
+    </fileset>
+    <executable targetfile="$INSTALL_PATH/Nikki_@@RELEASE_ID@@.jar" stage="never"/>
+  </pack>
+</packs>
+<native type="izpack" name="ShellLink.dll">
+    <os family="windows" arch="x86"/>
+</native>
+<native type="izpack" name="ShellLink_x64.dll">
+    <os family="windows" arch="amd64"/>
+</native>
+</installation>
