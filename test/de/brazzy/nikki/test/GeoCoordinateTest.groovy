@@ -19,13 +19,14 @@ package de.brazzy.nikki.test
 
 import de.brazzy.nikki.model.GeoCoordinate
 import de.brazzy.nikki.model.Cardinal
+import de.brazzy.nikki.model.Waypoint;
 
 
 /**
  * @author Michael Borgwardt
  */
 public class GeoCoordinateTest extends GroovyTestCase{
-    
+
     public void testCoordValue() {
         GeoCoordinate a;
         a = new GeoCoordinate(direction: Cardinal.SOUTH, magnitude: 1.5d)
@@ -36,6 +37,31 @@ public class GeoCoordinateTest extends GroovyTestCase{
         assertEquals(2.0d, a.value)
         a = new GeoCoordinate(direction: Cardinal.WEST, magnitude: 3.0d)
         assertEquals(-3.0d, a.value)
+    }
+
+    public void testWaypointDistance() {
+
+        // runway of Munich airport, should be 4km but is probably not measured that exactly
+        def start = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.3406806d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.7509944d)
+                )
+        def end = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.3447944d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.8045889d)
+                )
+        assertEquals(4000.0d,start.distanceInMeters(end), 20d);
+
+        // length of a 100m track, much more exact
+        start = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.1776889d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.5459806d)
+                )
+        end = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.1785861d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.5459806d)
+                )
+        assertEquals(100.0d,start.distanceInMeters(end), 1d);
     }
 }
 

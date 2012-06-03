@@ -1,5 +1,5 @@
 package de.brazzy.nikki.model;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -42,38 +42,44 @@ import org.joda.time.format.ISODateTimeFormat;
 /**
  * Represents one day during a journey, as experienced subjectively by
  * a traveler (while possible passing through several time zones).
- * 
+ *
  * @author Michael Borgwardt
  */
 class Day extends AbstractTableModel implements Comparable<Day> {
     public static final long serialVersionUID = 1
-    
+
     private static final DateTimeFormatter DISPLAY_FORMAT = ISODateTimeFormat.date()
-    
-    /** 
-     * Waypoints further apart than this will result in beginning a new path
+
+    /**
+     * Waypoints further apart than this in time will result in beginning a new path
      * (thus creating a gap) in the exported KML file
      */
-    public static final Duration WAYPOINT_THRESHOLD = Duration.standardSeconds(90)
-    
+    public static final Duration WAYPOINT_NEWLINE_THRESHOLD_TIME = Duration.standardSeconds(90)
+
+    /**
+     * Waypoints closer together than this (in meters) will be merged in the exported
+     * KML file.
+     */
+    public static final int WAYPOINT_MERGE_THRESHOLD_DISTANCE = 20;
+
     /** Images taken on this day */
     private final ListDataModel<Image> images = new ListDataModel<Image>()
-    
+
     private ImageSortField imageSortOrder
-    
+
     /** Waypoints recorded on this day */
     final SortedSet<Waypoint> waypoints = new TreeSet()
-    
+
     /** Date represented by this day */
     final LocalDate date
-    
-    /** 
+
+    /**
      *  Contains the files (images and GPS logs) used by this Day instance.
      *  Must not be null (Enforcement currently not possible, as Groovy
      *  ignores "private")
      */
     final Directory directory
-    
+
     public Day(Map arguments){
         this.date = arguments?.date
         this.directory = arguments?.directory
@@ -81,12 +87,12 @@ class Day extends AbstractTableModel implements Comparable<Day> {
                 ImageSortField.TIME :
                 ImageSortField.FILENAME)
     }
-    
+
     public String toString() {
         return (date==null? Texts.Main.UNKNOWN_DAY : DISPLAY_FORMAT.print(date)) +
         " ("+images.size()+", "+waypoints.size()+")"
     }
-    
+
     public setImageSortOrder(ImageSortField order){
         if(order == ImageSortField.TIME && !this.date) {
             throw new IllegalArgumentException("Cannot set sort order to time on unknown day")
@@ -98,7 +104,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
             fireTableDataChanged();
         }
     }
-    
+
     /**
      * From AbstractTableModel
      */
@@ -106,7 +112,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     public int getRowCount() {
         images.size()
     }
-    
+
     /**
      * From AbstractTableModel
      */
@@ -114,7 +120,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     public int getColumnCount() {
         1
     }
-    
+
     /**
      * From AbstractTableModel
      */
@@ -122,7 +128,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     public Object getValueAt(int row, int column) {
         images[row]
     }
-    
+
     /**
      * From AbstractTableModel
      */
@@ -130,11 +136,11 @@ class Day extends AbstractTableModel implements Comparable<Day> {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         true
     }
-    
+
     /**
      * Exports this day's data (Annotated images and GPS tracks)
      * to a KMZ file
-     * 
+     *
      * @param out stream to write the data to
      * @param worker for updating progress
      */
@@ -146,21 +152,21 @@ class Day extends AbstractTableModel implements Comparable<Day> {
                 .createAndSetLineStyle()
                 .withWidth(4.0)
                 .withColor("801977FF")
-        
+
         int count = 0;
-        out.method = ZipOutputStream.STORED        
+        out.method = ZipOutputStream.STORED
         createDirEntry(out, "images/");
         createDirEntry(out, "thumbs/");
-        
+
         def imgIndex = 0;
         for(Image image : images) {
             worker?.labelUpdate = image.fileName
             image.exportTo(out, doc, imgIndex++)
             worker?.progress = new Integer((int)(++count / images.size * 100))
         }
-        
+
         exportWaypoints(doc)
-        
+
         out.method = ZipOutputStream.DEFLATED
         out.putNextEntry(new ZipEntry("diary.kml"))
         kml.marshal(out)
@@ -168,7 +174,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
         out.close()
         worker?.progress = 0
     }
-    
+
     private static void createDirEntry(ZipOutputStream out, String dirName) {
         def entry = new ZipEntry(dirName);
         entry.size = 0;
@@ -176,23 +182,23 @@ class Day extends AbstractTableModel implements Comparable<Day> {
         out.putNextEntry(entry)
         out.closeEntry()
     }
-    
+
     private void exportWaypoints(Document doc) {
-        def wpList = []
-        wpList.addAll(waypoints)
-        wpList.addAll(images.asList().waypoint)
-        LineString ls;        
+        def wpList = prepareWaypoints()
+        LineString ls
         DateTime previous = new DateTime(1900, 1, 1,0 ,0,0,0);
-        for(Waypoint wp : waypoints) {
-            def gap = new Duration(previous, wp.timestamp)
-            if(gap.isLongerThan(WAYPOINT_THRESHOLD)) {
+        Waypoint previousWP = wpList.first()
+        for(Waypoint wp : wpList) {
+            if(wp.startNewLine) {
                 ls = startLineSegment(doc)
             }
+
             ls.addToCoordinates(wp.longitude.value, wp.latitude.value)
             previous = wp.timestamp
+            previousWP = wp
         }
     }
-    
+
     private LineString startLineSegment(Document doc) {
         return doc.createAndAddPlacemark()
         .withStyleUrl("#track")
@@ -201,7 +207,7 @@ class Day extends AbstractTableModel implements Comparable<Day> {
         .withExtrude(Boolean.TRUE)
         .withAltitudeMode(AltitudeMode.CLAMP_TO_GROUND)
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -227,12 +233,43 @@ class Day extends AbstractTableModel implements Comparable<Day> {
             return false
         return directory.equals(other.directory)
     }
-    
+
     @Override
     public int compareTo(Day other) {
         if(date==null) {
             return other.date==null ? 0 : -1
         }
         return other.date == null ? 1 : date.compareTo(other.date)
+    }
+
+    /**
+     * Prepare waypoints for export:
+     *
+     * - merge waypoints that are very close together in space
+     * - mark start of new line segment
+     */
+    public SortedSet<Waypoint> prepareWaypoints(){
+        def result = new TreeSet()
+        result.addAll(images.asList().waypoint)
+        if(waypoints){
+            def previous = waypoints.first()
+            result.add(previous)
+            for(Waypoint wp : waypoints){
+                def dist = previous.distanceInMeters(wp)
+                def time = new Duration(previous.timestamp, wp.timestamp)
+
+                if(dist >= WAYPOINT_MERGE_THRESHOLD_DISTANCE){
+                    result.add(wp)
+                    previous = wp
+                    if(time.isLongerThan(WAYPOINT_NEWLINE_THRESHOLD_TIME)){
+                        wp.startNewLine = true
+                    }
+                }
+            }
+        }
+        if(result){
+            result.iterator().next().startNewLine = true
+        }
+        return result;
     }
 }

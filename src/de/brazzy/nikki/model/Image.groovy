@@ -1,5 +1,5 @@
 package de.brazzy.nikki.model;
-/*   
+/*
  *   Copyright 2010 Michael Borgwardt
  *   Part of the Nikki Photo GPS diary:  http://www.brazzy.de/nikki
  *
@@ -35,43 +35,43 @@ import org.joda.time.Seconds
 
 class Image implements Serializable{
     public static final long serialVersionUID = 1;
-    
+
     /** Color used for the pin that marks the image position in the offset finder */
     public static final String OFFSET_FINDER_COLOR = "801977FF";
-    
+
     /** Size factor the pin that marks the image position in the offset finder */
     public static final double OFFSET_FINDER_SCALE = 3.0
-    
-    /** 
+
+    /**
      * Set to true to show that data has been added or changed that
-     * should be persisted  
+     * should be persisted
      */
     boolean modified
-    
+
     /** Name of the image data file */
     String fileName
-    
+
     /** Briefly describes the image */
     String title
-    
+
     /** Longer description of the image */
     String description
-    
+
     /** Time at which the image was taken */
     DateTime time
-    
+
     /** Day instance that contains the image */
     Day day
-    
+
     /** Contains the GPS coordinates assigned to the image */
     Waypoint waypoint
-    
+
     /** Scaled-down version for display */
     byte[] thumbnail
-    
+
     /** Determines whether the image will be part of an export to KMZ */
     boolean export
-    
+
     /**
      * Sets the modified property when other properties change content
      */
@@ -86,11 +86,11 @@ class Image implements Serializable{
         this.modified = true
         this.@"$name"=value
     }
-    
+
     public String toString(){
         fileName
     }
-    
+
     /**
      * Allows the copying of the timestamp from another image
      * when an image has none; will result in the image being
@@ -109,19 +109,19 @@ class Image implements Serializable{
             }
         }
     }
-    
+
     private String getHtmlForExport() {
-        def writer = new StringWriter()  
-        def builder = new groovy.xml.MarkupBuilder(writer) 
-        builder.html(){ 
-            body(){ 
-                img(src: "images/"+fileName)
+        def writer = new StringWriter()
+        def builder = new groovy.xml.MarkupBuilder(writer)
+        builder.html(){
+            body(){
+                img(src: "images/"+fileName.toLowerCase())
                 p(description)
             }
-        } 
+        }
         return writer.toString()
     }
-    
+
     /**
      * Saves the image data to the file's EXIF headers
      */
@@ -131,7 +131,7 @@ class Image implements Serializable{
         }
         modified = false
     }
-    
+
     /**
      * Displays a KML file that marks the image's current position
      * as well as the position and offsets of all known waypoints,
@@ -140,12 +140,12 @@ class Image implements Serializable{
     public void offsetFinder(OutputStream out) {
         Kml kml = KmlFactory.createKml()
         Document doc = kml.createAndSetDocument()
-        
+
         doc.createAndAddStyle().withId("image")
                 .createAndSetIconStyle()
                 .withScale(OFFSET_FINDER_SCALE)
                 .withColor(OFFSET_FINDER_COLOR)
-        
+
         doc.createAndAddPlacemark()
                 .withName(title)
                 .withStyleUrl("#image")
@@ -154,7 +154,7 @@ class Image implements Serializable{
                 .withCoordinates([
                     new Coordinate(waypoint.longitude.value, waypoint.latitude.value)
                 ])
-        
+
         NumberFormat nf = NumberFormat.getIntegerInstance();
         day.waypoints.each{ Waypoint point ->
             doc.createAndAddPlacemark()
@@ -165,28 +165,28 @@ class Image implements Serializable{
                         new Coordinate(point.longitude.value, point.latitude.value)
                     ])
         }
-        
+
         kml.marshal(out)
         out.close()
     }
-    
+
     /**
      * Finds and sets the Waypoint that is closest in time to this
      * image's timestamp.
-     * 
+     *
      * @param offset to adjust for incorrectly set camera time
      */
     public void geotag(ReadablePeriod offset = Seconds.seconds(0), SortedSet<Waypoint> waypoints) {
         if(!this.time){
             return;
         }
-        
+
         def imagetime = this.time.plus(offset)
         Waypoint imageTimestamp = new Waypoint(timestamp: imagetime)
         def beforeSet = waypoints.headSet(imageTimestamp)
-        def afterSet = waypoints.tailSet(imageTimestamp)        
+        def afterSet = waypoints.tailSet(imageTimestamp)
         def result
-        
+
         if(afterSet.isEmpty()) // after all WPs
         {
             result = beforeSet.last()
@@ -203,7 +203,7 @@ class Image implements Serializable{
             def after =  afterSet.first()
             def distBefore = Seconds.secondsBetween(before.timestamp, imagetime)
             def distAfter = Seconds.secondsBetween(imagetime, after.timestamp)
-            
+
             if(distBefore.isGreaterThan(distAfter)) {
                 result = after
             }
@@ -211,16 +211,16 @@ class Image implements Serializable{
                 result = before
             }
         }
-        
+
         if(result.timestamp!=waypoint?.timestamp) {
             waypoint = result
             modified = true
         }
     }
-    
+
     /**
      * Write this image to a KMZ file
-     * 
+     *
      * @param out for writing image data itself to
      * @param doc for writing KML data to
      * @param imgIndex for display in title
@@ -240,17 +240,17 @@ class Image implements Serializable{
                     .createAndSetIconStyle()
                     .withScale(1.5) // adjusts default icon size (64) for out icon size (96)
                     .createAndSetIcon()
-                    .withHref("thumbs/"+fileName)
-            
-            ImageReader reader = new ImageReader(new File(day.directory.path, fileName), null)
-            store(reader.scale(592, false, false), "images/"+fileName, out)
-            store(reader.scale(96, true, true), "thumbs/"+fileName, out)
+                    .withHref("thumbs/"+fileName.toLowerCase())
+
+            ImageReader reader = new ImageReader(new File(day.directory.path, fileName.toLowerCase()), null)
+            store(reader.scale(592, false, false), "images/"+fileName.toLowerCase(), out)
+            store(reader.scale(96, true, true), "thumbs/"+fileName.toLowerCase(), out)
         }
     }
-    
+
     /**
      * Stores one image
-     * 
+     *
      * @param imgData image data
      * @param name file name
      * @param out stream to write to
