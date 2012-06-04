@@ -271,6 +271,24 @@ class DayTest extends AbstractNikkiTest{
                 longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.050000d),
                 timestamp: TIME1.plusMinutes(31)
                 )
+        // near, soon
+        def wp10 = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.050001d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.050001d),
+                timestamp: TIME1.plusMinutes(32)
+                )
+        // near, soon
+        def wp11 = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.050002d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.050002d),
+                timestamp: TIME1.plusMinutes(33)
+                )
+        // far, soon
+        def wp12 = new Waypoint(
+                latitude: new GeoCoordinate(direction: Cardinal.NORTH, magnitude: 48.060000d),
+                longitude: new GeoCoordinate(direction: Cardinal.EAST, magnitude: 11.060000d),
+                timestamp: TIME1.plusMinutes(34)
+                )
         day.waypoints.addAll([
             wp1,
             wp2,
@@ -280,15 +298,26 @@ class DayTest extends AbstractNikkiTest{
             wp6,
             wp7,
             wp8,
-            wp9
+            wp9,
+            wp10,
+            wp11,
+            wp12
         ])
         def compressedList = new ArrayList(day.prepareWaypoints());
-        assertEquals([wp1, wp2, wp6, wp8, wp9], compressedList)
+        assertEquals([
+            wp1,
+            wp2,
+            wp6,
+            wp8,
+            wp9,
+            wp12
+        ], compressedList)
         assertTrue(compressedList[0].startNewLine)
         assertFalse(compressedList[1].startNewLine)
         assertTrue(compressedList[2].startNewLine)
         assertTrue(compressedList[3].startNewLine)
         assertTrue(compressedList[4].startNewLine)
+        assertFalse(compressedList[5].startNewLine)
 
         day = new Day(directory: tmpDir, date: DAY1)
         day.waypoints.addAll([wp1])

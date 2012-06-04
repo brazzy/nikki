@@ -254,17 +254,19 @@ class Day extends AbstractTableModel implements Comparable<Day> {
         if(waypoints){
             def previous = waypoints.first()
             result.add(previous)
+            def previousAdded = previous
             for(Waypoint wp : waypoints){
-                def dist = previous.distanceInMeters(wp)
+                def dist = previousAdded.distanceInMeters(wp)
                 def time = new Duration(previous.timestamp, wp.timestamp)
 
                 if(dist >= WAYPOINT_MERGE_THRESHOLD_DISTANCE){
                     result.add(wp)
-                    previous = wp
+                    previousAdded = wp
                     if(time.isLongerThan(WAYPOINT_NEWLINE_THRESHOLD_TIME)){
                         wp.startNewLine = true
                     }
                 }
+                previous = wp
             }
         }
         if(result){
